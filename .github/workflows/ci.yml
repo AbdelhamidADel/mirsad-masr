@@ -104,7 +104,10 @@ jobs:
         env:
           DOKPLOY_DEPLOY_URL: ${{ secrets.DOKPLOY_DEPLOY_URL }}
         run: |
-          test -n "$DOKPLOY_DEPLOY_URL"
+          if [ -z "$DOKPLOY_DEPLOY_URL" ]; then
+            echo "DOKPLOY_DEPLOY_URL not set; skipping Dokploy trigger"
+            exit 0
+          fi
           curl --fail-with-body --show-error --silent \
             --request POST \
             --header "Content-Type: application/json" \
