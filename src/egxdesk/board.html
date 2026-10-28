@@ -1,0 +1,5027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIRSAD MASR</title>
+<link rel="icon" href="/static/mirsad-masr-favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/static/mirsad-masr-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=Noto+Naskh+Arabic:wght@500;600&display=swap" rel="stylesheet">
+<script>
+try {
+  var savedTheme = localStorage.getItem("egx-theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+  var savedLang = localStorage.getItem("egx-lang");
+  if (savedLang !== "ar" && savedLang !== "en") savedLang = "en";
+  document.documentElement.lang = savedLang;
+  document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+} catch (error) {}
+</script>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0a1315;
+    --bg-alt: #0e1b1e;
+    --surface: #112124;
+    --line: #1f3438;
+    --text: #e7efea;
+    --muted: #8aa09c;
+    --accent: #e3b768;
+    --accent-ink: #e3b768;
+    --accent-soft: #2c2616;
+    --up: #4fd1a1;
+    --up-ink: #4fd1a1;
+    --up-soft: #10332a;
+    --down: #ff7f73;
+    --down-ink: #ff7f73;
+    --down-soft: #3a1a18;
+    --shadow: none;
+    --font-display: "Fraunces", "Iowan Old Style", Palatino, serif;
+    --font-ui: "Instrument Sans", "Segoe UI", sans-serif;
+    --font-ar: "Noto Naskh Arabic", "Segoe UI", serif;
+    --radius: 18px;
+    --pad: 24px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      color-scheme: light;
+      --bg: #f3f1ea;
+      --bg-alt: #e9e6dc;
+      --surface: #fffefa;
+      --line: #dcd8cb;
+      --text: #14201f;
+      --muted: #5a6864;
+      --accent: #a8741a;
+      --accent-ink: #8a5e12;
+      --accent-soft: #f3e6c8;
+      --up: #0e8a63;
+      --up-ink: #0c7454;
+      --up-soft: #d8f0e6;
+      --down: #c8402f;
+      --down-ink: #a33224;
+      --down-soft: #f8dcd7;
+      --shadow: 0 1px 2px rgba(20, 32, 31, 0.05), 0 10px 28px rgba(20, 32, 31, 0.06);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0a1315;
+    --bg-alt: #0e1b1e;
+    --surface: #112124;
+    --line: #1f3438;
+    --text: #e7efea;
+    --muted: #8aa09c;
+    --accent: #e3b768;
+    --accent-ink: #e3b768;
+    --accent-soft: #2c2616;
+    --up: #4fd1a1;
+    --up-ink: #4fd1a1;
+    --up-soft: #10332a;
+    --down: #ff7f73;
+    --down-ink: #ff7f73;
+    --down-soft: #3a1a18;
+    --shadow: none;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f3f1ea;
+    --bg-alt: #e9e6dc;
+    --surface: #fffefa;
+    --line: #dcd8cb;
+    --text: #14201f;
+    --muted: #5a6864;
+    --accent: #a8741a;
+    --accent-ink: #8a5e12;
+    --accent-soft: #f3e6c8;
+    --up: #0e8a63;
+    --up-ink: #0c7454;
+    --up-soft: #d8f0e6;
+    --down: #c8402f;
+    --down-ink: #a33224;
+    --down-soft: #f8dcd7;
+    --shadow: 0 1px 2px rgba(20, 32, 31, 0.05), 0 10px 28px rgba(20, 32, 31, 0.06);
+  }
+
+  /* Metal accents. Gold and silver are mapped onto .metals-view below; brand mark keeps --accent. */
+  :root {
+    --gold-a: #e3b768;
+    --gold-i: #e3b768;
+    --gold-s: #2c2616;
+    --silver-a: #aebbc4;
+    --silver-i: #aebbc4;
+    --silver-s: #1f2a30;
+    --tabs-h: 52px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      --gold-a: #a8741a;
+      --gold-i: #8a5e12;
+      --gold-s: #f3e6c8;
+      --silver-a: #5b6b76;
+      --silver-i: #5b6b76;
+      --silver-s: #e3e8eb;
+    }
+  }
+  :root[data-theme="light"] {
+    --gold-a: #a8741a;
+    --gold-i: #8a5e12;
+    --gold-s: #f3e6c8;
+    --silver-a: #5b6b76;
+    --silver-i: #5b6b76;
+    --silver-s: #e3e8eb;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 400 16px/1.5 var(--font-ui);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  button, input, a { font: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .shell {
+    width: min(1360px, 100%);
+    margin: 0 auto;
+    padding: 20px var(--pad) 40px;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px 28px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    overflow: visible;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    overflow: visible;
+  }
+  .brand-logo {
+    display: block;
+    height: 80px;
+    width: auto;
+    max-width: 80px;
+    object-fit: contain;
+    background: transparent;
+    flex-shrink: 0;
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 0;
+  }
+  .brand-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  html[dir="rtl"] .brand-title {
+    font-family: var(--font-ar), var(--font-display);
+    letter-spacing: 0;
+  }
+  @media (max-width: 640px) {
+    .brand-logo { height: 60px; max-width: 60px; }
+    .brand-title { font-size: 1.25rem; }
+  }
+  .tagline {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.35;
+    max-width: 42ch;
+  }
+  #status {
+    margin: 2px 0 0;
+    color: var(--muted);
+    max-width: 80ch;
+  }
+  /* Sticky underline tabs: Exchange | Gold | Silver */
+  .view-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    height: var(--tabs-h);
+    margin: 0 calc(var(--pad) * -1) 18px;
+    padding: 0 var(--pad);
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .view-tabs::-webkit-scrollbar { display: none; }
+  .view-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 8px 8px 0 0;
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+  .view-tab:hover { color: var(--text); background: color-mix(in srgb, var(--text) 5%, transparent); }
+  .view-tab[aria-selected="true"] { color: var(--text); font-weight: 600; }
+  .view-tab[data-view="exchange"][aria-selected="true"] .tab-icon { color: var(--accent); }
+  .view-tab[data-view="gold"][aria-selected="true"] .tab-icon { color: var(--gold-a); }
+  .view-tab[data-view="silver"][aria-selected="true"] .tab-icon { color: var(--silver-a); }
+  .view-tab:focus-visible { outline: 2px solid var(--tab-ink, var(--accent)); outline-offset: -3px; }
+  .tab-icon { width: 18px; height: 18px; flex: none; }
+  .tab-ink {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 3px;
+    width: 0;
+    border-radius: 3px 3px 0 0;
+    background: var(--tab-ink, var(--accent));
+    transform: translateX(0);
+    transition: transform 240ms cubic-bezier(0.3, 0.7, 0.2, 1), width 240ms cubic-bezier(0.3, 0.7, 0.2, 1), background-color 200ms ease;
+    pointer-events: none;
+  }
+  .view-tabs[data-active="gold"] { --tab-ink: var(--gold-a); }
+  .view-tabs[data-active="silver"] { --tab-ink: var(--silver-a); }
+  .metals-view[hidden], .exchange-view[hidden] { display: none !important; }
+
+  /* Metals container: scoped accent + 12-column layout */
+  .metals-view[data-metal="gold"] {
+    --metal-accent: var(--gold-a);
+    --metal-accent-ink: var(--gold-i);
+    --metal-accent-soft: var(--gold-s);
+  }
+  .metals-view[data-metal="silver"] {
+    --metal-accent: var(--silver-a);
+    --metal-accent-ink: var(--silver-i);
+    --metal-accent-soft: var(--silver-s);
+  }
+  .metals-view :focus-visible { outline: 2px solid var(--metal-accent-ink, var(--accent)); outline-offset: 2px; }
+  .metals-panel {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "hero  hero  hero  hero  hero  hero  hero  hero  build build build build"
+      "chart chart chart chart chart chart chart chart chart chart chart chart"
+      "calc  calc  calc  calc  calc  calc  also  also  also  also  also  also"
+      "foot  foot  foot  foot  foot  foot  foot  foot  foot  foot  foot  foot";
+    gap: 20px 24px;
+    align-items: stretch;
+  }
+  .m-slot { min-width: 0; }
+  .m-slot[data-area="hero"] { grid-area: hero; }
+  .m-slot[data-area="build"] { grid-area: build; }
+  .m-slot[data-area="chart"] { grid-area: chart; }
+  .m-slot[data-area="calc"] { grid-area: calc; }
+  .m-slot[data-area="also"] { grid-area: also; }
+  .m-slot[data-area="foot"] { grid-area: foot; }
+  .m-slot:empty { display: none; }
+  @media (max-width: 1099px) {
+    .metals-panel {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "hero" "build" "chart" "calc" "also" "foot";
+    }
+  }
+  /* Block chrome: hero + chart are loud, price build + calculator are tinted, the rest stay quiet. */
+  .m-slot[data-area="hero"], .m-slot[data-area="chart"] {
+    padding: 24px 28px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .m-slot[data-area="build"], .m-slot[data-area="calc"] {
+    padding: 22px 24px;
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--metal-accent) 6%, var(--bg-alt));
+  }
+  .m-slot[data-area="also"] {
+    padding: 18px 2px 0;
+    border-top: 1px solid var(--line);
+  }
+  /* Related funds nests under Also tracked in the same quiet column. */
+  .m-slot[data-area="also"] .also + .funds {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .m-slot[data-area="hero"], .m-slot[data-area="build"] { container-type: inline-size; }
+  .m-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .m-title.quiet {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .m-kicker { margin: 0; color: var(--muted); font-size: 0.92rem; font-weight: 500; }
+  .m-muted { color: var(--muted); }
+  .metals-view .is-up { color: var(--up-ink); }
+  .metals-view .is-down { color: var(--down-ink); }
+  .metals-view .is-missing { color: var(--muted); font-weight: 500; }
+  .m-icon { width: 1em; height: 1em; flex: none; }
+  .btn-ext {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+  }
+  .btn-ext:hover { border-color: var(--metal-accent); color: var(--metal-accent-ink); background: color-mix(in srgb, var(--metal-accent) 8%, transparent); }
+
+  /* Hero */
+  .hero-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 28px; flex-wrap: wrap; }
+  .hero-main { min-width: 0; }
+  .hero-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-top: 8px; }
+  .hero-value {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+    border-radius: 6px;
+  }
+  .hero-unit { color: var(--muted); font-weight: 500; }
+  .hero-day { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .hero-day .m-icon { width: 0.7em; height: 0.7em; }
+  .hero-day-label { color: var(--muted); font-weight: 500; }
+  .hero-spark { flex: 1 1 160px; max-width: 280px; min-width: 140px; margin: 0; align-self: center; }
+  .hero-spark svg { display: block; width: 100%; height: 64px; overflow: visible; }
+  .hero-spark figcaption { margin-top: 2px; color: var(--muted); font-size: 0.74rem; text-align: right; }
+  .spark-line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .spark-area { fill: currentColor; opacity: 0.14; stroke: none; }
+  .perf {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin: 22px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line);
+  }
+  .perf > div { padding: 0 14px; min-width: 0; }
+  .perf > div:first-child { padding-left: 0; }
+  .perf > div + div { border-left: 1px solid var(--line); }
+  .perf dt { margin: 0 0 2px; color: var(--muted); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .perf dd { margin: 0; font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .hero-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin-top: 18px; color: var(--muted); font-size: 0.88rem; }
+  /* Fineness / karat table lives inside the hero card (same composition as the headline price). */
+  .hero .karat {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .hero .karat .m-title.quiet { margin: 0; }
+  .hero .ktable { margin-top: 6px; }
+
+  /* Price build */
+  .build-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; }
+  .build-head .m-title { flex: 1 1 auto; }
+  .build-sum { display: none; order: 3; flex-basis: 100%; margin-top: -4px; color: var(--muted); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+  .build-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: -8px -10px -8px 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .build-toggle .m-icon { width: 20px; height: 20px; transition: transform 180ms ease; }
+  .build[data-open="true"] .build-toggle .m-icon { transform: rotate(180deg); }
+  /* Formula strip: 4 equal boxes with × ÷ = between them; always LTR for math order */
+  .steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: stretch;
+    gap: 6px 4px;
+    margin: 14px 0 0;
+    padding: 0;
+    direction: ltr;
+  }
+  .step {
+    display: grid;
+    gap: 2px;
+    align-content: start;
+    min-width: 0;
+    padding: 8px 8px 9px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .step-label { color: var(--muted); font-size: 0.72rem; font-weight: 600; line-height: 1.25; }
+  .step-op {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    min-width: 1.1rem;
+    padding: 0 2px;
+    color: var(--metal-accent-ink);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1;
+    user-select: none;
+  }
+  .step-value { font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .step-unit { color: var(--muted); font-size: 0.72rem; font-weight: 500; }
+  .step.is-result { background: var(--metal-accent-soft); border-color: color-mix(in srgb, var(--metal-accent) 50%, var(--line)); }
+  .step.is-result .step-value { color: var(--metal-accent-ink); }
+  .build-note { margin: 12px 0 0; color: var(--muted); font-size: 0.8rem; }
+  @container (max-width: 420px) {
+    .steps { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .step-op { padding: 2px 0; font-size: 0.95rem; }
+  }
+  @media (max-width: 1099px) {
+    .build-sum { display: inline; }
+    .build-toggle { display: inline-flex; }
+    .build[data-open="false"] .build-body { display: none; }
+    .build[data-open="true"] .build-sum { display: none; }
+    .m-slot[data-area="build"] { padding-block: 14px; }
+    .m-slot[data-area="hero"] { padding: 22px 20px; }
+  }
+  @media (max-width: 639px) {
+    .steps { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .step { grid-template-columns: 1fr auto; align-items: center; column-gap: 8px; padding: 10px 12px; }
+    .step-label { grid-column: 1; }
+    .step-value { grid-column: 2; grid-row: 1 / span 2; text-align: right; align-self: center; }
+    .step-op { padding: 2px 0; font-size: 0.95rem; }
+    .perf > div { padding: 0 8px; }
+    .perf dd { font-size: 0.92rem; }
+    .hero-spark { max-width: none; flex-basis: 100%; }
+  }
+  /* Segmented control (chart ranges, zakat basis) */
+  .seg {
+    display: inline-flex;
+    padding: 3px;
+    gap: 2px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-alt);
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .seg button {
+    min-height: 34px;
+    min-width: 44px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 140ms ease, color 140ms ease;
+  }
+  .seg[hidden] { display: none; }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--metal-accent-ink); font-weight: 600; box-shadow: 0 0 0 1px color-mix(in srgb, var(--metal-accent) 45%, var(--line)); }
+  @media (pointer: coarse), (max-width: 639px) { .seg button { min-height: 44px; } }
+
+  /* Chart */
+  .chart-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; }
+  .chart-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; min-width: 0; }
+  .chart-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--bg-alt);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .chart-badge-pill.up { background: var(--up-soft); color: var(--up-ink); }
+  .chart-badge-pill.down { background: var(--down-soft); color: var(--down-ink); }
+  .chart-caption { margin: 6px 0 0; color: var(--muted); font-size: 0.86rem; }
+  .m-chart-stage { position: relative; height: 320px; margin-top: 12px; }
+  .m-chart-stage canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; border-radius: 8px; }
+  .m-tip {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    min-width: 168px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    font-size: 0.84rem;
+    line-height: 1.45;
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .m-tip[hidden] { display: none; }
+  .m-tip-date { color: var(--muted); font-size: 0.78rem; }
+  .m-tip-price { font-family: var(--font-display); font-size: 1.15rem; font-weight: 560; }
+  .m-tip-change { font-weight: 600; }
+  .chart-hint { margin: 8px 0 0; color: var(--muted); font-size: 0.78rem; }
+  @media (max-width: 639px) { .m-chart-stage { height: 280px; } .m-slot[data-area="chart"] { padding: 18px 14px; } }
+  /* Karat / fineness table (inside hero) + Also tracked (quiet blocks) */
+  .ktable { width: 100%; margin-top: 10px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .ktable th, .ktable td { padding: 11px 10px; text-align: left; vertical-align: middle; border-top: 1px solid var(--line); }
+  .ktable thead th { padding-top: 6px; padding-bottom: 8px; border-top: 0; color: var(--muted); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ktable tbody th { font-family: var(--font-display); font-size: 1.05rem; font-weight: 560; }
+  .ktable .num { text-align: right; white-space: nowrap; }
+  .ktable td.num { font-weight: 600; }
+  .ktable small { color: var(--muted); font-size: 0.74rem; font-weight: 500; }
+  .ktable tr.is-key > * { background: var(--metal-accent-soft); border-top-color: transparent; }
+  .ktable tr.is-key > :first-child { box-shadow: inset 3px 0 0 var(--metal-accent); border-radius: 8px 0 0 8px; }
+  .ktable tr.is-key > :last-child { border-radius: 0 8px 8px 0; }
+  .ktable tr.is-key + tr > * { border-top-color: transparent; }
+  .k-badge {
+    display: block;
+    width: max-content;
+    margin-top: 3px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--metal-accent) 22%, transparent);
+    color: var(--metal-accent-ink);
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .pbar { display: flex; align-items: center; gap: 10px; min-width: 80px; }
+  .pbar-track { flex: 1 1 auto; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  .pbar-track i { display: block; height: 100%; border-radius: 4px; background: var(--metal-accent); }
+  .pbar-text { flex: none; min-width: 3.6em; color: var(--muted); font-size: 0.86rem; text-align: right; }
+  @container (max-width: 440px) {
+    .ktable th, .ktable td { padding-left: 6px; padding-right: 6px; }
+    .ktable tbody th { font-size: 0.98rem; }
+    .k-badge { max-width: 9.5em; line-height: 1.25; padding: 2px 8px; }
+    .pbar { gap: 6px; min-width: 0; }
+    .pbar-track { min-width: 18px; }
+    .pbar-text { min-width: 3.1em; font-size: 0.8rem; }
+    .ktable td.num small { display: none; }
+  }
+  .kv { margin: 10px 0 0; }
+  .kv-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 10px; border-top: 1px solid var(--line); }
+  .kv-row dt { min-width: 0; }
+  .kv-title { display: block; font-weight: 500; }
+  .kv-sub { display: block; color: var(--muted); font-size: 0.82rem; }
+  .kv-row dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; border-radius: 6px; }
+  .kv-row dd small { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+  /* Calculator + zakat */
+  .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 14px; }
+  .field { display: grid; gap: 6px; align-content: start; min-width: 0; }
+  .field label { color: var(--muted); font-size: 0.84rem; font-weight: 600; }
+  .field-control { position: relative; }
+  .field-control input, .field-control select {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 44px 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    transition: border-color 140ms ease;
+  }
+  .field-control select { padding-right: 12px; appearance: auto; }
+  .field-control input:hover, .field-control select:hover { border-color: color-mix(in srgb, var(--metal-accent) 55%, var(--line)); }
+  .field-control input[aria-invalid="true"] { border-color: var(--down); }
+  .field-suffix { position: absolute; top: 0; right: 12px; bottom: 0; display: flex; align-items: center; color: var(--muted); font-size: 0.82rem; font-weight: 600; pointer-events: none; }
+  .field-hint { margin: 0; color: var(--muted); font-size: 0.78rem; min-height: 1.2em; }
+  .field-hint.is-error { color: var(--down-ink); }
+  .calc-result { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .calc-label { color: var(--muted); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .calc-total {
+    margin-top: 2px;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4.4vw, 2.9rem);
+    font-weight: 560;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    border-radius: 6px;
+    width: max-content;
+    max-width: 100%;
+  }
+  .calc-total small { color: var(--muted); font-family: var(--font-ui); font-size: 1rem; font-weight: 500; letter-spacing: 0; }
+  .calc-breakdown { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 12px; margin: 10px 0 0; }
+  .calc-breakdown > div { min-width: 0; }
+  .calc-breakdown dt { color: var(--muted); font-size: 0.76rem; font-weight: 600; }
+  .calc-breakdown dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .calc-op { align-self: flex-end; padding-bottom: 1px; color: var(--metal-accent-ink); font-weight: 700; }
+  .zakat { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .zakat-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 14px; }
+  .zakat-nisab { margin-top: 8px; font-family: var(--font-display); font-size: clamp(1.8rem, 3.6vw, 2.4rem); font-weight: 560; line-height: 1.1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; width: max-content; max-width: 100%; border-radius: 6px; }
+  .zakat-nisab small { color: var(--muted); font-family: var(--font-ui); font-size: 0.95rem; font-weight: 500; letter-spacing: 0; }
+  .zakat-sub { margin: 2px 0 0; color: var(--muted); font-size: 0.86rem; }
+  .zakat-check { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 14px; font-size: 0.9rem; }
+  .zakat-pill { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 12px; border-radius: 999px; background: var(--bg-alt); color: var(--muted); font-weight: 700; }
+  .zakat-pill.is-yes { background: var(--up-soft); color: var(--up-ink); }
+  .zakat-pill .m-icon { width: 14px; height: 14px; }
+  .zakat-rate { margin: 12px 0 0; color: var(--muted); font-size: 0.84rem; }
+  .zakat-disc { margin: 6px 0 0; color: var(--muted); font-size: 0.78rem; max-width: 62ch; }
+  /* Funds */
+  .funds-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .funds-sort { display: none; align-items: center; gap: 8px; color: var(--muted); font-size: 0.84rem; font-weight: 600; }
+  .funds-sort select { min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); }
+  .ftable { width: 100%; margin-top: 8px; border-collapse: separate; border-spacing: 0; font-variant-numeric: tabular-nums; }
+  .ftable thead th {
+    position: sticky;
+    top: var(--tabs-h);
+    z-index: 2;
+    padding: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .ftable th.num, .ftable td.num { text-align: right; }
+  .th-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
+  .ftable th.num .th-sort { justify-content: flex-end; }
+  .th-sort:hover { color: var(--text); }
+  .th-sort .m-icon { width: 12px; height: 12px; opacity: 0.45; }
+  .ftable th[aria-sort="ascending"] .th-sort, .ftable th[aria-sort="descending"] .th-sort { color: var(--metal-accent-ink); }
+  .ftable th[aria-sort="ascending"] .m-icon, .ftable th[aria-sort="descending"] .m-icon { opacity: 1; }
+  .ftable tbody th, .ftable tbody td { padding: 12px 10px; border-bottom: 1px solid var(--line); text-align: left; font-weight: 400; transition: background-color 120ms ease; }
+  .ftable tbody td.num { text-align: right; white-space: nowrap; }
+  .ftable tbody tr:hover > * { background: color-mix(in srgb, var(--metal-accent) 7%, transparent); }
+  .ftable tbody tr:last-child > * { border-bottom: 0; }
+  .f-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text); text-decoration: none; border-radius: 4px; }
+  .f-link .m-icon { width: 13px; height: 13px; opacity: 0.4; flex: none; transition: opacity 120ms ease; }
+  .f-link:hover, .f-link:focus-visible { color: var(--metal-accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .f-link:hover .m-icon, .f-link:focus-visible .m-icon { opacity: 1; }
+  .f-ret { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+  .f-ret .m-icon { width: 0.62em; height: 0.62em; }
+  @media (max-width: 639px) {
+    .funds-sort { display: inline-flex; }
+    .ftable, .ftable tbody, .ftable tr, .ftable tbody th, .ftable tbody td { display: block; }
+    .ftable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+    .ftable tbody tr {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px 10px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .ftable tbody tr:last-child { border-bottom: 0; }
+    .ftable tbody th { grid-column: 1 / -1; padding: 0; border: 0; font-weight: 500; }
+    .ftable tbody td { padding: 0; border: 0; text-align: left; font-size: 0.95rem; font-weight: 600; }
+    .ftable tbody td.num { text-align: left; white-space: normal; }
+    .ftable tbody td::before { content: attr(data-label); display: block; margin-bottom: 1px; color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .ftable tbody tr:hover > * { background: transparent; }
+  }
+  /* Footer */
+  .m-slot[data-area="foot"] { padding-top: 16px; border-top: 1px solid var(--line); }
+  .m-foot { margin: 0; max-width: 70ch; color: var(--muted); font-size: 0.84rem; }
+  .m-foot + .m-foot { margin-top: 4px; }
+  .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .live, .theme, .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    font: inherit;
+  }
+  .theme {
+    gap: 6px;
+    padding: 7px 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .theme .theme-opt { opacity: 0.45; }
+  .theme .theme-opt.is-active { opacity: 1; color: var(--accent-ink); }
+  .theme-sep { opacity: 0.35; font-weight: 400; }
+  .live { cursor: default; }
+  .live.is-closed .dot { background: var(--muted); animation: none; box-shadow: none; }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--up);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 55%, transparent);
+    animation: pulse 2.8s ease-in-out infinite;
+  }
+
+  .markets {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .indices {
+    margin: 0 0 16px;
+  }
+  .indices-head {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.15rem;
+  }
+  .indices-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .index-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+  }
+  .index-item h3 {
+    margin: 0 0 6px;
+    min-height: 2.5em;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--accent-ink);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  .index-item h3[lang="ar"] {
+    font-family: var(--font-ar);
+  }
+  .index-value {
+    flex: none;
+    margin: 0;
+    min-width: 0;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.35rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .index-value > .num:not(.change) {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .index-value > .change {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    font-size: clamp(0.72rem, 1.6vw, 0.85rem);
+    padding-inline: 6px;
+  }
+  .index-value .missing { color: var(--muted); font-size: 0.95rem; font-weight: 500; }
+  .index-item p {
+    margin: 0;
+    margin-top: auto;
+    padding-top: 8px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    max-width: 48ch;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px 13px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+    min-height: 124px;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--line);
+  }
+  .card.up::before { background: var(--up); }
+  .card.down::before { background: var(--down); }
+  .card .label { color: var(--muted); font-size: 0.95rem; }
+  .card .value {
+    margin: 4px 0 8px;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: clamp(1.45rem, 2vw, 2rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .spark { width: 80px; height: 28px; margin-top: 8px; color: var(--muted); }
+  .card.up .spark { color: var(--up); }
+  .card.down .spark { color: var(--down); }
+  .card .foot {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .unit { color: var(--muted); font-size: 0.85rem; }
+  .change {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--bg-alt);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .change.up { background: var(--up-soft); color: var(--up-ink); }
+  .change.down { background: var(--down-soft); color: var(--down-ink); }
+
+  .desk {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr) 360px;
+    gap: 16px;
+    align-items: start;
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    min-width: 0;
+  }
+  .list-panel, .news-panel {
+    position: sticky;
+    top: 16px;
+    height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-head { flex: none; }
+  .scroll-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    scroll-padding: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 14px), transparent 100%);
+  }
+  .scroll-body::-webkit-scrollbar { width: 8px; }
+  .scroll-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+  .search { position: relative; margin: 12px 12px 8px; }
+  .search input {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    padding: 10px 42px 10px 14px;
+    min-height: 44px;
+  }
+  .search input::placeholder { color: var(--muted); }
+  .search kbd {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    padding: 0 6px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    background: var(--surface);
+  }
+  .search:focus-within kbd { visibility: hidden; }
+  .entry {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    align-items: stretch;
+    border-bottom: 1px solid var(--line);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    min-height: 58px;
+    max-height: 64px;
+    text-align: left;
+    background: transparent;
+    color: inherit;
+    border: 0;
+    border-bottom: 0;
+    border-left: 3px solid transparent;
+    padding: 4px 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+  .row:hover { background: var(--bg-alt); }
+  .row[aria-current="true"] {
+    background: color-mix(in srgb, var(--accent-soft) 72%, transparent);
+    border-left-color: var(--accent);
+  }
+  .star {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    min-width: 28px;
+    min-height: 44px;
+    padding: 0;
+    line-height: 1;
+  }
+  .star[aria-pressed="true"] { color: var(--accent-ink); }
+  .list-tools { padding: 0 12px 8px; }
+  .sector-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 10px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .sector-dd {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+  .sector-dd-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: calc(var(--radius) - 6px);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    text-align: start;
+    cursor: pointer;
+    transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  }
+  .sector-dd-btn:hover,
+  .sector-dd-btn:focus-visible {
+    border-color: var(--accent);
+    outline: none;
+  }
+  .sector-dd-btn[aria-expanded="true"] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .sector-dd-value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sector-dd-caret {
+    flex: none;
+    color: var(--muted);
+    font-size: 0.7rem;
+    line-height: 1;
+    transition: transform 150ms ease;
+  }
+  .sector-dd-btn[aria-expanded="true"] .sector-dd-caret {
+    transform: rotate(180deg);
+    color: var(--accent-ink);
+  }
+  .sector-dd-list {
+    position: absolute;
+    z-index: 40;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    top: calc(100% + 4px);
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    max-height: min(280px, 45vh);
+    overflow: auto;
+    border-radius: calc(var(--radius) - 4px);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .sector-dd-list[hidden] { display: none; }
+  .sector-dd-option {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: calc(var(--radius) - 8px);
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+  .sector-dd-option:hover,
+  .sector-dd-option.is-active {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .sector-dd-option[aria-selected="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  html[dir="rtl"] .sector-dd-btn,
+  html[dir="rtl"] .sector-dd-option {
+    font-family: var(--font-ar), var(--font-ui);
+  }
+  .sym {
+    font-weight: 600;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    padding-top: 2px;
+    overflow-wrap: anywhere;
+  }
+  .en-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.92rem;
+    font-weight: 560;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+  }
+  .en-name[lang="ar"] {
+    font-family: var(--font-ar);
+    direction: rtl;
+    text-align: start;
+  }
+  .ar-name {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-family: var(--font-ar);
+    font-weight: 500;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    direction: rtl;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ar-name[lang="en"] {
+    font-family: inherit;
+    direction: ltr;
+    text-align: start;
+  }
+  .quote-stack { text-align: right; }
+  .quote-cell {
+    display: block;
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .day-pill {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .day-pill.up { color: var(--up-ink); }
+  .day-pill.down { color: var(--down-ink); }
+  .quote-cell.up { color: var(--up-ink); }
+  .quote-cell.down { color: var(--down-ink); }
+  .quote-cell.missing {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .detail { padding: 18px 20px 16px; }
+  .detail.is-pending { opacity: 0.55; }
+  .flash-up { animation: flashUp 600ms ease; }
+  .flash-down { animation: flashDown 600ms ease; }
+  .detail-ar {
+    margin: 0;
+    font-family: var(--font-ar);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3vw, 2.125rem);
+    line-height: 1.4;
+    direction: rtl;
+    text-align: right;
+    max-width: 80ch;
+  }
+  .detail-ar[lang="en"] {
+    font-family: var(--font-display);
+    direction: ltr;
+    text-align: left;
+  }
+  .detail-ar.missing {
+    font-family: var(--font-ui);
+    direction: ltr;
+    text-align: left;
+    color: var(--muted);
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  .detail-en {
+    margin: 0;
+    color: var(--muted);
+    max-width: 80ch;
+  }
+  .detail-en[lang="ar"] {
+    font-family: var(--font-ar);
+    direction: rtl;
+    text-align: start;
+  }
+  .title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 14px; }
+  .copy-symbol {
+    min-height: 36px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 12px;
+    min-height: 3.5rem;
+  }
+  .detail-price {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .currency { color: var(--muted); font-weight: 500; font-size: 1.05rem; }
+  .chart-panel { margin: 16px 0 8px; }
+  .ranges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .range-btn {
+    min-height: 32px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .range-btn[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .chart-stage {
+    position: relative;
+    height: 280px;
+    margin-top: 10px;
+  }
+  .chart-stage canvas { width: 100%; height: 100%; display: block; }
+  .chart-stage canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chart-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  .chart-tip {
+    position: absolute;
+    z-index: 2;
+    min-width: 148px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    pointer-events: none;
+    box-shadow: var(--shadow);
+  }
+  .chart-tip b { font-weight: 560; }
+  .chart-note { margin: 6px 0 0; color: var(--muted); font-size: 0.85rem; }
+  .chart-skel { height: 280px; margin-top: 10px; }
+  .range { margin: 18px 0 4px; max-width: 80ch; direction: ltr; }
+  .track {
+    position: relative;
+    height: 6px;
+    margin: 26px 0 8px;
+    border-radius: 999px;
+    background: var(--line);
+  }
+  .fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: var(--accent);
+    opacity: 0.85;
+  }
+  .marker, .tick { position: absolute; top: 50%; }
+  .marker {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--surface);
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  .tick {
+    width: 2px;
+    height: 16px;
+    background: var(--text);
+    transform: translate(-50%, -50%);
+  }
+  .mark-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .marker .mark-label {
+    top: 50%;
+    left: 12px;
+    color: var(--accent-ink);
+    transform: translateY(-50%);
+  }
+  /* Open sits above the bar so it never paints over Low/High below. */
+  .tick .mark-label {
+    top: auto;
+    bottom: calc(100% + 6px);
+  }
+  .tick .mark-label.is-nudge-start {
+    transform: translateX(-12%);
+  }
+  .tick .mark-label.is-nudge-end {
+    transform: translateX(-88%);
+  }
+  .tick.is-label-hidden .mark-label { display: none; }
+  .marker:focus-visible, .tick:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .range-scale {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    direction: ltr;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .caption { margin: 8px 0 0; color: var(--muted); max-width: 80ch; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .stat {
+    min-width: 0;
+    padding: 12px 14px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat:nth-child(4n) { border-right: 0; }
+  .stat:nth-last-child(-n+4) { border-bottom: 0; }
+  .stat span { display: block; color: var(--muted); font-size: 0.82rem; }
+  .stat b {
+    display: block;
+    margin-top: 3px;
+    font-weight: 560;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat b.missing { color: var(--muted); font-weight: 500; }
+  .updated { margin: 14px 0 0; color: var(--muted); font-size: 0.9rem; }
+  .company-news { margin-top: 16px; }
+  .company-news .item { padding-left: 0; padding-right: 0; }
+  .company-news h2, .news-head {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.2rem;
+  }
+  .news-head { padding: 14px 14px 0; }
+  .empty { margin: 8px 0 12px; color: var(--muted); max-width: 80ch; }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 14px 4px;
+  }
+  .chip {
+    min-height: 34px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .item {
+    display: block;
+    padding: 12px 14px;
+    border-top: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+  .item:hover { background: var(--bg-alt); }
+  .tag {
+    color: var(--accent-ink);
+    font-weight: 600;
+    font-size: 0.82rem;
+  }
+  .item strong {
+    display: block;
+    margin: 3px 0 4px;
+    font-weight: 500;
+    max-width: 80ch;
+  }
+  .item strong[lang="ar"] {
+    font-family: var(--font-ar);
+    font-weight: 600;
+    line-height: 1.7;
+  }
+  .meta { color: var(--muted); font-size: 0.85rem; max-width: 80ch; }
+
+  .error { padding: 16px; }
+  .error p { margin: 0 0 10px; max-width: 80ch; }
+  .retry {
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg-alt);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .sk {
+    height: 12px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--bg-alt) 0%, var(--line) 50%, var(--bg-alt) 100%);
+    background-size: 220% 100%;
+    animation: shimmer 1.3s ease-in-out infinite;
+  }
+  .sk-label { width: 42%; height: 12px; }
+  .sk-value { width: 68%; height: 28px; margin: 12px 0; }
+  .sk-line { width: 54%; height: 12px; }
+  .sk-row { height: 46px; margin: 0 12px 8px; }
+  .sk-title { width: 70%; height: 32px; }
+  .sk-sub { width: 46%; height: 14px; margin-top: 10px; }
+  .sk-price { width: 48%; height: 52px; margin-top: 16px; }
+  .skeleton-card .sk + .sk { margin-top: 0; }
+  .sk-strip { width: 100%; height: 44px; margin-top: 16px; }
+  .sk-chart { width: 100%; height: 320px; margin-top: 14px; }
+  .m-slot > .sk + .sk { margin-top: 12px; }
+  .m-slot > .sk-row { margin: 12px 0 0; }
+  .m-error { grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 50%, transparent); }
+    60% { box-shadow: 0 0 0 7px transparent; }
+  }
+  @keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+  @keyframes flashUp { from { background: var(--up-soft); } to { background: transparent; } }
+  @keyframes flashDown { from { background: var(--down-soft); } to { background: transparent; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    .sk { background: var(--bg-alt); }
+  }
+  .companies-toggle, .sheet-backdrop { display: none; }
+  .companies-toggle {
+    position: sticky;
+    top: 8px;
+    z-index: 16;
+    align-items: center;
+    min-height: 44px;
+    margin: 0 0 12px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    background: rgba(10, 19, 21, 0.45);
+  }
+  @media (max-width: 1179px) {
+    .desk { grid-template-columns: 320px minmax(0, 1fr); }
+    .list-panel, .news-panel {
+      position: static;
+      height: auto;
+      max-height: 640px;
+    }
+    .news-panel { grid-column: 1 / -1; }
+  }
+  @media (max-width: 1099px) {
+    .indices-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 859px) {
+    :root { --pad: 16px; }
+    .markets { grid-template-columns: 1fr 1fr; }
+    .indices-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .desk { grid-template-columns: 1fr; }
+    .news-panel { grid-column: auto; max-height: 520px; }
+    .companies-toggle { display: inline-flex; }
+    .list-panel {
+      position: fixed;
+      top: auto;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      z-index: 30;
+      height: min(78vh, 640px);
+      max-height: min(78vh, 640px);
+      transform: translateY(120%);
+      transition: transform 180ms ease;
+    }
+    .list-panel.is-open { transform: translateY(0); }
+    .sheet-backdrop:not([hidden]) { display: block; }
+    .ranges { flex-wrap: nowrap; overflow-x: auto; }
+    .range-btn, .chip, .copy-symbol, .search input { min-height: 44px; flex: none; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(4n) { border-right: 1px solid var(--line); }
+    .stat:nth-child(2n) { border-right: 0; }
+    .stat:nth-last-child(-n+4) { border-bottom: 1px solid var(--line); }
+    .stat:nth-last-child(-n+2) { border-bottom: 0; }
+    .detail { padding: 16px; }
+    .chart-stage, .chart-skel { height: 230px; }
+  }
+
+  /* AR/EN: light RTL chrome flips */
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .lang .lang-opt { opacity: 0.45; }
+  .lang .lang-opt.is-active { opacity: 1; color: var(--accent-ink); }
+  .lang-sep { opacity: 0.35; font-weight: 400; }
+  html[dir="rtl"] body {
+    font-family: var(--font-ar), var(--font-ui);
+  }
+  html[dir="rtl"] .tagline {
+    font-family: var(--font-ar), var(--font-ui);
+  }
+  html[dir="rtl"] .view-tab,
+  html[dir="rtl"] .chip,
+  html[dir="rtl"] .theme,
+  html[dir="rtl"] .nav-pill,
+  html[dir="rtl"] .lang,
+  html[dir="rtl"] #status,
+  html[dir="rtl"] .indices-head,
+  html[dir="rtl"] .news-head,
+  html[dir="rtl"] .m-title,
+  html[dir="rtl"] .m-kicker,
+  html[dir="rtl"] .companies-toggle,
+  html[dir="rtl"] .sector-filter,
+  html[dir="rtl"] .panel-head,
+  html[dir="rtl"] .live,
+  html[dir="rtl"] .empty,
+  html[dir="rtl"] .error,
+  html[dir="rtl"] .caption,
+  html[dir="rtl"] .updated,
+  html[dir="rtl"] .chart-note,
+  html[dir="rtl"] .chart-hint,
+  html[dir="rtl"] .chart-caption,
+  html[dir="rtl"] .build-note,
+  html[dir="rtl"] .calc-label,
+  html[dir="rtl"] .zakat-sub,
+  html[dir="rtl"] .zakat-rate,
+  html[dir="rtl"] .zakat-disc,
+  html[dir="rtl"] .field label,
+  html[dir="rtl"] .field-hint,
+  html[dir="rtl"] .funds-sort,
+  html[dir="rtl"] .m-foot,
+  html[dir="rtl"] .hero-day-label,
+  html[dir="rtl"] .step-label,
+  html[dir="rtl"] .kv-title,
+  html[dir="rtl"] .k-badge {
+    font-family: var(--font-ar);
+  }
+  html[dir="rtl"] .num,
+  html[dir="rtl"] .hero-value,
+  html[dir="rtl"] .detail-price,
+  html[dir="rtl"] .quote-cell,
+  html[dir="rtl"] .day-pill,
+  html[dir="rtl"] .index-value,
+  html[dir="rtl"] .value,
+  html[dir="rtl"] input[type="number"],
+  html[dir="rtl"] .chart-badge,
+  html[dir="rtl"] .chart-badge-pill {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+  html[dir="rtl"] .ar-name {
+    text-align: start;
+  }
+  html[dir="rtl"] .quote-stack,
+  html[dir="rtl"] .quote-cell {
+    text-align: start;
+  }
+  html[dir="rtl"] .detail-ar {
+    text-align: start;
+  }
+  html[dir="rtl"] .detail-ar.missing {
+    direction: rtl;
+    text-align: start;
+  }
+  html[dir="rtl"] .hero-spark figcaption { text-align: left; }
+  html[dir="rtl"] .step-value { text-align: left; }
+  html[dir="rtl"] .ktable th, html[dir="rtl"] .ktable td { text-align: start; }
+  html[dir="rtl"] .ktable .num { text-align: start; }
+  html[dir="rtl"] .pbar-text { text-align: start; }
+  html[dir="rtl"] .kv-row dd { text-align: start; }
+  html[dir="rtl"] .ftable th.num, html[dir="rtl"] .ftable td.num { text-align: start; }
+  html[dir="rtl"] .search input { text-align: start; }
+
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand">
+      <a class="brand-mark" href="/" data-i18n-aria="brand_name" aria-label="MIRSAD MASR">
+        <img class="brand-logo" src="/static/mirsad-masr-emblem.png" alt="" width="80" height="80" decoding="async">
+        <span class="brand-text">
+          <span class="brand-title" data-i18n="brand_name">MIRSAD MASR</span>
+          <span class="tagline" data-i18n="tagline">Keep Your Eye on Egypt's Markets.</span>
+        </span>
+      </a>
+      <p id="status" data-i18n="loading_companies">Loading the listed companies…</p>
+    </div>
+    <div class="actions">
+      <span class="live" id="market-status" role="status"><span class="dot" aria-hidden="true"></span> <span id="market-state" data-i18n="market_closed">Market closed</span></span>
+      <a class="nav-pill" href="/" data-i18n="nav_home">Home</a>
+      <a class="nav-pill" href="/docs" data-i18n="nav_docs">Docs</a>
+      <button class="lang" id="lang" type="button" aria-label="Language">
+        <span class="lang-opt" data-lang-opt="en">EN</span>
+        <span class="lang-sep" aria-hidden="true">|</span>
+        <span class="lang-opt" data-lang-opt="ar">ع</span>
+      </button>
+      <button class="theme" id="theme" type="button" aria-label="Theme">
+        <span class="theme-opt" data-theme-opt="dark" data-i18n="theme_dark_short">Dark</span>
+        <span class="theme-sep" aria-hidden="true">|</span>
+        <span class="theme-opt" data-theme-opt="light" data-i18n="theme_light_short">Light</span>
+      </button>
+    </div>
+  </header>
+  <main>
+  <div class="view-tabs" id="view-tabs" role="tablist" aria-label="Exchange views" data-i18n-aria="views_label" data-active="exchange">
+    <button class="view-tab" id="tab-exchange" type="button" role="tab" data-view="exchange" aria-selected="true" aria-controls="exchange-view">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M12 4v16M17 4v16"/><path d="M5.5 9h3v6h-3zM10.5 7h3v8h-3zM15.5 10h3v5h-3z"/></svg>
+      <span data-i18n="tab_exchange">Exchange</span>
+    </button>
+    <button class="view-tab" id="tab-gold" type="button" role="tab" data-view="gold" aria-selected="false" aria-controls="metals-view" tabindex="-1">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5 8.5 6.5h7L18 9.5v1.2H6V9.5Z"/><path d="M5 10.7h14v3.2H5z"/><path d="M4.5 13.9h15v3.6H4.5z"/><path d="M9 6.5v3M15 6.5v3"/></svg>
+      <span data-i18n="tab_gold">Gold</span>
+    </button>
+    <button class="view-tab" id="tab-silver" type="button" role="tab" data-view="silver" aria-selected="false" aria-controls="metals-view" tabindex="-1">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25"/><text x="12" y="15.4" text-anchor="middle" font-size="8" font-weight="600" fill="currentColor" stroke="none" font-family="Instrument Sans,Segoe UI,sans-serif">Ag</text></svg>
+      <span data-i18n="tab_silver">Silver</span>
+    </button>
+    <span class="tab-ink" id="tab-ink" aria-hidden="true"></span>
+  </div>
+  <div class="exchange-view" id="exchange-view" role="tabpanel" aria-labelledby="tab-exchange">
+  <button class="companies-toggle" id="companies-toggle" type="button" aria-controls="list-panel" aria-expanded="false" data-i18n="companies">Companies</button>
+  <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+  <section class="markets" id="markets" aria-label="Market indicators" data-i18n-aria="markets_label" aria-busy="true"></section>
+  <section class="indices" aria-label="EGX indices" data-i18n-aria="indices_label">
+    <h2 class="indices-head" data-i18n="indices">Indices</h2>
+    <div class="indices-grid" id="indices" aria-busy="true"></div>
+  </section>
+  <div class="desk">
+    <section class="panel list-panel" id="list-panel" aria-label="Companies" data-i18n-aria="companies">
+      <div class="panel-head">
+        <div class="search">
+          <input id="q" type="search" placeholder="Search symbol or company" aria-label="Search symbol or company" data-i18n-placeholder="search_ph" data-i18n-aria="search_ph" autocomplete="off">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
+        <div class="chips list-tools" role="group" aria-label="Company filters" data-i18n-aria="filters_label">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true" data-i18n="filter_all">All</button>
+          <button class="chip" type="button" data-filter="gainers" aria-pressed="false" data-i18n="filter_gainers">Gainers</button>
+          <button class="chip" type="button" data-filter="losers" aria-pressed="false" data-i18n="filter_losers">Losers</button>
+          <button class="chip" type="button" data-filter="active" aria-pressed="false" data-i18n="filter_active">Most active</button>
+          <button class="chip" type="button" data-filter="watch" aria-pressed="false" data-i18n="filter_watch">Watchlist</button>
+        </div>
+        <div class="sector-filter" id="sector-wrap" hidden>
+          <span id="sector-label" data-i18n="sector">Sector</span>
+          <div class="sector-dd" id="sector-dd">
+            <button type="button" class="sector-dd-btn" id="sector" aria-haspopup="listbox" aria-expanded="false" aria-controls="sector-list" aria-labelledby="sector-label" data-i18n-aria="sector_filter" aria-label="Filter by sector">
+              <span class="sector-dd-value" id="sector-value"></span>
+              <span class="sector-dd-caret" aria-hidden="true">▾</span>
+            </button>
+            <ul class="sector-dd-list" id="sector-list" role="listbox" tabindex="-1" hidden></ul>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-body" id="rows"></div>
+    </section>
+    <section class="panel detail" id="detail" aria-label="Stock detail" data-i18n-aria="detail_label"></section>
+    <section class="panel news-panel" aria-label="Market news" data-i18n-aria="news_label">
+      <div class="panel-head">
+        <h2 class="news-head" data-i18n="market_news">Market news</h2>
+        <div class="chips" role="group" aria-label="News topics" data-i18n-aria="topics_label">
+          <button class="chip" type="button" data-topic="all" aria-pressed="true" data-i18n="topic_all">All</button>
+          <button class="chip" type="button" data-topic="currency" aria-pressed="false" data-i18n="topic_currency">Currency</button>
+          <button class="chip" type="button" data-topic="gold" aria-pressed="false" data-i18n="topic_gold">Gold</button>
+          <button class="chip" type="button" data-topic="petrol" aria-pressed="false" data-i18n="topic_petrol">Petrol</button>
+          <button class="chip" type="button" data-topic="egypt" aria-pressed="false" data-i18n="topic_egypt">Egypt</button>
+          <button class="chip" type="button" data-topic="wars" aria-pressed="false" data-i18n="topic_wars">Wars</button>
+          <button class="chip" type="button" data-topic="flights" aria-pressed="false" data-i18n="topic_flights">Flights</button>
+          <button class="chip" type="button" data-topic="shipping" aria-pressed="false" data-i18n="topic_shipping">Shipping</button>
+        </div>
+      </div>
+      <div class="scroll-body" id="world"></div>
+    </section>
+  </div>
+  </div>
+  <section class="metals-view" id="metals-view" role="tabpanel" hidden aria-label="Metal prices" data-i18n-aria="metals_label" data-metal="gold">
+    <div class="metals-panel" id="metals-body"></div>
+  </section>
+  </main>
+</div>
+<script>
+const status = document.getElementById("status");
+const rowsEl = document.getElementById("rows");
+const listPanel = document.getElementById("list-panel");
+const companiesToggle = document.getElementById("companies-toggle");
+const sheetBackdrop = document.getElementById("sheet-backdrop");
+const detail = document.getElementById("detail");
+const marketsEl = document.getElementById("markets");
+const indicesEl = document.getElementById("indices");
+const worldEl = document.getElementById("world");
+const exchangeView = document.getElementById("exchange-view");
+const metalsView = document.getElementById("metals-view");
+const metalsBody = document.getElementById("metals-body");
+const viewTabs = Array.from(document.querySelectorAll(".view-tab"));
+let activeView = "exchange";
+let metalsToken = 0;
+const search = document.getElementById("q");
+const themeButton = document.getElementById("theme");
+const langButton = document.getElementById("lang");
+const STRINGS = {
+  en: {
+    loading_companies: "Loading the listed companies…",
+    market_open: "Market open",
+    market_closed: "Market closed",
+    nav_home: "Home",
+    nav_docs: "Docs",
+    theme_light: "Light theme",
+    theme_dark: "Dark theme",
+    theme_light_short: "Light",
+    theme_dark_short: "Dark",
+    theme_to_light: "Switch to light theme",
+    theme_to_dark: "Switch to dark theme",
+    theme_label: "Theme",
+    lang_label: "Language",
+    brand_name: "MIRSAD MASR",
+    tagline: "Keep Your Eye on Egypt's Markets.",
+    tab_exchange: "Exchange",
+    tab_gold: "Gold",
+    tab_silver: "Silver",
+    views_label: "Exchange views",
+    companies: "Companies",
+    markets_label: "Market indicators",
+    indices: "Indices",
+    indices_label: "EGX indices",
+    search_ph: "Search symbol or company",
+    filters_label: "Company filters",
+    filter_all: "All",
+    filter_gainers: "Gainers",
+    filter_losers: "Losers",
+    filter_active: "Most active",
+    filter_watch: "Watchlist",
+    sector: "Sector",
+    sector_filter: "Filter by sector",
+    all_sectors: "All sectors",
+    detail_label: "Stock detail",
+    news_label: "Market news",
+    market_news: "Market news",
+    topics_label: "News topics",
+    topic_all: "All",
+    topic_currency: "Currency",
+    topic_gold: "Gold",
+    topic_petrol: "Petrol",
+    topic_egypt: "Egypt",
+    topic_wars: "Wars",
+    topic_flights: "Flights",
+    topic_shipping: "Shipping",
+    metals_label: "Metal prices",
+    retry: "Retry",
+    na: "Not available",
+    mins_ago: "{n}m ago",
+    hours_ago: "{n}h ago",
+    yesterday: "Yesterday",
+    cairo: "Cairo",
+    index_load_fail: "Index levels did not load.",
+    no_headlines: "No headlines returned.",
+    no_headlines_topic: "No headlines for this topic.",
+    no_watch: "No saved companies yet.",
+    no_match: "No companies match this filter.",
+    watch_save: "Save {symbol} in the watchlist",
+    watch_remove: "Remove {symbol} from the watchlist",
+    open: "Open",
+    now: "Now",
+    low: "Low {price}",
+    high: "High {price}",
+    trade_below: "Trading {amount} {currency} below today's high.",
+    trade_above: "Trading {amount} {currency} above today's high.",
+    trade_at_high: "Trading at today's high.",
+    chart_range: "Chart range",
+    chart_all: "All",
+    price_chart: "Price chart",
+    chart_no_intraday: "Yahoo has no intraday prices for this listing.",
+    chart_no_range: "Yahoo has no prices for this range.",
+    chart_fail: "The chart did not load.",
+    source_yahoo: "Yahoo Finance",
+    interval_monthly: "monthly",
+    interval_15m: "15-minute",
+    interval_daily: "daily",
+    copy: "Copy {symbol}",
+    copied: "Copied",
+    copy_fail: "Copy failed",
+    quote_fail: "The quote for {symbol} did not load.",
+    day: "Day {pct}",
+    stat_open: "Open",
+    stat_high: "High",
+    stat_low: "Low",
+    stat_prev: "Previous close",
+    stat_day_change: "Day change",
+    stat_52h: "52-week high",
+    stat_52l: "52-week low",
+    stat_volume: "Volume",
+    stat_mcap: "Market cap",
+    stat_sector: "Sector",
+    stat_source: "Source",
+    updated: "Updated {when}",
+    updated_na: "Updated time not available",
+    company_news: "Company news",
+    company_news_fail: "Company news did not load.",
+    no_company_news: "No recent headline for this company.",
+    reach_fail: "Could not reach the service.",
+    market_fail: "Market prices did not load.",
+    list_fail: "The company list did not load.",
+    news_fail: "Market news did not load.",
+    listed_n: "{n} listed companies",
+    listed_priced: "{n} listed companies, {p} with a price",
+    listed_no_price: "{n} listed companies. Prices did not load.",
+    title_exchange: "MIRSAD MASR",
+    title_metal: "{metal} prices · MIRSAD MASR",
+    gold: "Gold",
+    silver: "Silver",
+    per_gram: "{currency} per gram",
+    today: "Today",
+    perf_label: "Performance over time",
+    open_starta: "Open on Starta",
+    opens_tab: "{label} (opens in a new tab)",
+    trend: "{label} trend",
+    price_trend: "{label} price trend, {n} points",
+    how_built: "How the price is built",
+    ounce_usd: "Ounce, USD",
+    usd_egp: "USD/EGP",
+    grams_oz: "Grams/oz",
+    build_formula: "Ounce price in US dollars × US dollars to Egyptian pounds ÷ grams per troy ounce = {base} price per gram",
+    build_spoken: "Ounce {ounce} × {rate} EGP per USD ÷ {grams} grams per ounce = {base_price} per gram of {base}",
+    build_note: "Ounce price in dollars, times the dollar rate in pounds, divided by grams in a troy ounce, gives the {base} price.",
+    build_note_recon: " Reconstructed from the ounce price, dollar rate and base grade.",
+    price_chart_title: "Price chart",
+    price_history: "Price history",
+    chart_data_na: "The chart data is not available right now.",
+    chart_caption_default: "Indicative gram price series from Starta Markets.",
+    chart_hint: "Hover or tap the chart to read a price. With the chart focused, use the left and right arrow keys.",
+    vs: "{pct} vs {date}",
+    karat_title: "Karat & price",
+    fineness_title: "Fineness & price",
+    karat: "Karat",
+    fineness: "Fineness",
+    purity: "Purity",
+    price_g: "Price / g",
+    karat_caption: "Price per gram by {kind}",
+    karat_fail: "No {kind} prices were returned.",
+    most_common: "Most common in Egypt",
+    also_tracked: "Also tracked",
+    gold_pound: "Gold pound",
+    ounce_egp: "Ounce in EGP",
+    ounce_usd_label: "Ounce in USD",
+    value_your: "Value your {noun}",
+    weight: "Weight",
+    workmanship: "Workmanship",
+    total_value: "Total value",
+    total: "Total",
+    enter_weight: "Enter a weight of 0 or more.",
+    enter_amount: "Enter an amount of 0 or more.",
+    purity_rate: "Purity {purity} · {rate} EGP per g",
+    rate_only: "{rate} EGP per g",
+    zakat_nisab: "Zakat nisab",
+    zakat_basis: "Zakat nisab basis",
+    basis_21: "21K basis",
+    basis_24: "24K basis",
+    nisab_sub: "{grams} of {label}at today's price",
+    nisab_weight: "The nisab weight",
+    enter_a_weight: "Enter a weight",
+    check_nisab: "to check it against the nisab.",
+    above_yes: "Above nisab: yes",
+    above_no: "Above nisab: no",
+    zakat_worth: "Your {grams} g of {label} is worth {eq} g of {basis}, against {nisab} g.",
+    zakat_rate: "Zakat rate {pct}%.",
+    zakat_disc: "An estimate for information only, not religious or financial advice. Ask a qualified scholar about your own case.",
+    related_funds: "Related funds",
+    sort_by: "Sort by ",
+    sort_funds: "Sort funds",
+    sort_default: "Default order",
+    sort_name: "Name",
+    sort_price: "Unit price, high to low",
+    sort_6m: "6 months, high to low",
+    sort_ytd: "YTD, high to low",
+    fund: "Fund",
+    unit_price: "Unit price",
+    months_6: "6 months",
+    ytd: "YTD",
+    funds_caption: "Funds that track {metal}. Column headers sort the table.",
+    source_updated: "Source: {source} · Updated {when}.",
+    source_only: "Source: {source}.",
+    metal_fail: "The {metal} prices did not load.",
+    base_24k: "24K gram",
+    base_999: "999 silver",
+    not_available_lc: "not available",
+    months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    tip_price: "Price",
+    tip_vs: "Vs start",
+    tip_announce: "{date}, price {price}, {signed} versus the start of the range",
+  },
+  ar: {
+    loading_companies: "جاري تحميل الشركات المدرجة…",
+    market_open: "السوق مفتوح",
+    market_closed: "السوق مغلق",
+    nav_home: "الرئيسية",
+    nav_docs: "التوثيق",
+    theme_light: "المظهر الفاتح",
+    theme_dark: "المظهر الداكن",
+    theme_light_short: "فاتح",
+    theme_dark_short: "داكن",
+    theme_to_light: "التبديل إلى المظهر الفاتح",
+    theme_to_dark: "التبديل إلى المظهر الداكن",
+    theme_label: "المظهر",
+    lang_label: "اللغة",
+    brand_name: "مرصاد مصر",
+    tagline: "أبقِ عينك على أسواق مصر.",
+    tab_exchange: "البورصة",
+    tab_gold: "ذهب",
+    tab_silver: "فضة",
+    views_label: "عروض البورصة",
+    companies: "الشركات",
+    markets_label: "مؤشرات السوق",
+    indices: "المؤشرات",
+    indices_label: "مؤشرات البورصة المصرية",
+    search_ph: "ابحث عن رمز أو شركة",
+    filters_label: "مرشحات الشركات",
+    filter_all: "الكل",
+    filter_gainers: "الرابحون",
+    filter_losers: "الخاسرون",
+    filter_active: "الأكثر نشاطاً",
+    filter_watch: "قائمة المتابعة",
+    sector: "القطاع",
+    sector_filter: "تصفية حسب القطاع",
+    all_sectors: "كل القطاعات",
+    detail_label: "تفاصيل السهم",
+    news_label: "أخبار السوق",
+    market_news: "أخبار السوق",
+    topics_label: "مواضيع الأخبار",
+    topic_all: "الكل",
+    topic_currency: "العملة",
+    topic_gold: "الذهب",
+    topic_petrol: "البترول",
+    topic_egypt: "مصر",
+    topic_wars: "الحروب",
+    topic_flights: "الطيران",
+    topic_shipping: "الشحن",
+    metals_label: "أسعار المعادن",
+    retry: "إعادة المحاولة",
+    na: "غير متاح",
+    mins_ago: "منذ {n} د",
+    hours_ago: "منذ {n} س",
+    yesterday: "أمس",
+    cairo: "القاهرة",
+    index_load_fail: "تعذر تحميل مستويات المؤشرات.",
+    no_headlines: "لا توجد عناوين.",
+    no_headlines_topic: "لا عناوين لهذا الموضوع.",
+    no_watch: "لا شركات محفوظة بعد.",
+    no_match: "لا شركات تطابق هذا المرشح.",
+    watch_save: "حفظ {symbol} في قائمة المتابعة",
+    watch_remove: "إزالة {symbol} من قائمة المتابعة",
+    open: "افتتاح",
+    now: "الآن",
+    low: "أدنى {price}",
+    high: "أعلى {price}",
+    trade_below: "يتداول بفارق {amount} {currency} دون أعلى اليوم.",
+    trade_above: "يتداول بفارق {amount} {currency} فوق أعلى اليوم.",
+    trade_at_high: "يتداول عند أعلى اليوم.",
+    chart_range: "نطاق الرسم",
+    chart_all: "الكل",
+    price_chart: "رسم السعر",
+    chart_no_intraday: "لا تتوفر أسعار خلال اليوم لهذا الإدراج.",
+    chart_no_range: "لا تتوفر أسعار لهذا النطاق.",
+    chart_fail: "تعذر تحميل الرسم.",
+    source_yahoo: "ياهو فاينانس",
+    interval_monthly: "شهري",
+    interval_15m: "١٥ دقيقة",
+    interval_daily: "يومي",
+    copy: "نسخ {symbol}",
+    copied: "تم النسخ",
+    copy_fail: "فشل النسخ",
+    quote_fail: "تعذر تحميل تسعير {symbol}.",
+    day: "اليوم {pct}",
+    stat_open: "الافتتاح",
+    stat_high: "الأعلى",
+    stat_low: "الأدنى",
+    stat_prev: "إغلاق سابق",
+    stat_day_change: "تغير اليوم",
+    stat_52h: "أعلى ٥٢ أسبوعاً",
+    stat_52l: "أدنى ٥٢ أسبوعاً",
+    stat_volume: "الحجم",
+    stat_mcap: "القيمة السوقية",
+    stat_sector: "القطاع",
+    stat_source: "المصدر",
+    updated: "حدّث {when}",
+    updated_na: "وقت التحديث غير متاح",
+    company_news: "أخبار الشركة",
+    company_news_fail: "تعذر تحميل أخبار الشركة.",
+    no_company_news: "لا عنوان حديث لهذه الشركة.",
+    reach_fail: "تعذر الوصول إلى الخدمة.",
+    market_fail: "تعذر تحميل أسعار السوق.",
+    list_fail: "تعذر تحميل قائمة الشركات.",
+    news_fail: "تعذر تحميل أخبار السوق.",
+    listed_n: "{n} شركة مدرجة",
+    listed_priced: "{n} شركة مدرجة، {p} بسعر",
+    listed_no_price: "{n} شركة مدرجة. تعذر تحميل الأسعار.",
+    title_exchange: "مرصاد مصر",
+    title_metal: "أسعار {metal} · مرصاد مصر",
+    gold: "ذهب",
+    silver: "فضة",
+    per_gram: "{currency} للجرام",
+    today: "اليوم",
+    perf_label: "الأداء عبر الزمن",
+    open_starta: "افتح على ستارتا",
+    opens_tab: "{label} (يفتح في تبويب جديد)",
+    trend: "اتجاه {label}",
+    price_trend: "اتجاه سعر {label}، {n} نقطة",
+    how_built: "كيف يُبنى السعر",
+    ounce_usd: "الأونصة، دولار",
+    usd_egp: "دولار/جنيه",
+    grams_oz: "جرام/أونصة",
+    build_formula: "سعر الأونصة بالدولار × الدولار بالجنيه ÷ جرامات الأونصة troy = سعر {base} للجرام",
+    build_spoken: "أونصة {ounce} × {rate} جنيه لكل دولار ÷ {grams} جرام لكل أونصة = {base_price} للجرام من {base}",
+    build_note: "سعر الأونصة بالدولار، مضروباً في سعر الدولار بالجنيه، مقسوماً على جرامات الأونصة، يعطي سعر {base}.",
+    build_note_recon: " أُعيد بناؤه من سعر الأونصة وسعر الدولار والعيار الأساسي.",
+    price_chart_title: "رسم السعر",
+    price_history: "تاريخ السعر",
+    chart_data_na: "بيانات الرسم غير متاحة الآن.",
+    chart_caption_default: "سلسلة أسعار جرام إرشادية من ستارتا ماركتس.",
+    chart_hint: "مرّر أو اضغط على الرسم لقراءة سعر. مع تركيز الرسم استخدم أسهم اليمين واليسار.",
+    vs: "{pct} مقابل {date}",
+    karat_title: "العيار والسعر",
+    fineness_title: "النقاوة والسعر",
+    karat: "العيار",
+    fineness: "النقاوة",
+    purity: "النقاء",
+    price_g: "السعر / ج",
+    karat_caption: "السعر للجرام حسب {kind}",
+    karat_fail: "لم تُرجع أسعار {kind}.",
+    most_common: "الأكثر شيوعاً في مصر",
+    also_tracked: "يُتتبَّع أيضاً",
+    gold_pound: "الجنيه الذهب",
+    ounce_egp: "الأونصة بالجنيه",
+    ounce_usd_label: "الأونصة بالدولار",
+    value_your: "احسب قيمة {noun}",
+    weight: "الوزن",
+    workmanship: "المصنعية",
+    total_value: "القيمة الإجمالية",
+    total: "الإجمالي",
+    enter_weight: "أدخل وزناً صفر أو أكثر.",
+    enter_amount: "أدخل مبلغاً صفر أو أكثر.",
+    purity_rate: "نقاء {purity} · {rate} جنيه للجرام",
+    rate_only: "{rate} جنيه للجرام",
+    zakat_nisab: "نصاب الزكاة",
+    zakat_basis: "أساس نصاب الزكاة",
+    basis_21: "أساس ٢١ قيراط",
+    basis_24: "أساس ٢٤ قيراط",
+    nisab_sub: "{grams} من {label}بسعر اليوم",
+    nisab_weight: "وزن النصاب",
+    enter_a_weight: "أدخل وزناً",
+    check_nisab: "للمقارنة مع النصاب.",
+    above_yes: "فوق النصاب: نعم",
+    above_no: "فوق النصاب: لا",
+    zakat_worth: "وزنك {grams} ج من {label} يعادل {eq} ج من {basis}، مقابل {nisab} ج.",
+    zakat_rate: "معدل الزكاة {pct}٪.",
+    zakat_disc: "تقدير للمعلومة فقط، وليس فتوى أو نصيحة مالية. راجع عالماً مؤهلاً لحالتك.",
+    related_funds: "صناديق ذات صلة",
+    sort_by: "ترتيب حسب ",
+    sort_funds: "ترتيب الصناديق",
+    sort_default: "الترتيب الافتراضي",
+    sort_name: "الاسم",
+    sort_price: "سعر الوحدة، من الأعلى",
+    sort_6m: "٦ أشهر، من الأعلى",
+    sort_ytd: "منذ بداية العام، من الأعلى",
+    fund: "الصندوق",
+    unit_price: "سعر الوحدة",
+    months_6: "٦ أشهر",
+    ytd: "منذ بداية العام",
+    funds_caption: "صناديق تتبع {metal}. رؤوس الأعمدة ترتّب الجدول.",
+    source_updated: "المصدر: {source} · حُدّث {when}.",
+    source_only: "المصدر: {source}.",
+    metal_fail: "تعذر تحميل أسعار {metal}.",
+    base_24k: "جرام ٢٤ قيراط",
+    base_999: "فضة ٩٩٩",
+    not_available_lc: "غير متاح",
+    months: ["ينا", "فبر", "مار", "أبر", "ماي", "يون", "يول", "أغس", "سبت", "أكت", "نوف", "ديس"],
+    tip_price: "السعر",
+    tip_vs: "مقابل البداية",
+    tip_announce: "{date}، السعر {price}، {signed} مقابل بداية النطاق",
+  },
+};
+const INSTRUMENT_AR = {
+  usd_egp: { name: "الدولار الأمريكي", unit: "جنيه لكل دولار" },
+  eur_egp: { name: "اليورو", unit: "جنيه لكل يورو" },
+  gold: { name: "الذهب", unit: "دولار للأونصة" },
+  brent: { name: "خام برنت", unit: "دولار للبرميل" },
+};
+const INDEX_AR = {
+  egx30: {
+    name: "مؤشر EGX 30",
+    description: "المؤشر الرئيسي الذي يتتبع أكثر ٣٠ شركة سيولة وكبراً من حيث القيمة السوقية.",
+  },
+  egx30_capped: {
+    name: "مؤشر EGX 30 المحدود",
+    description: "نسخة من EGX 30 تضع حداً أقصى لوزن كل شركة حتى لا تهيمن الأسهم الكبيرة على المؤشر.",
+  },
+  egx70_ewi: {
+    name: "مؤشر EGX 70 متساوي الأوزان",
+    description: "مؤشر متساوي الأوزان يقيس أداء أكبر ٧٠ شركة متوسطة وصغيرة.",
+  },
+  egx100_ewi: {
+    name: "مؤشر EGX 100 متساوي الأوزان",
+    description: "يجمع مكونات EGX 30 وEGX 70 بمنهجية الأوزان المتساوية.",
+  },
+  egx_shariah: {
+    name: "مؤشر الشريعة",
+    description: "يتتبع الشركات المدرجة المتوافقة مع معايير الشريعة الإسلامية.",
+  },
+  tamayuz: {
+    name: "سوق التميّز",
+    description: "مؤشر مخصص للشركات الصغيرة والمتوسطة.",
+  },
+};
+let lang = (document.documentElement.lang === "ar") ? "ar" : "en";
+let lastMarketPayload = null;
+let lastIndices = [];
+const metalsPayload = {};
+let statusState = { key: "loading_companies", vars: null };
+function t(key, vars) {
+  const table = STRINGS[lang] || STRINGS.en;
+  let text = Object.prototype.hasOwnProperty.call(table, key) ? table[key]
+    : (Object.prototype.hasOwnProperty.call(STRINGS.en, key) ? STRINGS.en[key] : key);
+  if (Array.isArray(text)) return text;
+  if (vars) {
+    Object.keys(vars).forEach((name) => {
+      text = String(text).split("{" + name + "}").join(String(vars[name]));
+    });
+  }
+  return text;
+}
+function monthNames() {
+  return t("months") || STRINGS.en.months;
+}
+function instrumentLabel(item) {
+  const mapped = INSTRUMENT_AR[item && item.id] || {};
+  if (lang === "ar") {
+    return {
+      name: item.name_ar || mapped.name || item.name || t("na"),
+      unit: item.unit_ar || mapped.unit || item.unit || t("na"),
+    };
+  }
+  return { name: item.name || t("na"), unit: item.unit || t("na") };
+}
+function indexLabel(item) {
+  const mapped = INDEX_AR[item && item.id] || {};
+  if (lang === "ar") {
+    return {
+      name: item.name_ar || mapped.name || item.name || t("na"),
+      description: item.description_ar || mapped.description || item.description || t("na"),
+    };
+  }
+  return { name: item.name || t("na"), description: item.description || t("na") };
+}
+function sourceLabel(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return t("source_yahoo");
+  if (lang !== "ar") return raw;
+  return raw.replace(/Yahoo Finance/gi, t("source_yahoo"));
+}
+/** EN catalog sector → Arabic label (values stay EN for filtering). */
+const SECTOR_AR = {
+  "Basic Resources": "الموارد الأساسية",
+  "Building Materials": "مواد البناء",
+  "Communication Services": "خدمات الاتصالات",
+  "Consumer Discretionary": "السلع الاستهلاكية الكمالية",
+  "Consumer Staples": "السلع الاستهلاكية الأساسية",
+  "Contracting & Construction Engineering": "المقاولات والهندسة الإنشائية",
+  "Education Services": "خدمات التعليم",
+  "Energy": "الطاقة",
+  "Energy & Support Services": "الطاقة والخدمات المساندة",
+  "Financials": "الخدمات المالية",
+  "Health Care & Pharmaceuticals": "الرعاية الصحية والأدوية",
+  "Healthcare": "الرعاية الصحية",
+  "IT , Media & Communication Services": "تكنولوجيا المعلومات والإعلام والاتصالات",
+  "Industrial Goods , Services and Automobiles": "السلع الصناعية والخدمات والسيارات",
+  "Industrials": "الصناعات",
+  "Information Technology": "تكنولوجيا المعلومات",
+  "Materials": "المواد",
+  "Non-bank financial services": "الخدمات المالية غير المصرفية",
+  "Paper & Packaging": "الورق والتعبئة والتغليف",
+  "Real Estate": "العقارات",
+  "Shipping & Transportation Services": "الشحن وخدمات النقل",
+  "Trade & Distributors": "التجارة والموزعون",
+  "Travel & Leisure": "السفر والترفيه",
+  "Banks": "البنوك",
+  "Utilities": "المرافق",
+  "Unknown": "غير معروف",
+  // Aliases for spacing / naming variants that may appear from feeds
+  "IT Media & Communication Services": "تكنولوجيا المعلومات والإعلام والاتصالات",
+  "IT, Media & Communication Services": "تكنولوجيا المعلومات والإعلام والاتصالات",
+  "Industrial Goods Services and Automobiles": "السلع الصناعية والخدمات والسيارات",
+  "Industrial Goods, Services and Automobiles": "السلع الصناعية والخدمات والسيارات",
+};
+function sectorLabel(en) {
+  const raw = String(en || "").trim();
+  if (!raw || raw === "all") return t("all_sectors");
+  if (lang !== "ar") return raw;
+  return SECTOR_AR[raw] || raw;
+}
+function appendCompanyNames(parent, englishName, arabicName) {
+  const english = englishName || t("na");
+  const arabic = arabicName || "";
+  const preferAr = lang === "ar" && arabic;
+  const primary = document.createElement("span");
+  primary.className = "en-name";
+  if (preferAr) {
+    primary.lang = "ar";
+    primary.dir = "rtl";
+    primary.textContent = arabic;
+    parent.appendChild(primary);
+    const secondary = document.createElement("span");
+    secondary.className = "ar-name";
+    secondary.lang = "en";
+    secondary.dir = "ltr";
+    secondary.textContent = english;
+    parent.appendChild(secondary);
+    return;
+  }
+  primary.textContent = english;
+  parent.appendChild(primary);
+  if (arabic) {
+    const secondary = document.createElement("span");
+    secondary.className = "ar-name";
+    secondary.lang = "ar";
+    secondary.dir = "rtl";
+    secondary.textContent = arabic;
+    parent.appendChild(secondary);
+  }
+}
+function setStatus(key, vars) {
+  statusState = { key, vars: vars || null };
+  status.textContent = t(key, vars);
+}
+function paintChrome() {
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    if (node.id === "status" || node.id === "market-state" || node.id === "theme") return;
+    node.textContent = t(node.getAttribute("data-i18n"));
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach((node) => {
+    node.setAttribute("aria-label", t(node.getAttribute("data-i18n-aria")));
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+    node.setAttribute("placeholder", t(node.getAttribute("data-i18n-placeholder")));
+  });
+  if (langButton) {
+    langButton.setAttribute("aria-label", t("lang_label"));
+    langButton.querySelectorAll("[data-lang-opt]").forEach((opt) => {
+      opt.classList.toggle("is-active", opt.getAttribute("data-lang-opt") === lang);
+    });
+  }
+  if (themeButton) {
+    themeButton.querySelectorAll("[data-i18n]").forEach((node) => {
+      node.textContent = t(node.getAttribute("data-i18n"));
+    });
+  }
+  paintThemeButton();
+  paintMarket();
+  setStatus(statusState.key, statusState.vars);
+}
+function applyLang(next, repaint) {
+  lang = next === "ar" ? "ar" : "en";
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  try { localStorage.setItem("egx-lang", lang); } catch (error) {}
+  paintChrome();
+  if (!repaint) return;
+  // Re-fetch market headlines so EN Yahoo/BBC and AR sources do not mix.
+  loadMarkets();
+  if (companies.length) {
+    paintSectors();
+    renderList();
+    if (selected) select(selected);
+  }
+  if (activeView === "gold" || activeView === "silver") {
+    const cached = metalsPayload[activeView];
+    if (cached) paintMetals(cached, activeView, false);
+    else loadMetals(activeView);
+  }
+  document.title = (activeView === "gold" || activeView === "silver")
+    ? t("title_metal", { metal: t(activeView) })
+    : t("title_exchange");
+  try { moveTabInk(false); } catch (error) {}
+}
+
+const chips = Array.from(document.querySelectorAll("[data-topic]"));
+const filterChips = Array.from(document.querySelectorAll("[data-filter]"));
+const sectorWrap = document.getElementById("sector-wrap");
+const sectorBtn = document.getElementById("sector");
+const sectorValueEl = document.getElementById("sector-value");
+const sectorList = document.getElementById("sector-list");
+let sectorNames = [];
+let sectorOpen = false;
+let sectorActiveIndex = -1;
+
+let companies = [];
+let quotes = new Map();
+let headlines = [];
+let selected = "";
+let topic = "all";
+let requestId = 0;
+let quotesReady = false;
+const seenPrices = new Map();
+function priceFlash(previous, price) {
+  if (previous === undefined || previous === null || previous === price) return "";
+  return Number(price) > Number(previous) ? " flash-up" : " flash-down";
+}
+let listFilter = "all";
+let sectorFilter = "all";
+const watchlist = new Set();
+function loadWatch() {
+  watchlist.clear();
+  try {
+    const saved = JSON.parse(localStorage.getItem("egx-watchlist") || "[]");
+    if (Array.isArray(saved)) saved.forEach((symbol) => watchlist.add(String(symbol)));
+  } catch (error) {}
+}
+function saveWatch() {
+  try { localStorage.setItem("egx-watchlist", JSON.stringify([...watchlist])); } catch (error) {}
+}
+loadWatch();
+function symbolFromHash() {
+  const raw = decodeURIComponent(location.hash.replace(/^#/, "")).trim().toUpperCase();
+  return companies.some((company) => company.symbol === raw) ? raw : "";
+}
+function rememberSymbol(symbol) {
+  if (activeView !== "exchange") return;
+  const next = "#" + encodeURIComponent(symbol);
+  if (location.hash !== next) history.replaceState(null, "", next);
+}
+let chartRange = "1mo";
+let chartToken = 0;
+function chartRanges() {
+  return [
+    ["1d", "1D"],
+    ["1mo", "1M"],
+    ["3mo", "3M"],
+    ["6mo", "6M"],
+    ["ytd", "YTD"],
+    ["1y", "1Y"],
+    ["5y", "5Y"],
+    ["10y", "10Y"],
+    ["max", t("chart_all")],
+  ];
+}
+
+function missing(value) {
+  return value === null || value === undefined || value === "";
+}
+function money(value, digits = 2, minDigits = digits) {
+  if (missing(value) || Number.isNaN(Number(value))) return null;
+  return Number(value).toLocaleString(undefined, {
+    minimumFractionDigits: minDigits,
+    maximumFractionDigits: digits,
+  });
+}
+function direction(value) {
+  if (missing(value)) return "";
+  const text = String(value);
+  if (text.startsWith("-") || Number(value) < 0) return "down";
+  if (text.startsWith("+") || Number(value) > 0) return "up";
+  return "";
+}
+function topicLabel(value) {
+  if (!value) return "";
+  const key = "topic_" + value;
+  const labeled = t(key);
+  return labeled === key ? (value.charAt(0).toUpperCase() + value.slice(1)) : labeled;
+}
+function shown(value) {
+  return missing(value) ? t("na") : String(value);
+}
+function cairoDate(instant) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Africa/Cairo",
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).formatToParts(instant).filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+  };
+}
+function wallTimeInCairo(year, month, day, hour, minute, second) {
+  const guess = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  const shown = cairoDate(guess);
+  const shownUtc = Date.UTC(shown.year, shown.month - 1, shown.day, shown.hour, shown.minute, second);
+  return new Date(guess.getTime() - (shownUtc - guess.getTime()));
+}
+function parseWhen(value) {
+  const text = String(value || "").trim();
+  const stamp = text.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?(?: UTC)?$/);
+  if (!stamp) return null;
+  const year = Number(stamp[1]);
+  const month = Number(stamp[2]);
+  const day = Number(stamp[3]);
+  const hour = Number(stamp[4] || 0);
+  const minute = Number(stamp[5] || 0);
+  const second = Number(stamp[6] || 0);
+  if (text.includes("UTC")) return new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  return wallTimeInCairo(year, month, day, hour, minute, second);
+}
+function formatWhen(value) {
+  const raw = missing(value) ? "" : String(value).trim();
+  const instant = parseWhen(raw);
+  if (!instant || Number.isNaN(instant.getTime())) return { text: raw || t("na"), title: raw || t("na") };
+  const when = cairoDate(instant);
+  const now = cairoDate(new Date());
+  const dayStamp = Date.UTC(when.year, when.month - 1, when.day);
+  const todayStamp = Date.UTC(now.year, now.month - 1, now.day);
+  const months = monthNames();
+  const full = when.day + " " + months[when.month - 1] + " " + when.year + ", " + String(when.hour).padStart(2, "0") + ":" + String(when.minute).padStart(2, "0") + " " + t("cairo");
+  const elapsed = Date.now() - instant.getTime();
+  let text = when.day + " " + months[when.month - 1] + " " + when.year;
+  if (elapsed >= 0 && elapsed < 60 * 60 * 1000) text = t("mins_ago", { n: Math.max(1, Math.round(elapsed / 60000)) });
+  else if (elapsed >= 0 && elapsed < 24 * 60 * 60 * 1000 && dayStamp === todayStamp) text = t("hours_ago", { n: Math.max(1, Math.round(elapsed / 3600000)) });
+  else if (todayStamp - dayStamp === 86400000) text = t("yesterday");
+  return { text, title: full };
+}
+
+function skeleton(className) {
+  const bar = document.createElement("div");
+  bar.className = "sk " + className;
+  return bar;
+}
+function marketSkeletons() {
+  marketsEl.replaceChildren();
+  marketsEl.setAttribute("aria-busy", "true");
+  for (let index = 0; index < 4; index += 1) {
+    const card = document.createElement("article");
+    card.className = "card skeleton-card";
+    card.setAttribute("aria-hidden", "true");
+    card.append(skeleton("sk-label"), skeleton("sk-value"), skeleton("sk-line"));
+    marketsEl.appendChild(card);
+  }
+  indicesEl.replaceChildren();
+  indicesEl.setAttribute("aria-busy", "true");
+  for (let index = 0; index < 6; index += 1) {
+    const card = document.createElement("article");
+    card.className = "index-item skeleton-card";
+    card.setAttribute("aria-hidden", "true");
+    card.append(skeleton("sk-label"), skeleton("sk-value"), skeleton("sk-line"));
+    indicesEl.appendChild(card);
+  }
+}
+function listSkeletons() {
+  rowsEl.replaceChildren();
+  for (let index = 0; index < 8; index += 1) {
+    rowsEl.appendChild(skeleton("sk-row"));
+  }
+}
+function detailSkeleton() {
+  detail.replaceChildren();
+  detail.setAttribute("aria-busy", "true");
+  const wrap = document.createElement("div");
+  wrap.append(skeleton("sk-title"), skeleton("sk-sub"), skeleton("sk-price"));
+  detail.appendChild(wrap);
+}
+function newsSkeletons() {
+  worldEl.replaceChildren();
+  for (let index = 0; index < 4; index += 1) {
+    worldEl.appendChild(skeleton("sk-row"));
+  }
+}
+
+function errorBox(message, onRetry) {
+  const wrap = document.createElement("div");
+  wrap.className = "error";
+  const text = document.createElement("p");
+  text.textContent = message;
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "retry";
+  button.textContent = t("retry");
+  button.addEventListener("click", onRetry);
+  wrap.append(text, button);
+  return wrap;
+}
+
+function headline(article, showTopic) {
+  const node = article.link ? document.createElement("a") : document.createElement("div");
+  node.className = "item";
+  if (article.link) {
+    node.href = article.link;
+    node.target = "_blank";
+    node.rel = "noreferrer";
+  }
+  if (showTopic && article.topic) {
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.textContent = topicLabel(article.topic);
+    node.appendChild(tag);
+  }
+  const title = document.createElement("strong");
+  title.textContent = article.title || t("na");
+  if (/[\u0600-\u06FF]/.test(title.textContent)) {
+    title.lang = "ar";
+    title.dir = "rtl";
+  }
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  const when = formatWhen(article.published);
+  const bits = [article.publisher, when.text].filter(Boolean);
+  meta.textContent = bits.length ? bits.join(" · ") : t("na");
+  meta.title = when.title;
+  node.append(title, meta);
+  return node;
+}
+
+function sparkline(points) {
+  const values = (Array.isArray(points) ? points : []).map((point) => {
+    if (typeof point === "number") return point;
+    if (point && typeof point === "object") return Number(point.close ?? point.price);
+    return Number(point);
+  }).filter(Number.isFinite).slice(-30);
+  if (values.length < 2) return null;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "spark");
+  svg.setAttribute("viewBox", "0 0 80 28");
+  svg.setAttribute("aria-hidden", "true");
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min || 1;
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "1.5");
+  path.setAttribute("d", values.map((value, index) => {
+    const x = (index / (values.length - 1)) * 80;
+    const y = 26 - ((value - min) / span) * 24;
+    return (index ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+  }).join(" "));
+  svg.appendChild(path);
+  return svg;
+}
+
+function renderMarkets(payload) {
+  lastMarketPayload = payload;
+  marketsEl.replaceChildren();
+  marketsEl.setAttribute("aria-busy", "false");
+  payload.instruments.forEach((item) => {
+    const card = document.createElement("article");
+    const way = direction(item.change);
+    const labels = instrumentLabel(item);
+    card.className = "card" + (way ? " " + way : "");
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = labels.name;
+    if (lang === "ar") { label.lang = "ar"; label.dir = "rtl"; }
+    const value = document.createElement("div");
+    value.className = "value num";
+    const digits = String(item.id || "").endsWith("egp") ? 4 : 2;
+    const price = money(item.price, digits, 2);
+    value.textContent = price || t("na");
+    if (!price) value.classList.add("missing");
+    const foot = document.createElement("div");
+    foot.className = "foot";
+    const change = document.createElement("div");
+    change.className = "change num" + (way ? " " + way : "");
+    const arrow = way === "up" ? "▲ " : way === "down" ? "▼ " : "";
+    change.textContent = missing(item.change_percent) ? t("na") : arrow + item.change_percent;
+    const unit = document.createElement("div");
+    unit.className = "unit";
+    unit.textContent = labels.unit;
+    if (lang === "ar") { unit.lang = "ar"; unit.dir = "rtl"; }
+    foot.append(change, unit);
+    card.append(label, value, foot);
+    const spark = sparkline(item.history || item.bars || item.closes);
+    if (spark) card.appendChild(spark);
+    marketsEl.appendChild(card);
+  });
+  headlines = payload.headlines || [];
+  renderWorld();
+  renderIndices(payload.indices || []);
+}
+
+function renderIndices(items) {
+  lastIndices = items || [];
+  indicesEl.replaceChildren();
+  indicesEl.setAttribute("aria-busy", "false");
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = t("index_load_fail");
+    indicesEl.appendChild(empty);
+    return;
+  }
+  items.forEach((item) => {
+    const card = document.createElement("article");
+    card.className = "index-item";
+    const labels = indexLabel(item);
+    const title = document.createElement("h3");
+    title.textContent = labels.name;
+    if (lang === "ar") { title.lang = "ar"; title.dir = "rtl"; }
+    const value = document.createElement("div");
+    value.className = "index-value";
+    const level = money(item.price, 2, 2);
+    if (!level) {
+      const missingLevel = document.createElement("span");
+      missingLevel.className = "missing";
+      missingLevel.textContent = t("na");
+      value.appendChild(missingLevel);
+    } else {
+      const amount = document.createElement("span");
+      amount.className = "num";
+      amount.textContent = level;
+      value.appendChild(amount);
+      if (!missing(item.change_percent)) {
+        const way = direction(item.change);
+        const change = document.createElement("span");
+        change.className = "change num" + (way ? " " + way : "");
+        const arrow = way === "up" ? "▲ " : way === "down" ? "▼ " : "";
+        change.textContent = arrow + item.change_percent;
+        value.appendChild(change);
+      }
+    }
+    const note = document.createElement("p");
+    note.textContent = labels.description;
+    if (lang === "ar") { note.lang = "ar"; note.dir = "rtl"; }
+    card.append(title, value, note);
+    indicesEl.appendChild(card);
+  });
+}
+
+function renderWorld() {
+  worldEl.replaceChildren();
+  const items = headlines.filter((article) => topic === "all" || article.topic === topic);
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = topic === "all" ? t("no_headlines") : t("no_headlines_topic");
+    worldEl.appendChild(empty);
+    return;
+  }
+  items.forEach((article) => worldEl.appendChild(headline(article, true)));
+}
+
+function visibleCompanies() {
+  const needle = search.value.trim().toLowerCase();
+  const items = companies.filter((company) => {
+    const haystack = [company.symbol, company.name, company.name_ar, company.sector].join(" ").toLowerCase();
+    if (needle && !haystack.includes(needle)) return false;
+    if (sectorFilter !== "all" && company.sector !== sectorFilter) return false;
+    if (listFilter === "watch") return watchlist.has(company.symbol);
+    const change = Number(quotes.get(company.symbol) && quotes.get(company.symbol).change);
+    if (listFilter === "gainers") return change > 0;
+    if (listFilter === "losers") return change < 0;
+    return true;
+  });
+  const number = (symbol, field) => Number(quotes.get(symbol) && quotes.get(symbol)[field]) || 0;
+  if (listFilter === "gainers") items.sort((a, b) => number(b.symbol, "change") - number(a.symbol, "change"));
+  if (listFilter === "losers") items.sort((a, b) => number(a.symbol, "change") - number(b.symbol, "change"));
+  if (listFilter === "active") items.sort((a, b) => number(b.symbol, "volume") - number(a.symbol, "volume"));
+  return items;
+}
+function closeSectorMenu(focusBtn) {
+  if (!sectorOpen) return;
+  sectorOpen = false;
+  sectorBtn.setAttribute("aria-expanded", "false");
+  sectorList.hidden = true;
+  sectorList.querySelectorAll(".sector-dd-option").forEach((opt) => opt.classList.remove("is-active"));
+  sectorActiveIndex = -1;
+  if (focusBtn) sectorBtn.focus();
+}
+function openSectorMenu() {
+  if (sectorWrap.hidden) return;
+  sectorOpen = true;
+  sectorBtn.setAttribute("aria-expanded", "true");
+  sectorList.hidden = false;
+  const options = [...sectorList.querySelectorAll(".sector-dd-option")];
+  const selectedIdx = options.findIndex((opt) => opt.getAttribute("aria-selected") === "true");
+  sectorActiveIndex = selectedIdx >= 0 ? selectedIdx : 0;
+  options.forEach((opt, idx) => opt.classList.toggle("is-active", idx === sectorActiveIndex));
+  if (options[sectorActiveIndex]) {
+    options[sectorActiveIndex].scrollIntoView({ block: "nearest" });
+    options[sectorActiveIndex].focus();
+  }
+}
+function paintSectorValue() {
+  if (!sectorValueEl) return;
+  sectorValueEl.textContent = sectorLabel(sectorFilter);
+  if (lang === "ar") {
+    sectorValueEl.lang = "ar";
+    sectorValueEl.dir = "rtl";
+  } else {
+    sectorValueEl.removeAttribute("lang");
+    sectorValueEl.removeAttribute("dir");
+  }
+}
+function setSectorFilter(value, render) {
+  const next = value || "all";
+  const valid = next === "all" || sectorNames.includes(next);
+  sectorFilter = valid ? next : "all";
+  paintSectorValue();
+  sectorList.querySelectorAll(".sector-dd-option").forEach((opt) => {
+    opt.setAttribute("aria-selected", opt.dataset.value === sectorFilter ? "true" : "false");
+  });
+  closeSectorMenu(false);
+  if (render !== false) renderList();
+}
+function paintSectors() {
+  const names = [...new Set(companies.map((company) => company.sector).filter((sector) => sector && sector !== "Unknown"))].sort();
+  sectorNames = names;
+  sectorWrap.hidden = names.length === 0;
+  if (!names.length) {
+    closeSectorMenu(false);
+    return;
+  }
+  const current = sectorFilter;
+  sectorList.replaceChildren();
+  if (current !== "all" && !names.includes(current)) sectorFilter = "all";
+  [["all", t("all_sectors")], ...names.map((name) => [name, sectorLabel(name)])].forEach(([value, label]) => {
+    const option = document.createElement("li");
+    option.setAttribute("role", "none");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sector-dd-option";
+    btn.setAttribute("role", "option");
+    btn.dataset.value = value;
+    btn.textContent = label;
+    if (lang === "ar") {
+      btn.lang = "ar";
+      btn.dir = "rtl";
+    }
+    btn.setAttribute("aria-selected", value === sectorFilter ? "true" : "false");
+    btn.addEventListener("click", () => setSectorFilter(value, true));
+    option.appendChild(btn);
+    sectorList.appendChild(option);
+  });
+  paintSectorValue();
+  closeSectorMenu(false);
+}
+function renderList() {
+  rowsEl.replaceChildren();
+  const items = visibleCompanies();
+  items.forEach((company) => {
+    const quote = quotes.get(company.symbol);
+    const entry = document.createElement("div");
+    entry.className = "entry";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "row";
+    button.dataset.symbol = company.symbol;
+    if (company.symbol === selected) button.setAttribute("aria-current", "true");
+    const star = document.createElement("button");
+    star.type = "button";
+    star.className = "star";
+    const saved = watchlist.has(company.symbol);
+    star.setAttribute("aria-pressed", saved ? "true" : "false");
+    star.setAttribute("aria-label", saved ? t("watch_remove", { symbol: company.symbol }) : t("watch_save", { symbol: company.symbol }));
+    star.textContent = saved ? "★" : "☆";
+    star.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (watchlist.has(company.symbol)) watchlist.delete(company.symbol);
+      else watchlist.add(company.symbol);
+      saveWatch();
+      renderList();
+    });
+    const symbol = document.createElement("span");
+    symbol.className = "sym";
+    symbol.textContent = company.symbol;
+    const names = document.createElement("span");
+    appendCompanyNames(names, company.name, company.name_ar);
+    const price = document.createElement("span");
+    price.className = "quote-stack";
+    if (!quotesReady) {
+      const bar = document.createElement("span");
+      bar.className = "sk";
+      bar.style.width = "4.2rem";
+      bar.style.height = "14px";
+      bar.style.justifySelf = "end";
+      price.appendChild(bar);
+    } else if (!quote || missing(quote.price)) {
+      const missingPrice = document.createElement("span");
+      missingPrice.className = "quote-cell missing";
+      missingPrice.textContent = t("na");
+      price.appendChild(missingPrice);
+    } else {
+      const way = direction(quote.change);
+      const amount = document.createElement("span");
+      amount.className = "quote-cell num" + (way ? " " + way : "") + priceFlash(seenPrices.get(company.symbol), quote.price);
+      seenPrices.set(company.symbol, quote.price);
+      amount.textContent = money(quote.price);
+      const pct = document.createElement("span");
+      pct.className = "day-pill" + (way ? " " + way : "");
+      pct.textContent = missing(quote.change_percent) ? t("na") : quote.change_percent;
+      price.append(amount, pct);
+    }
+    button.append(symbol, names, price);
+    button.addEventListener("click", () => select(company.symbol));
+    entry.append(star, button);
+    rowsEl.appendChild(entry);
+  });
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = listFilter === "watch" ? t("no_watch") : t("no_match");
+    rowsEl.appendChild(empty);
+  }
+}
+
+function stat(label, value, numeric) {
+  const cell = document.createElement("div");
+  cell.className = "stat";
+  const name = document.createElement("span");
+  name.textContent = label;
+  const number = document.createElement("b");
+  const blank = missing(value);
+  number.textContent = blank ? t("na") : String(value);
+  if (blank) number.className = "missing";
+  else if (numeric) number.classList.add("num");
+  cell.append(name, number);
+  return cell;
+}
+
+function rangeBlock(quote) {
+  const low = Number(quote.low);
+  const high = Number(quote.high);
+  const open = Number(quote.open);
+  const price = Number(quote.price);
+  if (![low, high, open, price].every(Number.isFinite)) return null;
+  const place = (value) => {
+    if (high === low) return 50;
+    return Math.min(100, Math.max(0, ((value - low) / (high - low)) * 100));
+  };
+  const openPct = place(open);
+  const pricePct = place(price);
+  const block = document.createElement("div");
+  block.className = "range";
+  block.dir = "ltr";
+  const track = document.createElement("div");
+  track.className = "track";
+  const fill = document.createElement("span");
+  fill.className = "fill";
+  fill.style.width = pricePct + "%";
+  const tick = document.createElement("span");
+  tick.className = "tick";
+  tick.style.left = openPct + "%";
+  tick.title = t("open") + " " + money(open);
+  tick.tabIndex = 0;
+  const tickText = document.createElement("span");
+  tickText.className = "mark-label";
+  tickText.textContent = t("open");
+  // Keep Open above the bar; near Low/High hide the word or nudge inward so it never covers end labels.
+  if (openPct <= 12 || openPct >= 88) {
+    tick.classList.add("is-label-hidden");
+  } else if (openPct <= 22) {
+    tickText.classList.add("is-nudge-start");
+  } else if (openPct >= 78) {
+    tickText.classList.add("is-nudge-end");
+  }
+  tick.appendChild(tickText);
+  const marker = document.createElement("span");
+  marker.className = "marker";
+  marker.style.left = pricePct + "%";
+  marker.title = t("now") + " " + money(price);
+  marker.tabIndex = 0;
+  const markerText = document.createElement("span");
+  markerText.className = "mark-label";
+  markerText.textContent = t("now");
+  marker.appendChild(markerText);
+  track.append(fill, tick, marker);
+  const scale = document.createElement("div");
+  scale.className = "range-scale";
+  scale.dir = "ltr";
+  const lowLabel = document.createElement("span");
+  lowLabel.textContent = t("low", { price: money(low) });
+  const highLabel = document.createElement("span");
+  highLabel.textContent = t("high", { price: money(high) });
+  scale.append(lowLabel, highLabel);
+  const caption = document.createElement("p");
+  caption.className = "caption";
+  const currency = quote.currency || "EGP";
+  const gap = high - price;
+  const amount = money(Math.abs(gap));
+  if (gap > 0.0001) caption.textContent = t("trade_below", { amount, currency });
+  else if (gap < -0.0001) caption.textContent = t("trade_above", { amount, currency });
+  else caption.textContent = t("trade_at_high");
+  block.append(track, scale, caption);
+  return block;
+}
+
+function chartDate(time) {
+  const instant = parseWhen(time);
+  if (!instant || Number.isNaN(instant.getTime())) return String(time);
+  const when = cairoDate(instant);
+  const months = monthNames();
+  let text = when.day + " " + months[when.month - 1] + " " + when.year;
+  if (String(time).length > 10) text += ", " + String(when.hour).padStart(2, "0") + ":" + String(when.minute).padStart(2, "0");
+  return text;
+}
+
+function axisLabel(time, range, edge) {
+  const date = String(time).slice(0, 10);
+  const clock = String(time).length > 10 ? String(time).slice(11, 16) : "";
+  const parts = date.split("-").map(Number);
+  const month = monthNames()[(parts[1] || 1) - 1] || date;
+  if (range === "1d") return clock || date;
+  if (range === "1mo" || range === "3mo") return parts[2] + " " + month;
+  return edge ? month + " " + parts[0] : month;
+}
+
+function chartNote(payload) {
+  if (!payload || !payload.bars || !payload.bars.length) {
+    if (chartRange === "1d") return t("chart_no_intraday");
+    return t("chart_no_range");
+  }
+  const interval = payload.interval === "1mo" ? t("interval_monthly") : payload.interval === "15m" ? t("interval_15m") : t("interval_daily");
+  return sourceLabel(payload.source) + " · " + interval;
+}
+
+function mountChart(symbol) {
+  const host = document.getElementById("chart");
+  if (!host) return;
+  if (host._observer) host._observer.disconnect();
+  host.replaceChildren();
+  const ranges = document.createElement("div");
+  ranges.className = "ranges";
+  ranges.setAttribute("role", "group");
+  ranges.setAttribute("aria-label", t("chart_range"));
+  chartRanges().forEach(([key, label]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "range-btn";
+    button.textContent = label;
+    button.setAttribute("aria-pressed", key === chartRange ? "true" : "false");
+    button.addEventListener("click", () => {
+      chartRange = key;
+      ranges.querySelectorAll(".range-btn").forEach((item) => {
+        item.setAttribute("aria-pressed", item === button ? "true" : "false");
+      });
+      loadChart(symbol);
+    });
+    ranges.appendChild(button);
+  });
+  const stage = document.createElement("div");
+  stage.className = "chart-stage";
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("role", "img");
+  canvas.setAttribute("aria-label", t("price_chart"));
+  const tip = document.createElement("div");
+  tip.className = "chart-tip";
+  tip.hidden = true;
+  const live = document.createElement("div");
+  live.className = "sr-only";
+  live.setAttribute("aria-live", "polite");
+  const badge = document.createElement("div");
+  badge.className = "change chart-badge num";
+  badge.hidden = true;
+  stage.append(canvas, tip, badge, live);
+  const note = document.createElement("p");
+  note.className = "chart-note";
+  const skel = document.createElement("div");
+  skel.className = "sk chart-skel";
+  host.append(ranges, skel, note);
+  host._stage = stage;
+  host._canvas = canvas;
+  host._tip = tip;
+  host._live = live;
+  host._badge = badge;
+  host._note = note;
+  host._skel = skel;
+}
+
+async function loadChart(symbol) {
+  const token = ++chartToken;
+  mountChart(symbol);
+  const host = document.getElementById("chart");
+  if (!host) return;
+  let payload = null;
+  try {
+    const response = await fetch("/v1/chart/" + encodeURIComponent(symbol) + "?range=" + encodeURIComponent(chartRange));
+    payload = response.ok ? await response.json() : null;
+  } catch (error) {
+    payload = null;
+  }
+  if (token !== chartToken || !document.body.contains(host)) return;
+  host._skel.remove();
+  host._note.textContent = payload ? chartNote(payload) : t("chart_fail");
+  if (!payload) {
+    host.appendChild(errorBox(t("chart_fail"), () => loadChart(symbol)));
+    return;
+  }
+  if (!payload.bars.length) {
+    host._canvas.removeAttribute("aria-label");
+    return;
+  }
+  host.insertBefore(host._stage, host._note);
+  paintChart(host, payload);
+}
+
+function paintChart(host, payload) {
+  const canvas = host._canvas;
+  const bars = payload.bars.filter((bar) => bar.close !== null && bar.close !== undefined);
+  const first = Number(bars[0].close);
+  const last = Number(bars[bars.length - 1].close);
+  const move = first ? ((last - first) / first) * 100 : 0;
+  const way = move < 0 ? "down" : move > 0 ? "up" : "";
+  const rangeLabel = (chartRanges().find((item) => item[0] === payload.range) || ["", payload.range])[1];
+  const periodText = (move < 0 ? "−" : "+") + Math.abs(move).toFixed(2) + "%";
+  host._badge.hidden = false;
+  host._badge.className = "change chart-badge num" + (way ? " " + way : "");
+  host._badge.textContent = rangeLabel + " " + periodText;
+  const from = bars[0].time;
+  const to = bars[bars.length - 1].time;
+  canvas.setAttribute("aria-label", "Price from " + from + " to " + to + ", " + host._badge.textContent);
+
+  const draw = (hover) => {
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(width * ratio));
+    canvas.height = Math.max(1, Math.floor(height * ratio));
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    const styles = getComputedStyle(document.body);
+    const color = (name) => styles.getPropertyValue(name).trim();
+    const up = color("--up");
+    const down = color("--down");
+    const line = color("--line");
+    const muted = color("--muted");
+    const text = color("--text");
+    const accent = color("--accent");
+    const accentInk = color("--accent-ink");
+    const plot = { x: 28, y: 18, w: Math.max(20, width - 108), h: Math.max(40, height * 0.62) };
+    const volumeTop = plot.y + plot.h + 18;
+    const volume = { x: plot.x, y: volumeTop, w: plot.w, h: Math.max(24, height - volumeTop - 22) };
+    const lows = bars.map((bar) => Number(bar.low ?? bar.close));
+    const highs = bars.map((bar) => Number(bar.high ?? bar.close));
+    let min = Math.min(...lows);
+    let max = Math.max(...highs);
+    if (min === max) {
+      min -= 1;
+      max += 1;
+    }
+    const pad = (max - min) * 0.06;
+    min -= pad;
+    max += pad;
+    const yOf = (value) => plot.y + ((max - value) / (max - min)) * plot.h;
+    const slot = plot.w / bars.length;
+    const candles = slot >= 4;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(plot.x, yOf(last));
+    ctx.lineTo(plot.x + plot.w, yOf(last));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    for (let step = 0; step < 4; step += 1) {
+      const value = min + ((max - min) * step) / 3;
+      const y = yOf(value);
+      ctx.strokeStyle = line;
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath();
+      ctx.moveTo(plot.x, y);
+      ctx.lineTo(plot.x + plot.w, y);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = muted;
+      ctx.font = "12px Instrument Sans, Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      if (Math.abs(y - yOf(last)) > 26) ctx.fillText(value.toFixed(2), plot.x + plot.w + 8, y + 4);
+    }
+    const maxVolume = Math.max(...bars.map((bar) => Number(bar.volume) || 0), 1);
+    bars.forEach((bar, index) => {
+      const open = Number(bar.open ?? bar.close);
+      const close = Number(bar.close);
+      const high = Number(bar.high ?? Math.max(open, close));
+      const low = Number(bar.low ?? Math.min(open, close));
+      const rising = close >= open;
+      const ink = rising ? up : down;
+      const x = plot.x + index * slot + slot / 2;
+      ctx.strokeStyle = ink;
+      ctx.fillStyle = ink;
+      ctx.lineWidth = 1;
+      if (candles) {
+        ctx.beginPath();
+        ctx.moveTo(x, yOf(high));
+        ctx.lineTo(x, yOf(low));
+        ctx.stroke();
+        const body = Math.max(1, Math.abs(yOf(open) - yOf(close)));
+        const top = Math.min(yOf(open), yOf(close));
+        ctx.fillRect(x - Math.min(slot * 0.32, 7), top, Math.max(2, Math.min(slot * 0.64, 14)), body);
+      }
+      if (bar.volume) {
+        const barHeight = (Number(bar.volume) / maxVolume) * volume.h;
+        ctx.globalAlpha = hover === index ? 1 : 0.4;
+        ctx.fillRect(plot.x + index * slot, volume.y + volume.h - barHeight, Math.max(1, slot * 0.7), barHeight);
+        ctx.globalAlpha = 1;
+      }
+    });
+    if (!candles) {
+      ctx.beginPath();
+      bars.forEach((bar, index) => {
+        const x = plot.x + index * slot + slot / 2;
+        const y = yOf(Number(bar.close));
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = way === "down" ? down : up;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.lineTo(plot.x + (bars.length - 0.5) * slot, plot.y + plot.h);
+      ctx.lineTo(plot.x + slot / 2, plot.y + plot.h);
+      ctx.closePath();
+      ctx.globalAlpha = 0.16;
+      ctx.fillStyle = way === "down" ? down : up;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    ctx.font = "12px Instrument Sans, Segoe UI, sans-serif";
+    ctx.fillStyle = accentInk;
+    const tag = last.toFixed(2);
+    const tagWidth = ctx.measureText(tag).width + 12;
+    const tagY = Math.min(plot.y + plot.h - 16, Math.max(plot.y, yOf(last) - 9));
+    ctx.fillRect(plot.x + plot.w + 6, tagY, tagWidth, 18);
+    ctx.fillStyle = color("--bg");
+    ctx.textAlign = "left";
+    ctx.fillText(tag, plot.x + plot.w + 12, tagY + 13);
+    ctx.fillStyle = muted;
+    const labelCount = width < 520 ? 5 : 6;
+    const seen = new Set();
+    const indexes = [];
+    for (let step = 0; step < labelCount; step += 1) {
+      const index = Math.round((step * (bars.length - 1)) / (labelCount - 1));
+      if (!seen.has(index)) {
+        seen.add(index);
+        indexes.push(index);
+      }
+    }
+    indexes.forEach((index, position) => {
+      const edge = position === 0 ? "start" : position === indexes.length - 1 ? "end" : "center";
+      ctx.textAlign = edge;
+      const x = edge === "start" ? plot.x : edge === "end" ? plot.x + plot.w : plot.x + index * slot + slot / 2;
+      ctx.fillText(axisLabel(bars[index].time, payload.range, position === 0 || position === indexes.length - 1), x, height - 4);
+    });
+    if (hover !== null && hover >= 0 && hover < bars.length) {
+      const x = plot.x + hover * slot + slot / 2;
+      const y = yOf(Number(bars[hover].close));
+      ctx.strokeStyle = text;
+      ctx.globalAlpha = 0.35;
+      ctx.beginPath();
+      ctx.moveTo(x, plot.y);
+      ctx.lineTo(x, volume.y + volume.h);
+      ctx.moveTo(plot.x, y);
+      ctx.lineTo(plot.x + plot.w, y);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  };
+
+  const indexAt = (event) => {
+    const bounds = canvas.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const plotX = 28;
+    const plotW = Math.max(20, bounds.width - 108);
+    const slot = plotW / bars.length;
+    return Math.min(bars.length - 1, Math.max(0, Math.floor((x - plotX) / slot)));
+  };
+  let hoverIndex = null;
+  const showAt = (index, pointer, announce) => {
+    const bar = bars[index];
+    hoverIndex = index;
+    draw(index);
+    const tip = host._tip;
+    tip.hidden = false;
+    tip.replaceChildren();
+    const title = document.createElement("b");
+    title.textContent = chartDate(bar.time);
+    tip.appendChild(title);
+    const close = Number(bar.close);
+    const start = Number(bars[0].close);
+    const delta = start ? ((close - start) / start) * 100 : 0;
+    const signed = (delta < 0 ? "−" : "+") + Math.abs(delta).toFixed(2) + "%";
+    [
+      [t("tip_price"), close.toFixed(2)],
+      [t("tip_vs"), signed],
+    ].forEach(([label, value]) => {
+      const row = document.createElement("div");
+      row.textContent = label + "  " + value;
+      tip.appendChild(row);
+    });
+    const bounds = canvas.getBoundingClientRect();
+    const slot = Math.max(20, bounds.width - 108) / bars.length;
+    const localX = pointer ? pointer.clientX - bounds.left : 28 + index * slot + slot / 2;
+    const localY = pointer ? pointer.clientY - bounds.top : 36;
+    tip.style.left = Math.min(Math.max(8, localX + 12), bounds.width - 160) + "px";
+    tip.style.top = Math.max(8, localY - 20) + "px";
+    if (announce && host._live) host._live.textContent = t("tip_announce", { date: title.textContent, price: close.toFixed(2), signed });
+  };
+  canvas.tabIndex = 0;
+  canvas.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight");
+  canvas.onpointermove = (event) => {
+    if (event.pointerType === "touch") return;
+    showAt(indexAt(event), event);
+  };
+  canvas.onpointerdown = (event) => {
+    if (event.pointerType !== "touch") return;
+    showAt(indexAt(event), event);
+  };
+  canvas.onpointerleave = () => {
+    if (document.activeElement === canvas) return;
+    host._tip.hidden = true;
+    hoverIndex = null;
+    draw(null);
+  };
+  canvas.onkeydown = (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const next = hoverIndex === null
+      ? (event.key === "ArrowLeft" ? bars.length - 1 : 0)
+      : hoverIndex + (event.key === "ArrowRight" ? 1 : -1);
+    showAt(Math.min(bars.length - 1, Math.max(0, next)), null, true);
+  };
+  canvas.onblur = () => {
+    host._tip.hidden = true;
+    hoverIndex = null;
+    draw(null);
+  };
+  host._draw = (hover) => draw(hover);
+  draw(null);
+  if (host._observer) host._observer.disconnect();
+  host._observer = new ResizeObserver(() => draw(null));
+  host._observer.observe(canvas);
+}
+
+async function select(symbol) {
+  const id = ++requestId;
+  selected = symbol;
+  rememberSymbol(symbol);
+  renderList();
+  if (window.innerWidth < 860) setListOpen(false);
+  const company = companies.find((item) => item.symbol === symbol) || { symbol, name: symbol };
+  if (detail.querySelector(".detail-ar, .price-row, .error")) {
+    detail.classList.add("is-pending");
+    detail.setAttribute("aria-busy", "true");
+  } else {
+    detailSkeleton();
+  }
+  let quoteResponse;
+  let newsResponse;
+  try {
+    [quoteResponse, newsResponse] = await Promise.all([
+      fetch("/v1/quote/" + encodeURIComponent(symbol)),
+      fetch("/v1/news/" + encodeURIComponent(symbol) + "?lang=" + encodeURIComponent(lang)),
+    ]);
+  } catch (error) {
+    if (id !== requestId) return;
+    detail.classList.remove("is-pending");
+    detail.replaceChildren(errorBox(t("quote_fail", { symbol }), () => select(symbol)));
+    detail.setAttribute("aria-busy", "false");
+    return;
+  }
+  if (id !== requestId) return;
+  const quote = quoteResponse.ok ? await quoteResponse.json() : null;
+  const news = newsResponse.ok ? await newsResponse.json() : null;
+  if (quote) quotes.set(symbol, quote);
+  company._flashFrom = seenPrices.get(symbol);
+  renderList();
+  detail.classList.remove("is-pending");
+  paintDetail(company, quote, news, quoteResponse.ok, newsResponse.ok);
+}
+
+function paintDetail(company, quote, news, quoteOk, newsOk) {
+  detail.replaceChildren();
+  detail.setAttribute("aria-busy", "false");
+  const arabic = (quote && quote.company_ar) || company.name_ar || "";
+  const englishName = (quote && quote.company) || company.name || t("na");
+  const preferAr = lang === "ar" && arabic;
+  const heading = document.createElement("h2");
+  heading.className = "detail-ar" + ((preferAr ? arabic : englishName) ? "" : " missing");
+  if (preferAr) {
+    heading.lang = "ar";
+    heading.dir = "rtl";
+    heading.textContent = arabic;
+  } else if (lang === "en" && englishName) {
+    heading.lang = "en";
+    heading.dir = "ltr";
+    heading.textContent = englishName;
+  } else if (arabic) {
+    heading.lang = "ar";
+    heading.dir = "rtl";
+    heading.textContent = arabic;
+  } else {
+    heading.textContent = englishName || t("na");
+  }
+  const copy = document.createElement("button");
+  copy.type = "button";
+  copy.className = "copy-symbol";
+  copy.textContent = t("copy", { symbol: company.symbol });
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(company.symbol);
+      copy.textContent = t("copied");
+    } catch (error) {
+      copy.textContent = t("copy_fail");
+    }
+    window.setTimeout(() => { copy.textContent = t("copy", { symbol: company.symbol }); }, 1200);
+  });
+  const titleRow = document.createElement("div");
+  titleRow.className = "title-row";
+  if (preferAr) {
+    const secondary = document.createElement("p");
+    secondary.className = "detail-en";
+    secondary.lang = "en";
+    secondary.dir = "ltr";
+    secondary.textContent = englishName;
+    titleRow.append(secondary, copy);
+  } else if (arabic) {
+    const secondary = document.createElement("p");
+    secondary.className = "detail-en";
+    secondary.lang = "ar";
+    secondary.dir = "rtl";
+    secondary.textContent = arabic;
+    titleRow.append(secondary, copy);
+  } else {
+    titleRow.append(copy);
+  }
+  detail.append(heading, titleRow);
+
+  if (!quoteOk || !quote) {
+    detail.appendChild(errorBox(t("quote_fail", { symbol: company.symbol }), () => select(company.symbol)));
+  } else {
+  const row = document.createElement("div");
+  row.className = "price-row";
+  const price = document.createElement("div");
+  price.className = "detail-price num" + priceFlash(company._flashFrom, quote.price);
+  const formatted = money(quote.price);
+  price.textContent = formatted || t("na");
+  const currency = document.createElement("span");
+  currency.className = "currency";
+  currency.textContent = quote.currency || "EGP";
+  const change = document.createElement("span");
+  const way = direction(quote.change);
+  change.className = "change num" + (way ? " " + way : "");
+  change.textContent = missing(quote.change_percent) ? t("na") : t("day", { pct: String(quote.change_percent).replace(/^-/, "−") });
+  row.append(price, currency, change);
+  detail.appendChild(row);
+  }
+
+  const chartHost = document.createElement("div");
+  chartHost.className = "chart-panel";
+  chartHost.id = "chart";
+  detail.appendChild(chartHost);
+
+  if (quoteOk && quote) {
+  const range = rangeBlock(quote);
+  if (range) detail.appendChild(range);
+
+  const stats = document.createElement("div");
+  stats.className = "stats";
+  [
+    [t("stat_open"), money(quote.open), true],
+    [t("stat_high"), money(quote.high), true],
+    [t("stat_low"), money(quote.low), true],
+    [t("stat_prev"), money(quote.previous_close), true],
+    [t("stat_day_change"), missing(quote.change) ? null : money(quote.change) + " EGP", true],
+    [t("stat_52h"), money(quote.fifty_two_week_high), true],
+    [t("stat_52l"), money(quote.fifty_two_week_low), true],
+    [t("stat_volume"), missing(quote.volume) ? null : Number(quote.volume).toLocaleString(undefined), true],
+    [t("stat_mcap"), missing(quote.market_cap) ? null : Number(quote.market_cap).toLocaleString(undefined, { maximumFractionDigits: 0 }), true],
+    [t("stat_sector"), missing(quote.sector) ? null : sectorLabel(quote.sector), false],
+    [t("stat_source"), missing(quote.source) ? null : sourceLabel(quote.source), false],
+  ].forEach(([label, value, numeric]) => stats.appendChild(stat(label, value, numeric)));
+  detail.appendChild(stats);
+
+  const updated = document.createElement("p");
+  updated.className = "updated";
+  const updatedWhen = formatWhen(quote.updated_cairo);
+  updated.textContent = quote.updated_cairo ? t("updated", { when: updatedWhen.text }) : t("updated_na");
+  updated.title = updatedWhen.title;
+  detail.appendChild(updated);
+  }
+
+  const box = document.createElement("div");
+  box.className = "company-news";
+  const title = document.createElement("h2");
+  title.textContent = t("company_news");
+  box.appendChild(title);
+  if (!newsOk || !news || !Array.isArray(news.articles)) {
+    box.appendChild(errorBox(t("company_news_fail"), () => select(company.symbol)));
+  } else if (!news.articles.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = t("no_company_news");
+    box.appendChild(empty);
+  } else {
+    news.articles.forEach((article) => box.appendChild(headline(article, false)));
+  }
+  detail.appendChild(box);
+  loadChart(company.symbol);
+}
+
+function currentTheme() {
+  const chosen = document.documentElement.getAttribute("data-theme");
+  if (chosen === "light" || chosen === "dark") return chosen;
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+function paintMarket() {
+  const weekday = new Intl.DateTimeFormat("en-US", { timeZone: "Africa/Cairo", weekday: "short" }).format(new Date());
+  const now = cairoDate(new Date());
+  const minutes = now.hour * 60 + now.minute;
+  const open = ["Sun", "Mon", "Tue", "Wed", "Thu"].includes(weekday) && minutes >= 10 * 60 && minutes < 14 * 60 + 30;
+  const state = document.getElementById("market-state");
+  const badge = document.getElementById("market-status");
+  state.textContent = open ? t("market_open") : t("market_closed");
+  if (badge) badge.classList.toggle("is-closed", !open);
+}
+function paintThemeButton() {
+  if (!themeButton) return;
+  const theme = currentTheme();
+  themeButton.setAttribute("aria-label", t("theme_label"));
+  themeButton.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+  themeButton.querySelectorAll("[data-theme-opt]").forEach((opt) => {
+    opt.classList.toggle("is-active", opt.getAttribute("data-theme-opt") === theme);
+  });
+}
+
+async function loadMarkets() {
+  marketSkeletons();
+  newsSkeletons();
+  let market;
+  try {
+    market = await fetch("/v1/markets?lang=" + encodeURIComponent(lang));
+  } catch (error) {
+    marketsEl.replaceChildren(errorBox(t("market_fail"), loadMarkets));
+    worldEl.replaceChildren(errorBox(t("news_fail"), loadMarkets));
+    return;
+  }
+  if (!market.ok) {
+    marketsEl.replaceChildren(errorBox(t("market_fail"), loadMarkets));
+    worldEl.replaceChildren(errorBox(t("news_fail"), loadMarkets));
+    return;
+  }
+  renderMarkets(await market.json());
+}
+
+async function load() {
+  marketSkeletons();
+  listSkeletons();
+  detailSkeleton();
+  newsSkeletons();
+  setStatus("loading_companies");
+  let listed;
+  let market;
+  try {
+    [listed, market] = await Promise.all([
+      fetch("/v1/stocks"),
+      fetch("/v1/markets?lang=" + encodeURIComponent(lang)),
+    ]);
+  } catch (error) {
+    setStatus("reach_fail");
+    marketsEl.replaceChildren(errorBox(t("market_fail"), load));
+    rowsEl.replaceChildren(errorBox(t("list_fail"), load));
+    worldEl.replaceChildren();
+    detail.replaceChildren();
+    return;
+  }
+  if (!listed.ok) {
+    setStatus("list_fail");
+    rowsEl.replaceChildren(errorBox(t("list_fail"), load));
+  } else {
+    companies = (await listed.json()).symbols;
+    setStatus("listed_n", { n: companies.length });
+    paintSectors();
+    renderList();
+    const start = companies.find((company) => company.symbol === symbolFromHash()) || companies.find((company) => company.symbol === "COMI") || companies[0];
+    if (start) select(start.symbol);
+  }
+  if (!market.ok) {
+    marketsEl.replaceChildren(errorBox(t("market_fail"), load));
+    worldEl.replaceChildren(errorBox(t("news_fail"), load));
+  } else {
+    renderMarkets(await market.json());
+  }
+  if (!listed.ok) return;
+  try {
+    const quotesResponse = await fetch("/v1/quotes");
+    if (!quotesResponse.ok) throw new Error("quotes");
+    (await quotesResponse.json()).forEach((quote) => quotes.set(quote.symbol, quote));
+    quotesReady = true;
+    setStatus("listed_priced", { n: companies.length, p: quotes.size });
+    renderList();
+  } catch (error) {
+    quotesReady = true;
+    setStatus("listed_no_price", { n: companies.length });
+    renderList();
+  }
+}
+
+chips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    topic = chip.dataset.topic;
+    chips.forEach((item) => item.setAttribute("aria-pressed", item === chip ? "true" : "false"));
+    renderWorld();
+  });
+});
+function setListOpen(open) {
+  const phone = window.innerWidth < 860;
+  listPanel.classList.toggle("is-open", open && phone);
+  companiesToggle.setAttribute("aria-expanded", open && phone ? "true" : "false");
+  sheetBackdrop.hidden = !(open && phone);
+  const hide = phone && !open;
+  listPanel.toggleAttribute("inert", hide);
+  if (hide) listPanel.setAttribute("aria-hidden", "true");
+  else listPanel.removeAttribute("aria-hidden");
+}
+window.addEventListener("resize", () => setListOpen(false));
+setListOpen(false);
+companiesToggle.addEventListener("click", () => setListOpen(!listPanel.classList.contains("is-open")));
+sheetBackdrop.addEventListener("click", () => setListOpen(false));
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (sectorOpen) {
+    closeSectorMenu(true);
+    return;
+  }
+  setListOpen(false);
+});
+search.addEventListener("input", renderList);
+filterChips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    listFilter = chip.dataset.filter;
+    filterChips.forEach((item) => item.setAttribute("aria-pressed", item === chip ? "true" : "false"));
+    renderList();
+  });
+});
+sectorBtn.addEventListener("click", () => {
+  if (sectorOpen) closeSectorMenu(false);
+  else openSectorMenu();
+});
+sectorBtn.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    if (!sectorOpen) openSectorMenu();
+  } else if (event.key === "Escape") {
+    closeSectorMenu(false);
+  }
+});
+sectorList.addEventListener("keydown", (event) => {
+  const options = [...sectorList.querySelectorAll(".sector-dd-option")];
+  if (!options.length) return;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeSectorMenu(true);
+    return;
+  }
+  if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+    event.preventDefault();
+    if (event.key === "Home") sectorActiveIndex = 0;
+    else if (event.key === "End") sectorActiveIndex = options.length - 1;
+    else {
+      const delta = event.key === "ArrowDown" ? 1 : -1;
+      sectorActiveIndex = (sectorActiveIndex + delta + options.length) % options.length;
+    }
+    options.forEach((opt, idx) => opt.classList.toggle("is-active", idx === sectorActiveIndex));
+    options[sectorActiveIndex].focus();
+    options[sectorActiveIndex].scrollIntoView({ block: "nearest" });
+    return;
+  }
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    const active = options[sectorActiveIndex] || options.find((opt) => opt.classList.contains("is-active"));
+    if (active) setSectorFilter(active.dataset.value, true);
+  }
+});
+document.addEventListener("pointerdown", (event) => {
+  if (!sectorOpen) return;
+  const root = document.getElementById("sector-dd");
+  if (root && !root.contains(event.target)) closeSectorMenu(false);
+});
+rowsEl.addEventListener("keydown", (event) => {
+  if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+  const buttons = [...rowsEl.querySelectorAll(".row")];
+  const index = buttons.indexOf(document.activeElement);
+  if (index < 0) return;
+  event.preventDefault();
+  const next = buttons[index + (event.key === "ArrowDown" ? 1 : -1)];
+  if (next) next.focus();
+});
+window.addEventListener("hashchange", () => {
+  const next = symbolFromHash();
+  if (next && next !== selected) select(next);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
+  const active = document.activeElement;
+  const tag = active && active.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA" || (active && active.isContentEditable)) return;
+  event.preventDefault();
+  search.focus();
+});
+themeButton.addEventListener("click", () => {
+  const next = currentTheme() === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem("egx-theme", next); } catch (error) {}
+  paintThemeButton();
+  const chart = document.getElementById("chart");
+  if (chart && chart._draw) chart._draw(null);
+});
+if (langButton) {
+  langButton.addEventListener("click", () => applyLang(lang === "ar" ? "en" : "ar", true));
+}
+window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
+  if (!document.documentElement.hasAttribute("data-theme")) paintThemeButton();
+});
+paintChrome();
+/* ==========================================================================
+   Gold / Silver view. Presentation only: every number comes from /v1/metals/{metal}.
+   Shared components (m*): mEl, mSvg, mNum, mPct, mDir, mSkeleton, mFlash, mSlot, mError.
+   ========================================================================== */
+const M_AREAS = ["hero", "build", "chart", "calc", "also", "foot"];
+const M_MINUS = "\u2212";
+const metalSlots = {};
+const metalsLoaded = {};
+const metalFlashPrev = new Map();
+const tabBar = document.getElementById("view-tabs");
+const tabInk = document.getElementById("tab-ink");
+
+function mEl(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined && text !== null) node.textContent = text;
+  return node;
+}
+function mNum(value, minDigits = 2, maxDigits = minDigits) {
+  if (missing(value) || Number.isNaN(Number(value))) return null;
+  return Number(value).toLocaleString("en-US", { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
+}
+function mDir(value) {
+  if (missing(value) || Number.isNaN(Number(value))) return "";
+  const n = Number(value);
+  return n < 0 ? "down" : n > 0 ? "up" : "";
+}
+/* Signed percent with a real minus sign, e.g. "+19.35%" / "−0.33%". */
+function mPct(value, digits = 2) {
+  if (missing(value) || Number.isNaN(Number(value))) return null;
+  const n = Number(value);
+  const body = Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  return (n < 0 ? M_MINUS : n > 0 ? "+" : "") + body + "%";
+}
+const M_ICONS = {
+  external: '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+  chevron: '<path d="m6 9 6 6 6-6"/>',
+  up: '<path d="M12 6 20 18H4z" fill="currentColor" stroke="none"/>',
+  down: '<path d="M12 18 4 6h16z" fill="currentColor" stroke="none"/>',
+  sort: '<path d="M8 10l4-4 4 4M8 14l4 4 4-4"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+};
+function mSvg(name, className = "m-icon") {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  svg.setAttribute("class", className);
+  svg.innerHTML = M_ICONS[name] || "";
+  return svg;
+}
+function mSkeleton(...classes) {
+  return classes.map((name) => skeleton(name));
+}
+/* Brief tint when a value changes after a refresh. Uses a background-color animation, so nothing moves. */
+function mFlash(node, key, value) {
+  const prev = metalFlashPrev.get(key);
+  metalFlashPrev.set(key, value);
+  if (prev === undefined || prev === value || !Number.isFinite(Number(value)) || !Number.isFinite(Number(prev))) return node;
+  node.classList.add(Number(value) > Number(prev) ? "flash-up" : "flash-down");
+  node.addEventListener("animationend", () => node.classList.remove("flash-up", "flash-down"), { once: true });
+  return node;
+}
+function mSlot(area, ...nodes) {
+  const slot = metalSlots[area];
+  if (!slot) return;
+  slot.removeAttribute("aria-busy");
+  slot.replaceChildren(...nodes.filter(Boolean));
+}
+function mError(message, onRetry) {
+  const box = errorBox(message, onRetry);
+  box.classList.add("m-error");
+  box.setAttribute("role", "alert");
+  return box;
+}
+function mSlotSkeleton(area) {
+  const lines = {
+    hero: () => [skeleton("sk-label"), skeleton("sk-price"), skeleton("sk-line"), skeleton("sk-strip"), skeleton("sk-row"), skeleton("sk-row"), skeleton("sk-row")],
+    build: () => [skeleton("sk-label"), skeleton("sk-strip"), skeleton("sk-line")],
+    chart: () => [skeleton("sk-label"), skeleton("sk-chart")],
+    calc: () => [skeleton("sk-label"), skeleton("sk-strip"), skeleton("sk-value")],
+    also: () => [skeleton("sk-label"), skeleton("sk-row"), skeleton("sk-row"), skeleton("sk-label"), skeleton("sk-row"), skeleton("sk-row")],
+    foot: () => [],
+  };
+  return (lines[area] || (() => []))();
+}
+function buildMetalsGrid() {
+  const nodes = M_AREAS.map((area) => {
+    const slot = mEl("div", "m-slot m-" + area);
+    slot.dataset.area = area;
+    if (area !== "foot") slot.setAttribute("aria-busy", "true");
+    slot.append(...mSlotSkeleton(area));
+    metalSlots[area] = slot;
+    return slot;
+  });
+  metalsBody.replaceChildren(...nodes);
+}
+
+/* Tabs, URL hash, and the sliding underline */
+function viewFromHash() {
+  let raw = "";
+  try { raw = decodeURIComponent(location.hash.replace(/^#/, "")).trim().toLowerCase(); } catch (error) {}
+  if (raw === "gold" || raw === "silver") return raw;
+  if (raw === "desk") {
+    try { history.replaceState(null, "", location.pathname + location.search + "#exchange"); } catch (error) {}
+    return "exchange";
+  }
+  return "exchange";
+}
+function moveTabInk(animate = true) {
+  const active = viewTabs.find((tab) => tab.dataset.view === activeView);
+  if (!active || !tabInk) return;
+  if (!animate) tabInk.style.transition = "none";
+  tabInk.style.width = active.offsetWidth + "px";
+  tabInk.style.transform = "translateX(" + active.offsetLeft + "px)";
+  if (!animate) {
+    void tabInk.offsetWidth;
+    tabInk.style.transition = "";
+  } else {
+    active.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+}
+function applyView(view) {
+  const next = view === "gold" || view === "silver" ? view : "exchange";
+  const changed = next !== activeView;
+  activeView = next;
+  viewTabs.forEach((tab) => {
+    const on = tab.dataset.view === next;
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    tab.tabIndex = on ? 0 : -1;
+  });
+  tabBar.dataset.active = next;
+  const metals = next !== "exchange";
+  exchangeView.hidden = metals;
+  metalsView.hidden = !metals;
+  metalsView.setAttribute("aria-labelledby", "tab-" + next);
+  document.title = metals ? t("title_metal", { metal: t(next) }) : t("title_exchange");
+  moveTabInk(true);
+  if (metals) {
+    metalsView.dataset.metal = next;
+    if (changed || !metalsLoaded[next]) loadMetals(next);
+  }
+}
+function goView(view) {
+  const next = view === "gold" || view === "silver" ? view : "exchange";
+  if (next !== viewFromHash()) {
+    history.pushState(null, "", "#" + next);
+  }
+  applyView(next);
+}
+viewTabs.forEach((tab) => {
+  tab.addEventListener("click", () => goView(tab.dataset.view));
+  tab.addEventListener("keydown", (event) => {
+    const keys = { ArrowRight: 1, ArrowLeft: -1, Home: "first", End: "last" };
+    if (!(event.key in keys)) return;
+    event.preventDefault();
+    const at = viewTabs.indexOf(tab);
+    let step = keys[event.key];
+    if (typeof step === "number" && document.documentElement.dir === "rtl") step = -step;
+    const to = step === "first" ? 0 : step === "last" ? viewTabs.length - 1 : (at + step + viewTabs.length) % viewTabs.length;
+    viewTabs[to].focus();
+    goView(viewTabs[to].dataset.view);
+  });
+});
+window.addEventListener("hashchange", () => applyView(viewFromHash()));
+window.addEventListener("resize", () => moveTabInk(false));
+if (typeof ResizeObserver === "function") new ResizeObserver(() => moveTabInk(false)).observe(tabBar);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => moveTabInk(false));
+
+const metalUi = { buildOpen: false };
+function mSafeUrl(url, fallback) {
+  try {
+    const parsed = new URL(String(url), location.href);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.href : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+/* Outbound link: opens in a new tab, shows an external-link icon. */
+function mExtLink(href, label, className) {
+  const link = mEl("a", className || "m-ext");
+  link.href = mSafeUrl(href, "#");
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.append(document.createTextNode(label), mSvg("external"));
+  link.setAttribute("aria-label", t("opens_tab", { label }));
+  return link;
+}
+/* Picks the series used for the hero sparkline: 1Y when present, else the longest range. */
+function mSparkSeries(payload) {
+  const ranges = (payload.chart_ranges || []).filter((range) => range.points && range.points.length > 1);
+  if (!ranges.length) return null;
+  return ranges.find((range) => range.key === "1Y") || ranges.reduce((a, b) => (b.points.length > a.points.length ? b : a));
+}
+function mSample(values, count) {
+  if (values.length <= count) return values.slice();
+  return Array.from({ length: count }, (_, index) => values[Math.round((index * (values.length - 1)) / (count - 1))]);
+}
+function mSparkline(range) {
+  const values = mSample(range.points.map((point) => Number(point.value)).filter(Number.isFinite), 30);
+  if (values.length < 2) return null;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min || 1;
+  const w = 200;
+  const h = 64;
+  const coords = values.map((value, index) => [(index / (values.length - 1)) * w, 4 + (1 - (value - min) / span) * (h - 8)]);
+  const line = coords.map(([x, y], index) => (index ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1)).join(" ");
+  const way = values[values.length - 1] >= values[0] ? "is-up" : "is-down";
+  const figure = mEl("figure", "hero-spark " + way);
+  figure.innerHTML = '<svg viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none" role="img">'
+    + '<path class="spark-area" d="' + line + " L" + w + " " + h + " L0 " + h + ' Z"/>'
+    + '<path class="spark-line" d="' + line + '"/></svg>';
+  figure.querySelector("svg").setAttribute("aria-label", t("price_trend", { label: range.label || range.key, n: values.length }));
+  figure.appendChild(mEl("figcaption", "", t("trend", { label: range.label || range.key })));
+  return figure;
+}
+const M_PERF_KEYS = [["1w", "1W"], ["1m", "1M"], ["ytd", "YTD"], ["1y", "1Y"], ["5y", "5Y"]];
+function renderMetalsHero(payload, metal) {
+  const hero = payload.hero || {};
+  const wrap = mEl("div", "hero");
+  const price = mNum(hero.price, 2);
+  const value = mEl("span", "hero-value num" + (price ? "" : " is-missing"), price || t("na"));
+  if (price) mFlash(value, metal + ":hero", hero.price);
+  const unit = mEl("span", "hero-unit", t("per_gram", { currency: hero.currency || "EGP" }));
+  const main = mEl("div", "hero-main");
+  main.append(
+    mEl("h2", "m-kicker", hero.label || payload.title || t(metal === "silver" ? "silver" : "gold")),
+    mEl("div", "hero-price"),
+  );
+  main.querySelector(".hero-price").append(value, unit);
+  const dayText = mPct(hero.change_percent);
+  const day = mEl("p", "hero-day");
+  if (dayText) {
+    const way = mDir(hero.change_percent);
+    const delta = mEl("span", "hero-delta " + (way ? "is-" + way : ""));
+    if (way) delta.appendChild(mSvg(way));
+    delta.append(document.createTextNode(" " + dayText));
+    day.append(mEl("span", "hero-day-label", t("today")), delta);
+  } else {
+    day.append(mEl("span", "hero-day-label", t("today")), mEl("span", "is-missing", t("na")));
+  }
+  main.appendChild(day);
+  const top = mEl("div", "hero-top");
+  const series = mHeroSpark(payload);
+  top.append(main);
+  if (series) top.appendChild(series);
+  wrap.appendChild(top);
+
+  /* Karat / fineness grades sit in this same card, under the headline per-gram price. */
+  const karat = renderMetalsKarat(payload, metal);
+  if (karat) wrap.appendChild(karat);
+
+  const perf = payload.performance || {};
+  const shown = M_PERF_KEYS.filter(([key]) => !missing(perf[key]) && Number.isFinite(Number(perf[key])));
+  if (shown.length) {
+    const strip = mEl("dl", "perf");
+    strip.setAttribute("aria-label", t("perf_label"));
+    shown.forEach(([key, label]) => {
+      const cell = mEl("div");
+      const way = mDir(perf[key]);
+      cell.append(mEl("dt", "", label), mEl("dd", "num " + (way ? "is-" + way : ""), mPct(perf[key])));
+      strip.appendChild(cell);
+    });
+    wrap.appendChild(strip);
+  }
+
+  const meta = mEl("div", "hero-meta");
+  const updated = payload.updated || payload.updated_cairo;
+  meta.append(
+    mEl("span", "", updated ? t("updated", { when: updated }) : t("updated_na")),
+    mExtLink(payload.source_url || "https://startamarkets.com/" + metal, t("open_starta"), "btn-ext"),
+  );
+  wrap.appendChild(meta);
+  return wrap;
+}
+function mHeroSpark(payload) {
+  const range = mSparkSeries(payload);
+  return range ? mSparkline(range) : null;
+}
+function renderMetalsBuild(payload, metal) {
+  const b = payload.builder;
+  if (!b || (b.ounce_usd == null && b.usd_egp == null && b.base_price_egp == null)) return null;
+  const baseLabel = b.base_label || (metal === "silver" ? t("base_999") : t("base_24k"));
+  const ounce = b.ounce_usd != null ? "$" + mNum(b.ounce_usd, 2) : null;
+  const rate = mNum(b.usd_egp, 2, 4);
+  const grams = mNum(b.grams_per_oz, 4);
+  const base = mNum(b.base_price_egp, 2);
+  const formula = t("build_formula", { base: baseLabel });
+  const spoken = t("build_spoken", {
+    ounce: ounce || t("not_available_lc"),
+    rate: rate || t("not_available_lc"),
+    grams: grams || t("not_available_lc"),
+    base_price: base ? base + " EGP" : t("not_available_lc"),
+    base: baseLabel,
+  });
+
+  const wrap = mEl("div", "build");
+  wrap.dataset.open = metalUi.buildOpen ? "true" : "false";
+  const bodyId = "build-body-" + metal;
+  const head = mEl("div", "build-head");
+  const title = mEl("h2", "m-title", t("how_built"));
+  const summary = mEl("span", "build-sum num", base ? baseLabel + " " + base + " EGP" : "");
+  const toggle = mEl("button", "build-toggle");
+  toggle.type = "button";
+  toggle.setAttribute("aria-controls", bodyId);
+  toggle.setAttribute("aria-expanded", metalUi.buildOpen ? "true" : "false");
+  toggle.setAttribute("aria-label", t("how_built"));
+  toggle.appendChild(mSvg("chevron"));
+  toggle.addEventListener("click", () => {
+    metalUi.buildOpen = !metalUi.buildOpen;
+    wrap.dataset.open = metalUi.buildOpen ? "true" : "false";
+    toggle.setAttribute("aria-expanded", metalUi.buildOpen ? "true" : "false");
+  });
+  head.append(title, summary, toggle);
+
+  const body = mEl("div", "build-body");
+  body.id = bodyId;
+  /* dir=ltr keeps ounce → rate → grams → result order even under Arabic RTL */
+  const steps = mEl("div", "steps");
+  steps.dir = "ltr";
+  steps.setAttribute("role", "group");
+  steps.title = formula;
+  steps.setAttribute("aria-label", spoken);
+  const items = [
+    { label: t("ounce_usd"), value: ounce },
+    { op: "\u00d7" },
+    { label: t("usd_egp"), value: rate },
+    { op: "\u00f7" },
+    { label: t("grams_oz"), value: grams },
+    { op: "=" },
+    { label: baseLabel, value: base, unit: "EGP", result: true },
+  ];
+  items.forEach((item) => {
+    if (item.op) {
+      const op = mEl("span", "step-op", item.op);
+      op.setAttribute("aria-hidden", "true");
+      steps.appendChild(op);
+      return;
+    }
+    const box = mEl("div", "step" + (item.result ? " is-result" : ""));
+    box.appendChild(mEl("span", "step-label", item.label));
+    const value = mEl("span", "step-value num" + (item.value ? "" : " is-missing"), item.value || t("na"));
+    if (item.value && item.result) mFlash(value, metal + ":base", b.base_price_egp);
+    if (item.unit && item.value) value.append(document.createTextNode(" "), mEl("span", "step-unit", item.unit));
+    box.append(value);
+    steps.appendChild(box);
+  });
+  body.appendChild(steps);
+  body.appendChild(mEl("p", "build-note", t("build_note", { base: baseLabel })
+    + (b.source !== "aside" ? t("build_note_recon") : "")));
+  wrap.append(head, body);
+  return wrap;
+}
+/* ---- Chart ---- */
+const metalRange = {};
+let metalChart = null;
+function M_MONTHS() { return monthNames(); }
+function mParseDate(text) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(text || ""));
+  return match ? new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))) : null;
+}
+/* style: "day" 27 Oct, "month" Oct 2026, "year" 2026, anything else 27 Oct 2026 */
+function mDate(text, style) {
+  const date = mParseDate(text);
+  if (!date) return String(text || "");
+  const day = date.getUTCDate();
+  const month = M_MONTHS()[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+  if (style === "day") return day + " " + month;
+  if (style === "month") return month + " " + year;
+  if (style === "month-short") return month + " \u2019" + String(year).slice(2);
+  if (style === "year") return String(year);
+  return day + " " + month + " " + year;
+}
+function mAxisStyle(points) {
+  const a = mParseDate(points[0].time);
+  const b = mParseDate(points[points.length - 1].time);
+  if (!a || !b) return "full";
+  const days = (b - a) / 86400000;
+  return days <= 200 ? "day" : days <= 800 ? "month" : "year";
+}
+function mNice(min, max, target) {
+  const span = max - min || 1;
+  const raw = span / Math.max(1, target - 1);
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10) * mag;
+  const ticks = [];
+  for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) ticks.push(Math.round(v / step) * step);
+  return { ticks, step };
+}
+function mRgba(color, alpha) {
+  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(color).trim());
+  if (!hex) return color;
+  let h = hex[1];
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h, 16);
+  return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + alpha + ")";
+}
+function renderMetalsChart(payload, metal) {
+  const ranges = (payload.chart_ranges || []).filter((range) => range.points && range.points.length > 1);
+  if (!ranges.length) {
+    const empty = mEl("div", "m-empty");
+    empty.append(mEl("h2", "m-title", t("price_chart_title")), mError(t("chart_data_na"), () => loadMetals(metal)));
+    return empty;
+  }
+  const keys = ranges.map((range) => range.key);
+  if (!keys.includes(metalRange[metal])) metalRange[metal] = keys.includes("1Y") ? "1Y" : keys[keys.length - 1];
+
+  const wrap = mEl("div", "chart");
+  const badge = mEl("span", "chart-badge-pill");
+  const title = mEl("div", "chart-title");
+  title.append(mEl("h2", "m-title", t("price_history")), badge);
+  const seg = mEl("div", "seg");
+  seg.setAttribute("role", "group");
+  seg.setAttribute("aria-label", t("chart_range"));
+  const head = mEl("div", "chart-head");
+  head.append(title, seg);
+  const caption = mEl("p", "chart-caption", payload.chart_caption || t("chart_caption_default"));
+
+  const stage = mEl("div", "m-chart-stage");
+  const canvas = mEl("canvas");
+  canvas.tabIndex = 0;
+  canvas.setAttribute("role", "img");
+  canvas.setAttribute("aria-describedby", "chart-hint-" + metal);
+  const tip = mEl("div", "m-tip");
+  tip.hidden = true;
+  const tipDate = mEl("div", "m-tip-date");
+  const tipPrice = mEl("div", "m-tip-price num");
+  const tipChange = mEl("div", "m-tip-change num");
+  tip.append(tipDate, tipPrice, tipChange);
+  stage.append(canvas, tip);
+  const hint = mEl("p", "chart-hint", t("chart_hint"));
+  hint.id = "chart-hint-" + metal;
+  const live = mEl("div", "sr-only");
+  live.setAttribute("aria-live", "polite");
+  wrap.append(head, caption, stage, hint, live);
+
+  const host = { metal, canvas, stage, points: [], values: [], hover: null, geom: null, draw: null };
+  const rangeButtons = ranges.map((range) => {
+    const button = mEl("button", "", range.label || range.key);
+    button.type = "button";
+    button.addEventListener("click", () => {
+      metalRange[metal] = range.key;
+      host.hover = null;
+      setRange();
+    });
+    seg.appendChild(button);
+    return [range.key, button];
+  });
+
+  function readout(index) {
+    const point = host.points[index];
+    const first = host.values[0];
+    const value = host.values[index];
+    const move = first ? ((value - first) / first) * 100 : 0;
+    return {
+      date: mDate(point.time),
+      price: mNum(value, 2) + " EGP",
+      change: t("vs", { pct: mPct(move), date: mDate(host.points[0].time) }),
+      way: mDir(move),
+    };
+  }
+  function setRange() {
+    const range = ranges.find((item) => item.key === metalRange[metal]) || ranges[0];
+    host.range = range;
+    host.points = range.points.filter((point) => Number.isFinite(Number(point.value)));
+    host.values = host.points.map((point) => Number(point.value));
+    host.axis = mAxisStyle(host.points);
+    rangeButtons.forEach(([key, button]) => button.setAttribute("aria-pressed", key === range.key ? "true" : "false"));
+    const first = host.values[0];
+    const last = host.values[host.values.length - 1];
+    const move = first ? ((last - first) / first) * 100 : 0;
+    const way = mDir(move);
+    badge.className = "chart-badge-pill num" + (way ? " " + way : "");
+    badge.textContent = (range.label || range.key) + " " + mPct(move);
+    canvas.setAttribute("aria-label", "Price chart, " + mDate(host.points[0].time) + " to " + mDate(host.points[host.points.length - 1].time)
+      + ", " + badge.textContent + ". Latest " + mNum(last, 2) + " EGP.");
+    draw();
+  }
+  function draw() {
+    const width = stage.clientWidth;
+    const height = stage.clientHeight;
+    if (!width || !height || !host.values.length) return;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(width * ratio);
+    canvas.height = Math.floor(height * ratio);
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    const css = getComputedStyle(metalsView);
+    const color = (name) => css.getPropertyValue(name).trim();
+    const dark = currentTheme() === "dark";
+    const lineColor = color("--line");
+    const muted = color("--muted");
+    const accent = color("--metal-accent");
+    const accentInk = color("--metal-accent-ink");
+    const ink = host.values[host.values.length - 1] >= host.values[0] ? color("--up") : color("--down");
+    const font = "12px 'Instrument Sans', 'Segoe UI', sans-serif";
+    ctx.font = font;
+
+    const values = host.values;
+    const n = values.length;
+    const last = values[n - 1];
+    let vmin = Math.min(...values);
+    let vmax = Math.max(...values);
+    const pad = (vmax - vmin || Math.abs(vmax) * 0.02 || 1) * 0.1;
+    const lo = vmin - pad;
+    const hi = vmax + pad;
+    const { ticks, step } = mNice(lo, hi, 5);
+    const decimals = step >= 1 ? 0 : Math.min(4, Math.ceil(-Math.log10(step)));
+    const tickText = ticks.map((tick) => mNum(tick, decimals));
+    const tagText = mNum(last, 2);
+    const axisW = Math.ceil(Math.max(...tickText.map((text) => ctx.measureText(text).width), ctx.measureText(tagText).width + 12)) + 12;
+    const plot = { l: 6, r: width - axisW, t: 24, b: height - 30 };
+    plot.w = plot.r - plot.l;
+    plot.h = plot.b - plot.t;
+    const xOf = (i) => plot.l + (n > 1 ? (i / (n - 1)) * plot.w : 0);
+    const yOf = (v) => plot.t + ((hi - v) / (hi - lo)) * plot.h;
+    host.geom = { plot, n };
+
+    // Grid + y labels
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    const tagY = yOf(last);
+    ticks.forEach((tick, index) => {
+      const y = yOf(tick);
+      ctx.strokeStyle = mRgba(lineColor, 0.7);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(plot.l, Math.round(y) + 0.5);
+      ctx.lineTo(plot.r, Math.round(y) + 0.5);
+      ctx.stroke();
+      if (Math.abs(y - tagY) < 12) return;
+      ctx.fillStyle = muted;
+      ctx.fillText(tickText[index], plot.r + 8, y);
+    });
+
+    // Area + line, colored by direction over the visible range
+    const gradient = ctx.createLinearGradient(0, plot.t, 0, plot.b);
+    gradient.addColorStop(0, mRgba(ink, 0.3));
+    gradient.addColorStop(1, mRgba(ink, 0));
+    ctx.beginPath();
+    values.forEach((value, index) => (index ? ctx.lineTo(xOf(index), yOf(value)) : ctx.moveTo(xOf(index), yOf(value))));
+    ctx.lineTo(xOf(n - 1), plot.b);
+    ctx.lineTo(xOf(0), plot.b);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.beginPath();
+    values.forEach((value, index) => (index ? ctx.lineTo(xOf(index), yOf(value)) : ctx.moveTo(xOf(index), yOf(value))));
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // Current price: dashed accent line + tag on the axis
+    ctx.save();
+    ctx.setLineDash([5, 4]);
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.25;
+    ctx.beginPath();
+    ctx.moveTo(plot.l, Math.round(tagY) + 0.5);
+    ctx.lineTo(plot.r, Math.round(tagY) + 0.5);
+    ctx.stroke();
+    ctx.restore();
+    const tagW = ctx.measureText(tagText).width + 12;
+    ctx.fillStyle = accentInk;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(plot.r + 2, tagY - 10, tagW, 20, 5);
+    else ctx.rect(plot.r + 2, tagY - 10, tagW, 20);
+    ctx.fill();
+    ctx.fillStyle = dark ? color("--bg") : color("--surface");
+    ctx.font = "600 12px 'Instrument Sans', 'Segoe UI', sans-serif";
+    ctx.fillText(tagText, plot.r + 8, tagY + 0.5);
+    ctx.font = font;
+
+    // High / low markers for the visible range
+    const hiIndex = values.indexOf(vmax);
+    const loIndex = values.indexOf(vmin);
+    const marker = (index, label, above) => {
+      const x = xOf(index);
+      const y = yOf(values[index]);
+      ctx.fillStyle = color("--surface");
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      const text = label + " " + mNum(values[index], decimals > 0 ? decimals : 0);
+      const textW = ctx.measureText(text).width;
+      let tx = x - textW / 2;
+      tx = Math.max(plot.l, Math.min(plot.r - textW, tx));
+      let ty = above ? y - 12 : y + 14;
+      if (ty < 10) ty = y + 14;
+      if (ty > plot.b - 2) ty = y - 12;
+      ctx.fillStyle = mRgba(color("--surface"), 0.85);
+      ctx.fillRect(tx - 3, ty - 8, textW + 6, 16);
+      ctx.fillStyle = muted;
+      ctx.textAlign = "left";
+      ctx.fillText(text, tx, ty);
+    };
+    marker(hiIndex, "High", true);
+    if (loIndex !== hiIndex) marker(loIndex, "Low", false);
+
+    // X labels: 4 or 5, anchored start / end on the edges so they never clip
+    ctx.fillStyle = muted;
+    ctx.textBaseline = "alphabetic";
+    const axisStyle = plot.w < 380 && host.axis === "month" ? "month-short" : host.axis;
+    const layoutLabels = (count) => {
+      const placed = [];
+      for (let k = 0; k < count; k += 1) {
+        const index = Math.round((k * (n - 1)) / (count - 1));
+        const text = mDate(host.points[index].time, axisStyle);
+        const w = ctx.measureText(text).width;
+        let left = xOf(index) - w / 2;
+        if (k === 0) left = plot.l;
+        else if (k === count - 1) left = plot.r - w;
+        placed.push({ text, left, w });
+      }
+      const clear = placed.every((item, k) => k === 0 || item.left >= placed[k - 1].left + placed[k - 1].w + 12);
+      return clear ? placed : null;
+    };
+    const labels = layoutLabels(5) || layoutLabels(4) || layoutLabels(3) || layoutLabels(2);
+    (labels || []).forEach((item) => {
+      ctx.textAlign = "left";
+      ctx.fillText(item.text, item.left, height - 8);
+    });
+    ctx.textBaseline = "middle";
+
+    // Crosshair
+    const index = host.hover;
+    if (index != null && index >= 0 && index < n) {
+      const x = xOf(index);
+      const y = yOf(values[index]);
+      ctx.save();
+      ctx.setLineDash([3, 4]);
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x) + 0.5, plot.t);
+      ctx.lineTo(Math.round(x) + 0.5, plot.b);
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = ink;
+      ctx.strokeStyle = color("--surface");
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      const info = readout(index);
+      tipDate.textContent = info.date;
+      tipPrice.textContent = info.price;
+      tipChange.textContent = info.change;
+      tipChange.className = "m-tip-change num" + (info.way ? " is-" + info.way : "");
+      tip.hidden = false;
+      const tipW = tip.offsetWidth;
+      const tipH = tip.offsetHeight;
+      let left = x + 14;
+      if (left + tipW > width - 4) left = x - tipW - 14;
+      tip.style.transform = "translate(" + Math.max(4, left) + "px," + Math.max(4, Math.min(height - tipH - 4, y - tipH / 2)) + "px)";
+    } else {
+      tip.hidden = true;
+    }
+  }
+  host.draw = draw;
+  function indexAt(clientX) {
+    if (!host.geom) return null;
+    const rect = canvas.getBoundingClientRect();
+    const { plot, n } = host.geom;
+    const ratio = (clientX - rect.left - plot.l) / plot.w;
+    return Math.max(0, Math.min(n - 1, Math.round(ratio * (n - 1))));
+  }
+  function announce(index) {
+    const info = readout(index);
+    live.textContent = info.date + ", " + info.price + ", " + info.change;
+  }
+  canvas.addEventListener("pointermove", (event) => {
+    host.hover = indexAt(event.clientX);
+    draw();
+  });
+  canvas.addEventListener("pointerdown", (event) => {
+    host.hover = indexAt(event.clientX);
+    draw();
+  });
+  canvas.addEventListener("pointerleave", () => {
+    if (document.activeElement === canvas) return;
+    host.hover = null;
+    draw();
+  });
+  canvas.addEventListener("focus", () => {
+    if (host.hover == null) host.hover = host.values.length - 1;
+    draw();
+  });
+  canvas.addEventListener("blur", () => {
+    host.hover = null;
+    draw();
+  });
+  canvas.addEventListener("keydown", (event) => {
+    const n = host.values.length;
+    let index = host.hover == null ? n - 1 : host.hover;
+    const jump = event.shiftKey ? 10 : 1;
+    if (event.key === "ArrowLeft") index -= jump;
+    else if (event.key === "ArrowRight") index += jump;
+    else if (event.key === "Home") index = 0;
+    else if (event.key === "End") index = n - 1;
+    else if (event.key === "Escape") {
+      host.hover = null;
+      draw();
+      return;
+    } else return;
+    event.preventDefault();
+    host.hover = Math.max(0, Math.min(n - 1, index));
+    draw();
+    announce(host.hover);
+  });
+  if (typeof ResizeObserver === "function") new ResizeObserver(() => draw()).observe(stage);
+  metalChart = host;
+  setRange();
+  return wrap;
+}
+new MutationObserver(() => { if (metalChart) metalChart.draw(); })
+  .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => { if (metalChart) metalChart.draw(); });
+/* ---- Karat / fineness table ---- */
+function mIsKeyGrade(metal, label) {
+  return metal === "silver" ? /925/.test(label || "") : /^21\s*k/i.test(label || "");
+}
+function renderMetalsKarat(payload, metal) {
+  const rows = payload.rows || [];
+  if (!rows.length) return mError(t("karat_fail", { kind: metal === "silver" ? t("fineness") : t("karat") }), () => loadMetals(metal));
+  const wrap = mEl("div", "karat");
+  wrap.appendChild(mEl("h2", "m-title quiet", metal === "silver" ? t("fineness_title") : t("karat_title")));
+  const table = mEl("table", "ktable");
+  table.appendChild(mEl("caption", "sr-only", t("karat_caption", { kind: metal === "silver" ? t("fineness") : t("karat") })));
+  const head = mEl("thead");
+  const headRow = mEl("tr");
+  [[metal === "silver" ? t("fineness") : t("karat"), ""], [t("purity"), ""], [t("price_g"), "num"]].forEach(([text, cls]) => {
+    const th = mEl("th", cls, text);
+    th.scope = "col";
+    headRow.appendChild(th);
+  });
+  head.appendChild(headRow);
+  const body = mEl("tbody");
+  rows.forEach((row) => {
+    const tr = mEl("tr", mIsKeyGrade(metal, row.label) ? "is-key" : "");
+    const label = mEl("th", "", row.label || t("na"));
+    label.scope = "row";
+    if (tr.classList.contains("is-key")) label.appendChild(mEl("span", "k-badge", t("most_common")));
+    const purityCell = mEl("td");
+    const percent = parseFloat(String(row.purity || ""));
+    if (Number.isFinite(percent)) {
+      const bar = mEl("div", "pbar");
+      const track = mEl("div", "pbar-track");
+      const fill = mEl("i");
+      fill.style.width = Math.max(0, Math.min(100, percent)) + "%";
+      track.appendChild(fill);
+      bar.append(track, mEl("span", "pbar-text num", row.purity));
+      purityCell.appendChild(bar);
+    } else {
+      purityCell.appendChild(mEl("span", "is-missing", t("na")));
+    }
+    const priced = mNum(row.price, 2);
+    const priceCell = mEl("td", "num" + (priced ? "" : " is-missing"));
+    if (priced) {
+      priceCell.append(document.createTextNode(priced + " "), mEl("small", "", "EGP"));
+      mFlash(priceCell, metal + ":k:" + row.label, row.price);
+    } else {
+      priceCell.textContent = t("na");
+    }
+    tr.append(label, purityCell, priceCell);
+    body.appendChild(tr);
+  });
+  table.append(head, body);
+  wrap.appendChild(table);
+  return wrap;
+}
+
+/* ---- Also tracked: three-row key/value list ---- */
+function mSplitLabel(label) {
+  const match = /^(.*?)\s*\((.*)\)\s*$/.exec(String(label || ""));
+  return match ? { title: match[1], sub: match[2] } : { title: String(label || ""), sub: "" };
+}
+function renderMetalsExtras(payload, metal) {
+  const extras = payload.extras;
+  if (!extras) return null;
+  const items = [];
+  if (extras.gold_pound) items.push({ key: "pound", label: extras.gold_pound.label || t("gold_pound"), value: mNum(extras.gold_pound.price_egp, 2), raw: extras.gold_pound.price_egp, unit: "EGP" });
+  if (extras.ounce_egp) items.push({ key: "oz-egp", label: extras.ounce_egp.label || t("ounce_egp"), value: mNum(extras.ounce_egp.price_egp, 2), raw: extras.ounce_egp.price_egp, unit: "EGP" });
+  if (extras.ounce_usd) items.push({ key: "oz-usd", label: extras.ounce_usd.label || t("ounce_usd_label"), value: mNum(extras.ounce_usd.price_usd, 2), raw: extras.ounce_usd.price_usd, prefix: "$" });
+  if (!items.length) return null;
+  const wrap = mEl("div", "also");
+  wrap.appendChild(mEl("h2", "m-title quiet", t("also_tracked")));
+  const list = mEl("dl", "kv");
+  items.forEach((item) => {
+    const row = mEl("div", "kv-row");
+    const parts = mSplitLabel(item.label);
+    const dt = mEl("dt");
+    dt.appendChild(mEl("span", "kv-title", parts.title));
+    if (parts.sub) dt.appendChild(mEl("span", "kv-sub", parts.sub));
+    const dd = mEl("dd", "num" + (item.value ? "" : " is-missing"));
+    if (item.value) {
+      dd.append(document.createTextNode((item.prefix || "") + item.value + (item.unit ? " " : "")));
+      if (item.unit) dd.appendChild(mEl("small", "", item.unit));
+      mFlash(dd, metal + ":x:" + item.key, item.raw);
+    } else {
+      dd.textContent = t("na");
+    }
+    row.append(dt, dd);
+    list.appendChild(row);
+  });
+  wrap.appendChild(list);
+  return wrap;
+}
+/* ---- Calculator + zakat ---- */
+let metalCalc = null;
+function mCalcLoad(metal) {
+  try {
+    const saved = JSON.parse(localStorage.getItem("egx-metal-calc-" + metal) || "null");
+    return saved && typeof saved === "object" ? saved : {};
+  } catch (error) {
+    return {};
+  }
+}
+function mCalcSave(metal, state) {
+  try { localStorage.setItem("egx-metal-calc-" + metal, JSON.stringify(state)); } catch (error) {}
+}
+function mField(id, labelText, control, suffix) {
+  const field = mEl("div", "field");
+  const label = mEl("label", "", labelText);
+  label.htmlFor = id;
+  control.id = id;
+  const box = mEl("div", "field-control");
+  box.appendChild(control);
+  if (suffix) box.appendChild(mEl("span", "field-suffix", suffix));
+  field.append(label, box);
+  return field;
+}
+function mNumberInput(value) {
+  const input = mEl("input");
+  input.type = "number";
+  input.inputMode = "decimal";
+  input.min = "0";
+  input.step = "any";
+  input.autocomplete = "off";
+  input.value = value;
+  return input;
+}
+function renderMetalsCalculator(payload, metal) {
+  const rows = (payload.rows || []).filter((row) => Number.isFinite(Number(row.price)));
+  if (!rows.length) return null;
+  const noun = metal === "silver" ? t("silver") : t("gold");
+  const saved = mCalcLoad(metal);
+  const okNumber = (value) => (value !== undefined && value !== null && value !== "" && Number.isFinite(Number(value)) && Number(value) >= 0 ? String(value) : null);
+  const state = {
+    weight: okNumber(saved.weight) || "10",
+    work: okNumber(saved.work) || "0",
+    grade: typeof saved.grade === "string" ? saved.grade : "",
+    basis: saved.basis === "24k" ? "24k" : "21k",
+  };
+  let current = { rows, zakat: payload.zakat || null };
+
+  const wrap = mEl("div", "calc");
+  wrap.appendChild(mEl("h2", "m-title", t("value_your", { noun })));
+
+  const weight = mNumberInput(state.weight);
+  weight.setAttribute("aria-describedby", "calc-weight-hint-" + metal);
+  const grade = mEl("select");
+  const work = mNumberInput(state.work);
+  work.setAttribute("aria-describedby", "calc-work-hint-" + metal);
+  const weightHint = mEl("p", "field-hint");
+  weightHint.id = "calc-weight-hint-" + metal;
+  const gradeHint = mEl("p", "field-hint");
+  const workHint = mEl("p", "field-hint");
+  workHint.id = "calc-work-hint-" + metal;
+  const weightField = mField("calc-weight-" + metal, t("weight"), weight, "g");
+  const gradeField = mField("calc-grade-" + metal, metal === "silver" ? t("fineness") : t("karat"), grade);
+  const workField = mField("calc-work-" + metal, t("workmanship"), work, "EGP");
+  weightField.appendChild(weightHint);
+  gradeField.appendChild(gradeHint);
+  workField.appendChild(workHint);
+  const grid = mEl("div", "calc-grid");
+  grid.append(weightField, gradeField, workField);
+  wrap.appendChild(grid);
+
+  const result = mEl("div", "calc-result");
+  result.setAttribute("aria-live", "polite");
+  result.setAttribute("aria-atomic", "true");
+  const total = mEl("div", "calc-total num");
+  const breakdown = mEl("dl", "calc-breakdown");
+  const goldDd = mEl("dd", "num");
+  const workDd = mEl("dd", "num");
+  const totalDd = mEl("dd", "num");
+  const part = (term, dd) => {
+    const box = mEl("div");
+    box.append(mEl("dt", "", term), dd);
+    return box;
+  };
+  breakdown.append(
+    part(noun, goldDd),
+    mEl("span", "calc-op", "+"),
+    part(t("workmanship"), workDd),
+    mEl("span", "calc-op", "="),
+    part(t("total"), totalDd),
+  );
+  result.append(mEl("div", "calc-label", t("total_value")), total, breakdown);
+  wrap.appendChild(result);
+
+  let zakat = null;
+  if (payload.zakat) {
+    zakat = {
+      head: mEl("div", "zakat-head"),
+      nisab: mEl("div", "zakat-nisab num"),
+      sub: mEl("p", "zakat-sub"),
+      check: mEl("div", "zakat-check"),
+      rate: mEl("p", "zakat-rate"),
+      seg: mEl("div", "seg"),
+    };
+    zakat.seg.setAttribute("role", "group");
+    zakat.seg.setAttribute("aria-label", t("zakat_basis"));
+    const panel = mEl("section", "zakat");
+    panel.setAttribute("aria-label", t("zakat_nisab"));
+    zakat.head.append(mEl("h3", "m-title quiet", t("zakat_nisab")), zakat.seg);
+    panel.append(
+      zakat.head,
+      zakat.nisab,
+      zakat.sub,
+      zakat.check,
+      zakat.rate,
+      mEl("p", "zakat-disc", t("zakat_disc")),
+    );
+    wrap.appendChild(panel);
+  }
+
+  const selectedRow = () => current.rows.find((row) => row.label === state.grade) || current.rows.find((row) => mIsKeyGrade(metal, row.label)) || current.rows[0];
+  function fillGrades() {
+    grade.replaceChildren();
+    current.rows.forEach((row) => {
+      const option = mEl("option", "", row.label + (row.purity ? " \u00b7 " + row.purity : ""));
+      option.value = row.label;
+      grade.appendChild(option);
+    });
+    state.grade = selectedRow().label;
+    grade.value = state.grade;
+  }
+  function amount(input, hint, unitName) {
+    const text = input.value.trim();
+    const parsed = Number(text);
+    const bad = text !== "" && (!Number.isFinite(parsed) || parsed < 0);
+    input.setAttribute("aria-invalid", bad ? "true" : "false");
+    hint.classList.toggle("is-error", bad);
+    hint.textContent = bad ? (unitName === "a weight" ? t("enter_weight") : t("enter_amount")) : "";
+    return bad || text === "" ? 0 : parsed;
+  }
+  function basisInfo() {
+    const z = current.zakat;
+    if (!z) return null;
+    const have21 = Number.isFinite(Number(z.nisab_21k_egp));
+    const have24 = Number.isFinite(Number(z.nisab_24k_egp));
+    let basis = state.basis;
+    if (basis === "24k" && !have24) basis = "21k";
+    if (basis === "21k" && !have21 && have24) basis = "24k";
+    const value = basis === "24k" ? Number(z.nisab_24k_egp) : have21 ? Number(z.nisab_21k_egp) : Number(z.nisab_headline_egp);
+    return { basis, have21, have24, value, grams: Number(z.nisab_grams), label: basis === "24k" ? "24K" : "21K" };
+  }
+  function update() {
+    const row = selectedRow();
+    const grams = amount(weight, weightHint, "a weight");
+    const craft = amount(work, workHint, "an amount");
+    const rate = Number(row.price) || 0;
+    const goldValue = grams * rate;
+    const sum = goldValue + craft;
+    gradeHint.textContent = row.purity ? t("purity_rate", { purity: row.purity, rate: mNum(rate, 2) }) : t("rate_only", { rate: mNum(rate, 2) });
+    total.replaceChildren(document.createTextNode(mNum(sum, 2) + " "), mEl("small", "", "EGP"));
+    goldDd.textContent = mNum(goldValue, 2);
+    workDd.textContent = mNum(craft, 2);
+    totalDd.textContent = mNum(sum, 2);
+    if (zakat) updateZakat(goldValue, grams, row);
+  }
+  function updateZakat(goldValue, grams, row) {
+    const z = current.zakat;
+    const info = basisInfo();
+    zakat.seg.replaceChildren();
+    if (info.have21 && info.have24) {
+      [["21k", t("basis_21")], ["24k", t("basis_24")]].forEach(([key, text]) => {
+        const button = mEl("button", "", text);
+        button.type = "button";
+        button.setAttribute("aria-pressed", info.basis === key ? "true" : "false");
+        button.addEventListener("click", () => {
+          state.basis = key;
+          mCalcSave(metal, state);
+          update();
+        });
+        zakat.seg.appendChild(button);
+      });
+    }
+    zakat.seg.hidden = !zakat.seg.children.length;
+    const nisabText = mNum(info.value, 0);
+    zakat.nisab.replaceChildren(document.createTextNode((nisabText || t("na")) + " "), mEl("small", "", nisabText ? "EGP" : ""));
+    if (nisabText) mFlash(zakat.nisab, metal + ":nisab:" + info.basis, info.value);
+    const gramsText = Number.isFinite(info.grams) ? mNum(info.grams, 0, 2) + " g" : t("nisab_weight");
+    const labelBit = (info.have21 || info.have24 ? info.label + " " + t("gold") + " " : t("gold") + " ");
+    zakat.sub.textContent = t("nisab_sub", { grams: gramsText, label: labelBit });
+    zakat.check.replaceChildren();
+    if (Number.isFinite(info.value) && info.value > 0 && Number.isFinite(info.grams) && info.grams > 0) {
+      const perGram = info.value / info.grams;
+      const equivalent = goldValue / perGram;
+      const pill = mEl("span", "zakat-pill");
+      let text;
+      if (grams <= 0) {
+        pill.textContent = t("enter_a_weight");
+        text = t("check_nisab");
+      } else if (equivalent >= info.grams) {
+        pill.classList.add("is-yes");
+        pill.append(mSvg("check"), document.createTextNode(t("above_yes")));
+        text = "";
+      } else {
+        pill.append(document.createTextNode(t("above_no")));
+        text = "";
+      }
+      if (grams > 0) {
+        text = t("zakat_worth", {
+          grams: mNum(grams, 0, 2),
+          label: row.label,
+          eq: mNum(equivalent, 2),
+          basis: info.label,
+          nisab: mNum(info.grams, 0, 2),
+        });
+      }
+      zakat.check.append(pill, mEl("span", "m-muted", text));
+    }
+    const parts = [];
+    if (z.zakat_rate_percent != null) parts.push(t("zakat_rate", { pct: z.zakat_rate_percent }));
+    if (z.convention) parts.push(z.convention + ".");
+    zakat.rate.textContent = parts.join(" ");
+  }
+  const persist = () => mCalcSave(metal, state);
+  weight.addEventListener("input", () => { state.weight = weight.value; persist(); update(); });
+  work.addEventListener("input", () => { state.work = work.value; persist(); update(); });
+  grade.addEventListener("change", () => { state.grade = grade.value; persist(); update(); });
+
+  fillGrades();
+  update();
+  metalCalc = {
+    metal,
+    wrap,
+    refresh(next) {
+      const nextRows = (next.rows || []).filter((row) => Number.isFinite(Number(row.price)));
+      if (!nextRows.length) return;
+      current = { rows: nextRows, zakat: next.zakat || null };
+      fillGrades();
+      update();
+    },
+  };
+  return wrap;
+}
+/* ---- Funds ---- */
+/* Display-only cleanup: "X Fund Dahab Mubasher" -> "X Fund" when the tail repeats words already in the name. */
+function mFundName(raw) {
+  const original = String(raw || "").trim();
+  let words = original.split(/\s+/);
+  const same = (a, b) => a.toLowerCase() === b.toLowerCase();
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (let size = Math.floor(words.length / 2); size >= 1 && !changed; size -= 1) {
+      for (let at = 0; at + size * 2 <= words.length && !changed; at += 1) {
+        const twice = words.slice(at, at + size).every((word, offset) => same(word, words[at + size + offset]));
+        if (twice) {
+          words = words.slice(0, at + size).concat(words.slice(at + size * 2));
+          changed = true;
+        }
+      }
+    }
+  }
+  const fundAt = words.findIndex((word) => same(word, "fund"));
+  if (fundAt >= 0 && fundAt < words.length - 1) {
+    const head = words.slice(0, fundAt + 1);
+    const tail = words.slice(fundAt + 1);
+    if (tail.some((word) => head.some((seen) => same(seen, word)))) words = head;
+  }
+  return words.length >= 2 ? words.join(" ") : original;
+}
+function M_FUND_COLS() {
+  return [
+    { key: "name", label: t("fund"), get: (f) => mFundName(f.name).toLowerCase(), first: "ascending" },
+    { key: "price", label: t("unit_price"), get: (f) => f.unit_price_egp, num: true, first: "descending" },
+    { key: "m6", label: t("months_6"), get: (f) => f.return_6m_percent, num: true, first: "descending" },
+    { key: "ytd", label: t("ytd"), get: (f) => f.return_ytd_percent, num: true, first: "descending" },
+  ];
+}
+const metalSort = { gold: { key: "", dir: "none" }, silver: { key: "", dir: "none" } };
+function mSortedFunds(funds, sort) {
+  const col = M_FUND_COLS().find((item) => item.key === sort.key);
+  const list = funds.map((fund, index) => ({ fund, index }));
+  if (!col || sort.dir === "none") return list.map((item) => item.fund);
+  const sign = sort.dir === "ascending" ? 1 : -1;
+  const value = (item) => {
+    const v = col.get(item.fund);
+    return missing(v) || (col.num && !Number.isFinite(Number(v))) ? null : v;
+  };
+  list.sort((a, b) => {
+    const x = value(a);
+    const y = value(b);
+    if (x === null && y === null) return a.index - b.index;
+    if (x === null) return 1;
+    if (y === null) return -1;
+    const diff = col.num ? Number(x) - Number(y) : String(x).localeCompare(String(y));
+    return diff ? diff * sign : a.index - b.index;
+  });
+  return list.map((item) => item.fund);
+}
+function mReturnCell(td, value) {
+  const text = mPct(value);
+  if (!text) {
+    td.classList.add("is-missing");
+    td.textContent = t("na");
+    return;
+  }
+  const way = mDir(value);
+  const span = mEl("span", "f-ret" + (way ? " is-" + way : ""));
+  if (way) span.appendChild(mSvg(way));
+  span.append(document.createTextNode(text));
+  td.appendChild(span);
+}
+function renderMetalsFunds(payload, metal) {
+  const funds = payload.funds || [];
+  if (!funds.length) return null;
+  const sort = metalSort[metal];
+  const wrap = mEl("div", "funds");
+  const head = mEl("div", "funds-head");
+  head.appendChild(mEl("h2", "m-title quiet", t("related_funds")));
+  const sortWrap = mEl("label", "funds-sort", t("sort_by"));
+  const select = mEl("select");
+  select.setAttribute("aria-label", t("sort_funds"));
+  [["", "none", t("sort_default")], ["name", "ascending", t("sort_name")], ["price", "descending", t("sort_price")], ["m6", "descending", t("sort_6m")], ["ytd", "descending", t("sort_ytd")]].forEach(([key, dir, text]) => {
+    const option = mEl("option", "", text);
+    option.value = key + ":" + dir;
+    select.appendChild(option);
+  });
+  sortWrap.appendChild(select);
+  head.appendChild(sortWrap);
+
+  const table = mEl("table", "ftable");
+  table.appendChild(mEl("caption", "sr-only", t("funds_caption", { metal: t(metal) })));
+  const thead = mEl("thead");
+  const headRow = mEl("tr");
+  const headers = new Map();
+  M_FUND_COLS().forEach((col) => {
+    const th = mEl("th", col.num ? "num" : "");
+    th.scope = "col";
+    const button = mEl("button", "th-sort");
+    button.type = "button";
+    button.append(document.createTextNode(col.label), mSvg("sort"));
+    button.addEventListener("click", () => {
+      if (sort.key !== col.key || sort.dir === "none") {
+        sort.key = col.key;
+        sort.dir = col.first;
+      } else if (sort.dir === col.first) {
+        sort.dir = col.first === "ascending" ? "descending" : "ascending";
+      } else {
+        sort.key = "";
+        sort.dir = "none";
+      }
+      paint();
+    });
+    th.appendChild(button);
+    headers.set(col.key, th);
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  const tbody = mEl("tbody");
+  table.append(thead, tbody);
+
+  function paint() {
+    headers.forEach((th, key) => th.setAttribute("aria-sort", sort.key === key ? sort.dir : "none"));
+    select.value = (sort.key || "") + ":" + sort.dir;
+    if (select.value !== (sort.key || "") + ":" + sort.dir) select.selectedIndex = -1;
+    tbody.replaceChildren(...mSortedFunds(funds, sort).map((fund) => {
+      const tr = mEl("tr");
+      const name = mFundName(fund.name) || t("na");
+      const th = mEl("th");
+      th.scope = "row";
+      if (fund.href) {
+        const link = mExtLink(fund.href, name, "f-link");
+        link.title = String(fund.name || name);
+        th.appendChild(link);
+      } else {
+        th.textContent = name;
+        th.title = String(fund.name || name);
+      }
+      const price = mEl("td", "num");
+      price.dataset.label = t("unit_price");
+      const priced = missing(fund.unit_price_egp) ? null : mNum(fund.unit_price_egp, 2, Math.abs(Number(fund.unit_price_egp)) < 10 ? 4 : 2);
+      if (priced) price.textContent = priced + " EGP";
+      else { price.classList.add("is-missing"); price.textContent = t("na"); }
+      const m6 = mEl("td", "num");
+      m6.dataset.label = t("months_6");
+      mReturnCell(m6, fund.return_6m_percent);
+      const ytd = mEl("td", "num");
+      ytd.dataset.label = t("ytd");
+      mReturnCell(ytd, fund.return_ytd_percent);
+      tr.append(th, price, m6, ytd);
+      return tr;
+    }));
+  }
+  select.addEventListener("change", () => {
+    const [key, dir] = select.value.split(":");
+    sort.key = key;
+    sort.dir = dir || "none";
+    paint();
+  });
+  paint();
+  wrap.append(head, table);
+  return wrap;
+}
+function renderMetalsFooter(payload) {
+  const wrap = mEl("div", "m-foot-wrap");
+  if (payload.note) wrap.appendChild(mEl("p", "m-foot", payload.note));
+  const updated = payload.updated || payload.updated_cairo;
+  wrap.appendChild(mEl("p", "m-foot", updated
+    ? t("source_updated", { source: payload.source || "Starta Markets", when: updated })
+    : t("source_only", { source: payload.source || "Starta Markets" })));
+  return wrap;
+}
+async function loadMetals(metal, silent = false) {
+  const token = ++metalsToken;
+  if (!silent) buildMetalsGrid();
+  let payload = null;
+  try {
+    const response = await fetch("/v1/metals/" + encodeURIComponent(metal));
+    payload = response.ok ? await response.json() : null;
+  } catch (error) {
+    payload = null;
+  }
+  if (token !== metalsToken || activeView !== metal) return;
+  if (!payload) {
+    if (silent) return;
+    metalsLoaded[metal] = false;
+    metalsBody.replaceChildren(mError(t("metal_fail", { metal: t(metal) }), () => loadMetals(metal)));
+    return;
+  }
+  metalsLoaded[metal] = true;
+  metalsPayload[metal] = payload;
+  paintMetals(payload, metal, silent);
+}
+/* Quiet refresh while a metal tab is open; changed values flash briefly (see mFlash). */
+setInterval(() => {
+  if (activeView !== "exchange" && !document.hidden) loadMetals(activeView, true);
+}, 60000);
+function mChartSignature(payload) {
+  return (payload.chart_ranges || [])
+    .map((range) => {
+      const points = range.points || [];
+      const lastPoint = points[points.length - 1] || {};
+      return [range.key, points.length, lastPoint.time, lastPoint.value].join(":");
+    })
+    .join("|");
+}
+const metalChartSig = {};
+function paintMetals(payload, metal, silent = false) {
+  mSlot("hero", renderMetalsHero(payload, metal));
+  mSlot("build", renderMetalsBuild(payload, metal));
+  const sig = metalChartSig[metal] + "";
+  const nextSig = mChartSignature(payload);
+  if (!(silent && sig === nextSig && metalChart && metalChart.canvas.isConnected)) {
+    mSlot("chart", renderMetalsChart(payload, metal));
+    metalChartSig[metal] = nextSig;
+  }
+  if (silent && metalCalc && metalCalc.metal === metal && metalCalc.wrap.isConnected) metalCalc.refresh(payload);
+  else mSlot("calc", renderMetalsCalculator(payload, metal));
+  mSlot("also", renderMetalsExtras(payload, metal), renderMetalsFunds(payload, metal));
+  mSlot("foot", renderMetalsFooter(payload));
+}
+load();
+applyView(viewFromHash());
+</script>
+</body>
+</html>

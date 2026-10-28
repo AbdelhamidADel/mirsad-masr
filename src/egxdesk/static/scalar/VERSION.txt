@@ -1,0 +1,2 @@
+@scalar/api-reference@1.76.0
+served from /static/scalar/api-reference.min.js for offline docs

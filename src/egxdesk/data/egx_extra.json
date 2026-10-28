@@ -1,0 +1,297 @@
+[
+  {
+    "symbol": "EGS385S1C012",
+    "name": "Ferchem Misr Co. for Fertilizers & Chemicals",
+    "sector": "Basic Resources"
+  },
+  {
+    "symbol": "ICFC",
+    "name": "International Co. for Fertilizers & Chemicals",
+    "sector": "Trade & Distributors"
+  },
+  {
+    "symbol": "AIFI",
+    "name": "Atlas for Investment & Food Industries SAE",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "AIH",
+    "name": "Arabia Investments Holding SAE",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "IEEC",
+    "name": "Industrial & Engineering Enterprises Co.",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "MBEG",
+    "name": "MB for Engineering & Contracting",
+    "sector": "Industrial Goods , Services and Automobiles"
+  },
+  {
+    "symbol": "FCMD",
+    "name": "Future Care For Medical Industries",
+    "sector": "Health Care & Pharmaceuticals"
+  },
+  {
+    "symbol": "TYCN",
+    "name": "Tycoon Holding Company For Financial Investments",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "AMII",
+    "name": "Arabian Metal Industries and Industrial Investments",
+    "sector": "Building Materials"
+  },
+  {
+    "symbol": "EGREF",
+    "name": "Egyptians Real Estate Fund",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "IBCT",
+    "name": "International Business Corp. for Trading & Agencies",
+    "sector": "Industrial Goods , Services and Automobiles"
+  },
+  {
+    "symbol": "UTOP",
+    "name": "Utopia Real Estate Investment & Tourism SAE",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "FNAR",
+    "name": "Al Fanar Contracting Construction Trade Import & Export Co.",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "VERT",
+    "name": "Vertika for Industry & Trade",
+    "sector": "Trade & Distributors"
+  },
+  {
+    "symbol": "RKAZ",
+    "name": "REKAZ Financial Holding",
+    "sector": "Industrial Goods , Services and Automobiles"
+  },
+  {
+    "symbol": "AMPI",
+    "name": "AL Moasher Pay for Electronic Payment and Collection (S.A.E)",
+    "sector": "IT , Media & Communication Services"
+  },
+  {
+    "symbol": "BIGP",
+    "name": "ElBarbary Investment Group",
+    "sector": "Trade & Distributors"
+  },
+  {
+    "symbol": "FIRE",
+    "name": "First Investment & Real Estate Development",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "MISR",
+    "name": "MISR Intercontinental for Granite & Marble",
+    "sector": "Building Materials"
+  },
+  {
+    "symbol": "BIDI",
+    "name": "El Badr Investment and Development - BID",
+    "sector": "Basic Resources"
+  },
+  {
+    "symbol": "EGS370O1C013",
+    "name": "National Printing",
+    "sector": "Paper & Packaging"
+  },
+  {
+    "symbol": "EGS65101C015",
+    "name": "National Investment & Reconstruction",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "EGS65621C012",
+    "name": "El Nasr Housing & Egp5",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "EGS65861C014",
+    "name": "Egyptian Contracting Co.-AL- ABD",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "EGS72L31C011",
+    "name": "SOLARSOL For Energy",
+    "sector": "Energy & Support Services"
+  },
+  {
+    "symbol": "EGS73M81C012",
+    "name": "National Asset Management And Investment",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "EGWA",
+    "name": "General Warehouses of Egypt",
+    "sector": "Shipping & Transportation Services"
+  },
+  {
+    "symbol": "ELAB",
+    "name": "Egyptian Linear Alkyl Benzene Company",
+    "sector": "Energy & Support Services"
+  },
+  {
+    "symbol": "SIEG",
+    "name": "Egyptian Company for Pipes and Cement Products -Siegwart",
+    "sector": "Building Materials"
+  },
+  {
+    "symbol": "SINA",
+    "name": "Sinai Manganese Company",
+    "sector": "Basic Resources"
+  },
+  {
+    "symbol": "OCAP",
+    "name": "OG Capital For Investments SPAC",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "NMIN",
+    "name": "El Nasr Mining Co Egp10",
+    "sector": "Basic Resources"
+  },
+  {
+    "symbol": "ENPI",
+    "name": "Engineering for the Petroleum and Process Industries",
+    "sector": "Energy & Support Services"
+  },
+  {
+    "symbol": "CID",
+    "name": "Chemical Development Industries (CID)",
+    "sector": "Health Care & Pharmaceuticals"
+  },
+  {
+    "symbol": "NFCI",
+    "name": "ELNASR Co For Fertilizers And Chemical Industries",
+    "sector": "Basic Resources"
+  },
+  {
+    "symbol": "FTNS",
+    "name": "Fitness Prime",
+    "sector": "Travel & Leisure"
+  },
+  {
+    "symbol": "GEOS",
+    "name": "Geos for trading and contracting",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "MMHC",
+    "name": "El Mamoura Company For Construction & Tourism Development",
+    "sector": "Travel & Leisure"
+  },
+  {
+    "symbol": "MLIC",
+    "name": "Misr Life Insurance",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "TOUR",
+    "name": "Tourism Urbanization",
+    "sector": "Travel & Leisure"
+  },
+  {
+    "symbol": "MITR",
+    "name": "Misr Travel&Touris Egp6",
+    "sector": "Travel & Leisure"
+  },
+  {
+    "symbol": "TWSA",
+    "name": "Tawasoa Factoring",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "ANCC",
+    "name": "ALNAHDA Industrial Co.",
+    "sector": "Building Materials"
+  },
+  {
+    "symbol": "KORA",
+    "name": "KORRA",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "GROV",
+    "name": "Grova Special Purpose Acquisition Company",
+    "sector": "Non-bank financial services"
+  },
+  {
+    "symbol": "UPMS",
+    "name": "Union Pharmacist Company For Medical Services And Investment",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "HBCO",
+    "name": "Heibco for Commercial Investments & Real Estate Development",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "ALXD",
+    "name": "Alexandria For Investment and Urban Development",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "HDST",
+    "name": "HEDGESTONE INVESTMENT",
+    "sector": "Trade & Distributors"
+  },
+  {
+    "symbol": "INEG",
+    "name": "Integrated Engineering Group S.A.E",
+    "sector": "Contracting & Construction Engineering"
+  },
+  {
+    "symbol": "KNGC",
+    "name": "EL- Nasr Glass And Crystal",
+    "sector": "Industrial Goods , Services and Automobiles"
+  },
+  {
+    "symbol": "YAYT",
+    "name": "Spring & Transportation Needs Manufacturing Co.",
+    "sector": "Industrial Goods , Services and Automobiles"
+  },
+  {
+    "symbol": "ADRI",
+    "name": "Arab Development & Real Estate Investment",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "EFAC",
+    "name": "Egyptian Ferro All Egp10",
+    "sector": "Basic Resources"
+  },
+  {
+    "symbol": "ACFR",
+    "name": "Alexandria Company For Refractories",
+    "sector": "Building Materials"
+  },
+  {
+    "symbol": "EGOTH",
+    "name": "El Masreyah Touris Egp100",
+    "sector": "Travel & Leisure"
+  },
+  {
+    "symbol": "EEP",
+    "name": "Egypt Education Platform - EEP",
+    "sector": "Education Services"
+  },
+  {
+    "symbol": "PMSC",
+    "name": "Petroleum Marine Services Company",
+    "sector": "Energy & Support Services"
+  },
+  {
+    "symbol": "EGS220N1C016",
+    "name": "ALNASR For Building And Construction Company",
+    "sector": "Contracting & Construction Engineering"
+  }
+]
