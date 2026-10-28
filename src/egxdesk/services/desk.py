@@ -26,8 +26,10 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timedelta, timezone
+from collections.abc import Callable
+from datetime import UTC, datetime, timedelta
 from email.utils import parsedate_to_datetime
+from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 from egxdesk.data.symbols import get_symbol_name
@@ -47,14 +49,16 @@ from egxdesk.models import (
     MetalFund,
     MetalHero,
     MetalRow,
-    MetalZakat,
     MetalsResponse,
+    MetalZakat,
     NewsResponse,
 )
 from egxdesk.services.starta_metals import load_metal
 
 _CAIRO = ZoneInfo("Africa/Cairo")
-_SEARCH = "https://query2.finance.yahoo.com/v1/finance/search?q={query}&newsCount={count}&quotesCount=0"
+_SEARCH = (
+    "https://query2.finance.yahoo.com/v1/finance/search?q={query}&newsCount={count}&quotesCount=0"
+)
 _MUBASHER = "https://english.mubasher.info/markets/EGX/stocks/{symbol}/{kind}"
 _MUBASHER_AR = "https://www.mubasher.info/markets/EGX/stocks/{symbol}/{kind}"
 _MUBASHER_HOST = "https://english.mubasher.info"
@@ -84,7 +88,7 @@ _GENERIC_NAME = {
 }
 _ANNOUNCEMENT_CARD = re.compile(
     r'class="mi-announcement__date"(?:\s+data-publish-date="([^"]*)")?[^>]*>'
-    r'([^<]*)</span>\s*'
+    r"([^<]*)</span>\s*"
     r'<span class="mi-announcement__source">([^<]*)</span>\s*'
     r'</span>\s*<a href="([^"]+)">([^<]*)</a>',
     re.S,
@@ -393,11 +397,11 @@ async def get_company_news(symbol: str, lang: str = "en") -> NewsResponse:
     return NewsResponse(symbol=symbol, company=company, articles=articles)
 
 
-async def _cached(key: str, loader):
+async def _cached[T](key: str, loader: Callable[[], T]) -> T:
     hit = _cache.get(key)
     now = time.monotonic()
     if hit and now - hit[0] < _TTL:
-        return hit[1]
+        return cast(T, hit[1])
     value = await asyncio.to_thread(loader)
     _cache[key] = (now, value)
     return value
@@ -599,7 +603,7 @@ def _instrument(item: dict[str, str]) -> MarketInstrument:
     )
 
 
-def _index(item: dict[str, str | None]) -> IndexInsight:
+def _index(item: dict[str, str]) -> IndexInsight:
     ticker = item.get("ticker")
     price = None
     change = None
@@ -717,7 +721,7 @@ def _mubasher_page(symbol: str, kind: str, lang: str = "en") -> str:
             final = response.geturl().upper()
             if symbol.upper() not in final:
                 return ""
-            return response.read().decode("utf-8", "replace")
+            return cast(str, response.read().decode("utf-8", "replace"))
     except Exception:
         return ""
 
@@ -836,7 +840,7 @@ def _egypt_headlines(lang: str = "en") -> list[Headline]:
     return _headlines_from_egx_news(items, lang, limit=_EGYPT_LIMIT)
 
 
-def _egx_news_search(body: dict) -> list[dict] | None:
+def _egx_news_search(body: dict[str, Any]) -> list[dict[str, Any]] | None:
     """POST the EGX media-center search BFF. ``None`` means the call failed."""
     payload = _post_json(_EGX_NEWS_SEARCH, body)
     if payload is None:
@@ -847,7 +851,7 @@ def _egx_news_search(body: dict) -> list[dict] | None:
     return data if isinstance(data, list) else []
 
 
-def _post_json(url: str, body: dict) -> dict | None:
+def _post_json(url: str, body: dict[str, Any]) -> dict[str, Any] | None:
     request = urllib.request.Request(
         url,
         data=json.dumps(body).encode("utf-8"),
@@ -861,13 +865,20 @@ def _post_json(url: str, body: dict) -> dict | None:
     )
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
-            return json.loads(response.read().decode("utf-8", "replace"))
-    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError, OSError):
+            parsed: object = json.loads(response.read().decode("utf-8", "replace"))
+    except (
+        urllib.error.URLError,
+        urllib.error.HTTPError,
+        TimeoutError,
+        json.JSONDecodeError,
+        OSError,
+    ):
         return None
+    return parsed if isinstance(parsed, dict) else None
 
 
 def _headlines_from_egx_news(
-    items: list[dict],
+    items: list[dict[str, Any]],
     lang: str = "en",
     *,
     limit: int = _EGYPT_LIMIT,
@@ -906,7 +917,7 @@ def _headlines_from_egx_news(
     return [article for _, article in ranked[:limit]]
 
 
-def _egx_item_title(item: dict, lang: str) -> str | None:
+def _egx_item_title(item: dict[str, Any], lang: str) -> str | None:
     """Pick a headline the way beta.egx.com.eg media-center maps news items.
 
     The news-search BFF ignores Accept-Language / culture / lang body fields.
@@ -919,9 +930,7 @@ def _egx_item_title(item: dict, lang: str) -> str | None:
     arabic_body = str(item.get("contentArabic") or "")
     heading_en = _plain(item.get("heading") or "") or None
     heading_ar = _plain(item.get("headingArabic") or "") or None
-    heading = _egx_pick_localized(
-        heading_en or "", heading_ar or "", want_ar=want_ar
-    ) or None
+    heading = _egx_pick_localized(heading_en or "", heading_ar or "", want_ar=want_ar) or None
 
     extracted = None
     primary = _egx_pick_localized(english_body, arabic_body, want_ar=want_ar)
@@ -932,9 +941,7 @@ def _egx_item_title(item: dict, lang: str) -> str | None:
         if extracted:
             break
     if not extracted:
-        extracted = _egx_subject_from_text(english_body) or _egx_subject_from_text(
-            arabic_body
-        )
+        extracted = _egx_subject_from_text(english_body) or _egx_subject_from_text(arabic_body)
 
     # EGX ``T(heading, fallback=I(content))`` — heading wins when present.
     if want_ar:
@@ -1019,7 +1026,7 @@ def _egx_content_lines(text: str) -> list[str]:
     return [line.strip() for line in cleaned.splitlines() if line.strip()]
 
 
-def _egx_item_link(item: dict, fallback: str) -> str:
+def _egx_item_link(item: dict[str, Any], fallback: str) -> str:
     for attachment in item.get("attachments") or []:
         if not isinstance(attachment, dict):
             continue
@@ -1178,11 +1185,7 @@ def _google_news(query: str, limit: int, *, lang: str = "en") -> list[Headline]:
     else:
         locale = "&hl=en-US&gl=US&ceid=US:en"
         default_publisher = "Google News"
-    url = (
-        "https://news.google.com/rss/search?q="
-        + urllib.parse.quote(query)
-        + locale
-    )
+    url = "https://news.google.com/rss/search?q=" + urllib.parse.quote(query) + locale
     articles = _rss(url, default_publisher)
     cleaned: list[Headline] = []
     for article in articles:
@@ -1220,7 +1223,9 @@ def _rss(url: str, publisher: str) -> list[Headline]:
     headlines = []
     for block in _ITEM.findall(page):
         title_match = _TITLE.search(block)
-        title = html.unescape(re.sub(r"\s+", " ", title_match.group(1))).strip() if title_match else ""
+        title = (
+            html.unescape(re.sub(r"\s+", " ", title_match.group(1))).strip() if title_match else ""
+        )
         if not title:
             continue
         link_match = _LINK.search(block)
@@ -1251,8 +1256,8 @@ def _rss_time(value: str) -> str | None:
         except ValueError:
             return None
     if moment.tzinfo is None:
-        moment = moment.replace(tzinfo=timezone.utc)
-    return moment.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+        moment = moment.replace(tzinfo=UTC)
+    return moment.astimezone(UTC).strftime("%Y-%m-%d %H:%M UTC")
 
 
 def _search(query: str, count: int) -> list[Headline]:
@@ -1279,15 +1284,19 @@ def _search(query: str, count: int) -> list[Headline]:
     return headlines
 
 
-def _published(value) -> str | None:
+def _published(value: object) -> str | None:
+    if not isinstance(value, (int, float, str)):
+        return None
     try:
-        moment = datetime.fromtimestamp(int(value), tz=timezone.utc)
+        moment = datetime.fromtimestamp(int(value), tz=UTC)
     except (TypeError, ValueError, OSError):
         return None
     return moment.strftime("%Y-%m-%d %H:%M UTC")
 
 
-def _num(value) -> float | None:
+def _num(value: object) -> float | None:
+    if not isinstance(value, (int, float, str)):
+        return None
     try:
         number = float(value)
     except (TypeError, ValueError):

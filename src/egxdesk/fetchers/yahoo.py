@@ -9,7 +9,7 @@ import urllib.request
 from collections.abc import Callable
 from datetime import datetime
 from functools import partial
-from typing import Any
+from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 import structlog
@@ -26,7 +26,9 @@ log = structlog.get_logger()
 
 _ATTRIBUTION = ATTRIBUTIONS["yahoo"]
 _CAIRO = ZoneInfo("Africa/Cairo")
-_CHART = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval={interval}&range={rng}"
+_CHART = (
+    "https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval={interval}&range={rng}"
+)
 _CHART_RANGES = {
     "1d": ("15m", "1d"),
     "1mo": ("1d", "1mo"),
@@ -181,14 +183,18 @@ def _snapshot(fmt: str) -> dict[str, Any]:
         return _num(series[last])
 
     previous = next(
-        (_num(closes[index]) for index in range(last - 1, -1, -1) if _num(closes[index]) is not None),
+        (
+            _num(closes[index])
+            for index in range(last - 1, -1, -1)
+            if _num(closes[index]) is not None
+        ),
         None,
     )
     if previous is None:
         previous = _num(meta.get("chartPreviousClose")) or _num(meta.get("previousClose"))
     volumes = [_num(value) for value in (quote.get("volume") or [])]
-    volumes = [value for value in volumes if value is not None]
-    average = round(sum(volumes) / len(volumes), 4) if volumes else None
+    known = [value for value in volumes if value is not None]
+    average = round(sum(known) / len(known), 4) if known else None
     return {
         "price": _num(closes[last]),
         "previous_close": previous,
@@ -253,4 +259,4 @@ def _chart(fmt: str, interval: str = "1d", rng: str = "1y") -> dict[str, Any]:
     results = ((payload.get("chart") or {}).get("result")) or []
     if not results:
         return {}
-    return results[0]
+    return cast(dict[str, Any], results[0])

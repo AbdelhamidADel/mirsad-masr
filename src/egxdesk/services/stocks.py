@@ -108,8 +108,7 @@ class StocksService:
             (
                 sym
                 for sym, meta in EGX_SYMBOLS.items()
-                if name_lower in meta["name"].lower()
-                or name_lower in (meta.get("name_ar") or "")
+                if name_lower in meta["name"].lower() or name_lower in (meta.get("name_ar") or "")
             ),
             None,
         )

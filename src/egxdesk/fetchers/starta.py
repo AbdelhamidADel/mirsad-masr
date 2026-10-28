@@ -5,6 +5,7 @@ import re
 import time
 import urllib.request
 from datetime import datetime
+from typing import cast
 from zoneinfo import ZoneInfo
 
 import structlog
@@ -50,16 +51,23 @@ class StartaFetcher:
         row = _lookup(rows, symbol)
         if row is None:
             return None
+        price = row["price"]
+        change = row["change"]
+        change_percent = row["change_percent"]
+        market_cap = row["market_cap"]
+        previous_close = row["previous_close"]
+        if not isinstance(price, (int, float)):
+            return None
         return QuoteData(
             symbol=symbol.upper(),
             company=get_symbol_name(symbol) or symbol,
             company_ar=get_symbol_name_ar(symbol),
             sector=get_symbol_sector(symbol),
-            price=float(row["price"]),
-            change=row["change"],
-            change_percent=row["change_percent"],
-            market_cap=row["market_cap"],
-            previous_close=row["previous_close"],
+            price=float(price),
+            change=change if isinstance(change, (int, float)) else None,
+            change_percent=change_percent if isinstance(change_percent, str) else None,
+            market_cap=market_cap if isinstance(market_cap, (int, float)) else None,
+            previous_close=previous_close if isinstance(previous_close, (int, float)) else None,
             exchange="EGX",
             currency=str(row["currency"]),
             source=f"Starta Markets ({row['symbol']})",
@@ -93,7 +101,7 @@ def _lookup(rows: dict[str, dict[str, object]], symbol: str) -> dict[str, object
 def _download() -> str:
     request = urllib.request.Request(_PAGE, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8", errors="replace")
+        return cast(str, response.read().decode("utf-8", errors="replace"))
 
 
 def _parse(html: str) -> dict[str, dict[str, object]]:

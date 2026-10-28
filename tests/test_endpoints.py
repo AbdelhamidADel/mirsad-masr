@@ -100,7 +100,9 @@ def test_quote_unknown_symbol_returns_404(client: TestClient) -> None:
     assert resp.status_code == 404
 
 
-@patch("egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE)
+@patch(
+    "egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE
+)
 def test_quote_known_symbol(mock_get: AsyncMock, client: TestClient) -> None:
     resp = client.get("/v1/quote/CIBEA")
     assert resp.status_code == 200
@@ -111,7 +113,9 @@ def test_quote_known_symbol(mock_get: AsyncMock, client: TestClient) -> None:
     assert body["attribution"]["provider"] == "Yahoo Finance"
 
 
-@patch("egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE)
+@patch(
+    "egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE
+)
 def test_quote_sets_x_data_source_header(mock_get: AsyncMock, client: TestClient) -> None:
     resp = client.get("/v1/quote/CIBEA")
     assert resp.headers.get("x-data-source") == "Yahoo Finance"

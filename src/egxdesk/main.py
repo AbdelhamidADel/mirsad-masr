@@ -4,22 +4,21 @@ import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager, suppress
 from datetime import date
+from pathlib import Path as FilePath
 from typing import Annotated, Any
 
 import structlog
 import uvicorn
-from pathlib import Path as FilePath
-
 from fastapi import Depends, FastAPI, Path, Query, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 
 from egxdesk import __version__
 from egxdesk.api_docs import API_DESCRIPTION, OPENAPI_TAGS, scalar_docs_response
 from egxdesk.config import settings
-from egxdesk.exceptions import DemoRateLimitExceeded, SymbolNotFoundError
 from egxdesk.data.symbols import is_valid_symbol
+from egxdesk.exceptions import DemoRateLimitExceeded, SymbolNotFoundError
 from egxdesk.fetchers.alpha_vantage import AlphaVantageFetcher
 from egxdesk.fetchers.base import Fetcher
 from egxdesk.fetchers.finnhub import FinnhubFetcher
@@ -38,8 +37,8 @@ from egxdesk.models import (
     StatusResponse,
     SymbolListResponse,
 )
-from egxdesk.services.desk import get_chart, get_company_news, get_markets, get_metals
 from egxdesk.services.cache import TTLCacheService
+from egxdesk.services.desk import get_chart, get_company_news, get_markets, get_metals
 from egxdesk.services.stocks import StocksService
 
 log = structlog.get_logger()

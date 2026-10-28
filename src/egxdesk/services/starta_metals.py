@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import re
 import urllib.request
-from typing import Any
+from typing import Any, cast
 
 UA = "Mozilla/5.0"
 GRAMS_PER_TROY_OZ = 31.1035
@@ -37,8 +37,8 @@ SILVER_CARD_RE = re.compile(
 HERO_RE = re.compile(
     r'<p class="mt-6 text-sm font-semibold text-muted">([^<]+)</p>'
     r'[\s\S]{0,200}?<p class="font-mono text-5xl[^"]*"[^>]*>([\d,.]+)</p>'
-    r'[\s\S]{0,400}?>EGP<'
-    r'[\s\S]{0,400}?([+\-]\d+\.\d+)<!-- -->%',
+    r"[\s\S]{0,400}?>EGP<"
+    r"[\s\S]{0,400}?([+\-]\d+\.\d+)<!-- -->%",
     re.I,
 )
 BUILDER_ASIDE_RE = re.compile(
@@ -126,7 +126,7 @@ def _pct(sign: str, num: str) -> float:
 def fetch_html(url: str, timeout: int = 60) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+        return cast(str, resp.read().decode("utf-8", errors="replace"))
 
 
 def decode_next_f_strings(html: str) -> list[str]:
@@ -139,7 +139,7 @@ def decode_next_f_strings(html: str) -> list[str]:
     return out
 
 
-def _resolve_point(val: Any, ranges: list[dict], depth: int = 0) -> dict | None:
+def _resolve_point(val: Any, ranges: list[dict[str, Any]], depth: int = 0) -> dict[str, Any] | None:
     if isinstance(val, dict) and "d" in val and "v" in val:
         return {"d": val["d"], "v": float(val["v"])}
     if isinstance(val, str) and val.startswith("$") and depth < 8:

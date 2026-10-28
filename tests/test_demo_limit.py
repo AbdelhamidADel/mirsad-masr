@@ -74,7 +74,9 @@ def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
         yield test_client
 
 
-@patch("egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE)
+@patch(
+    "egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE
+)
 def test_demo_endpoint_returns_429_when_limit_exceeded(
     mock_get: AsyncMock,
     client: TestClient,
@@ -87,7 +89,9 @@ def test_demo_endpoint_returns_429_when_limit_exceeded(
     assert "self-host" in body["detail"].lower()
 
 
-@patch("egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE)
+@patch(
+    "egxdesk.services.stocks.StocksService.get_quote", new_callable=AsyncMock, return_value=_QUOTE
+)
 def test_demo_endpoint_allows_request_under_limit(
     mock_get: AsyncMock,
     client: TestClient,

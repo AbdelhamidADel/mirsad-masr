@@ -56,7 +56,10 @@ def test_a_general_market_story_is_left_out_when_the_company_is_named() -> None:
 def test_announcements_keep_the_exchange_timestamp() -> None:
     articles = _announcements_from_mubasher(_ANNOUNCEMENTS, "POCO")
     assert len(articles) == 1
-    assert articles[0].title == "Port Said Containers & Cargo (POCO.CA) - Board of Directors' Decisions"
+    assert (
+        articles[0].title
+        == "Port Said Containers & Cargo (POCO.CA) - Board of Directors' Decisions"
+    )
     assert articles[0].publisher == "Egyptian Stock Exchange"
     assert articles[0].published == "2026-09-28 09:02 UTC"
     assert articles[0].link == "https://english.mubasher.info/news/4677740/POCO-board/"
@@ -67,15 +70,23 @@ def test_world_topics_keep_wars_and_route_disruptions() -> None:
     assert _world_topic("Airport lounges: how did they get so horribly decadent?") is None
     assert _world_topic("Algeria to send troops to Niger in first foreign deployment") == "wars"
     assert _world_topic("Sudan paramilitary drone strikes cause mass power cuts") == "wars"
-    assert _world_topic("Two killed in Houthi attack on airport in eastern Saudi Arabia") == "flights"
+    assert (
+        _world_topic("Two killed in Houthi attack on airport in eastern Saudi Arabia") == "flights"
+    )
     assert _world_topic("Oil spill washes up on UAE beaches after tanker strike") == "shipping"
-    assert _world_topic("UK airlines to be banned from charging parents to sit with children") == "flights"
+    assert (
+        _world_topic("UK airlines to be banned from charging parents to sit with children")
+        == "flights"
+    )
     assert _world_topic("Tanker disabled near Strait of Hormuz after reported attack") == "shipping"
     assert (
         _world_topic("US bans vehicles from China’s BYD at Japan military base, calling them risk")
         is None
     )
-    assert _world_topic("Melting glaciers in Dolomites reveal cache of first world war munitions") is None
+    assert (
+        _world_topic("Melting glaciers in Dolomites reveal cache of first world war munitions")
+        is None
+    )
 
 
 _EGX_ITEMS = [
@@ -83,8 +94,7 @@ _EGX_ITEMS = [
         "code": 1001,
         "dateStamp": "2026-10-26T22:00:00",
         "content": (
-            "العنوان : قرار لجنة القيد لشركة تجريبية (DEMO.CA)<BR>\n"
-            "اسم الشركة : شركة تجريبية<br/>"
+            "العنوان : قرار لجنة القيد لشركة تجريبية (DEMO.CA)<BR>\nاسم الشركة : شركة تجريبية<br/>"
         ),
         "contentArabic": None,
         "attachments": [
@@ -179,6 +189,7 @@ def test_egx_media_center_items_become_egypt_headlines() -> None:
     assert all(not re.search(r"[\u0600-\u06FF]", a.title) for a in english)
     assert "Interest Type" not in " ".join(a.title for a in english)
 
+
 def test_egypt_headlines_return_empty_when_egx_bff_fails(monkeypatch) -> None:
     monkeypatch.setattr("egxdesk.services.desk._egx_news_search", lambda _body: None)
     assert _egypt_headlines("ar") == []
@@ -217,10 +228,7 @@ def test_egypt_en_prefers_english_disclosures_over_arabic_trading(monkeypatch) -
         {
             "code": 2,
             "dateStamp": "2026-10-26T12:00:00",
-            "content": (
-                "Company Name : Demo Bank<BR>\n"
-                "Content : Board approved Q3 results.<BR>"
-            ),
+            "content": ("Company Name : Demo Bank<BR>\nContent : Board approved Q3 results.<BR>"),
             "contentArabic": "العنوان : نتائج الربع الثالث<br/>",
             "attachments": [],
         }

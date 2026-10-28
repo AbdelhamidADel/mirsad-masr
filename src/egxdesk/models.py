@@ -256,7 +256,9 @@ class MetalRow(BaseModel):
     model_config = ConfigDict(title="MetalRow")
 
     label: str = Field(description="Karat / fineness label.", examples=["21K"])
-    purity: str | None = Field(default=None, description="Purity fraction string.", examples=["0.875"])
+    purity: str | None = Field(
+        default=None, description="Purity fraction string.", examples=["0.875"]
+    )
     price: float | None = Field(
         default=None,
         description="Price in the row unit (usually EGP per gram).",
