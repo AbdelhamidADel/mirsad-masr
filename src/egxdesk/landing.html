@@ -20,7 +20,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
 try {
-  if (localStorage.getItem("mirsad-skip-landing") === "1") {
+  var params = new URLSearchParams(location.search);
+  var forceHome = params.has("home");
+  if (forceHome) {
+    params.delete("home");
+    var clean = location.pathname + (params.toString() ? "?" + params.toString() : "") + location.hash;
+    history.replaceState(null, "", clean);
+  } else if (localStorage.getItem("mirsad-skip-landing") === "1") {
     location.replace("/app" + (location.hash || ""));
   }
 } catch (e) {}
