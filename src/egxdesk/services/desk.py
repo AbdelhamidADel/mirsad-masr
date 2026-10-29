@@ -430,6 +430,8 @@ def _load_markets(lang: str = "en") -> MarketsResponse:
                 continue
             seen.add(article.title)
             headlines.append(article)
+    # All-topics feed: newest first across sources (empty timestamps sink to the end).
+    headlines.sort(key=lambda article: article.published or "", reverse=True)
     return MarketsResponse(
         updated_cairo=datetime.now(_CAIRO).strftime("%Y-%m-%d %H:%M"),
         instruments=instruments,

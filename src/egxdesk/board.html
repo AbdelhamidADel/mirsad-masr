@@ -2763,7 +2763,14 @@ function renderWorld() {
     worldEl.appendChild(empty);
     return;
   }
-  items.forEach((article) => worldEl.appendChild(headline(article, true)));
+  const ranked = items.slice().sort((a, b) => {
+    const left = parseWhen(a.published);
+    const right = parseWhen(b.published);
+    const leftMs = left && !Number.isNaN(left.getTime()) ? left.getTime() : 0;
+    const rightMs = right && !Number.isNaN(right.getTime()) ? right.getTime() : 0;
+    return rightMs - leftMs;
+  });
+  ranked.forEach((article) => worldEl.appendChild(headline(article, true)));
 }
 
 function visibleCompanies() {
