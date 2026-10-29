@@ -228,10 +228,13 @@ try {
     font-weight: 500;
   }
   .nav-links a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 5%, transparent); }
+  .nav-mobile-cta { display: none; }
   .nav-actions {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
+    margin-inline-start: auto;
   }
   .theme-btn, .menu-btn {
     border: 1px solid var(--line);
@@ -241,6 +244,7 @@ try {
     padding: 8px 12px;
     cursor: pointer;
     font-weight: 500;
+    white-space: nowrap;
   }
   .theme-btn:hover, .menu-btn:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
   .menu-btn { display: none; }
@@ -271,9 +275,11 @@ try {
   .btn-nav {
     padding: 10px 16px;
     font-size: 0.92rem;
+    white-space: nowrap;
   }
   @media (max-width: 860px) {
     .menu-btn { display: inline-flex; }
+    .btn-nav { display: none; }
     .nav-links {
       display: none;
       position: absolute;
@@ -281,12 +287,39 @@ try {
       inset-inline: 0;
       flex-direction: column;
       align-items: stretch;
-      padding: 12px var(--pad) 16px;
+      padding: 12px max(var(--pad), env(safe-area-inset-left)) 16px max(var(--pad), env(safe-area-inset-right));
       background: var(--bg);
       border-bottom: 1px solid var(--line);
       gap: 2px;
     }
     .nav-links.open { display: flex; }
+    .nav-mobile-cta {
+      display: list-item;
+      margin-block-start: 10px;
+      padding-block-start: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .nav-mobile-cta a {
+      display: flex;
+      justify-content: center;
+      background: var(--accent);
+      color: #0a1315;
+      padding: 12px 16px;
+      font-weight: 600;
+    }
+    .nav-mobile-cta a:hover {
+      filter: brightness(1.05);
+      color: #0a1315;
+      background: var(--accent);
+    }
+    .theme-btn, .menu-btn {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+    }
+  }
+  @media (max-width: 560px) {
+    .nav-brand-text { display: none; }
+    .nav-actions { gap: 8px; }
   }
 
   /* —— Layout —— */
@@ -775,20 +808,21 @@ try {
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-nav">
   <div class="nav-inner">
-    <a class="nav-brand" href="/" aria-label="MIRSAD MASR">
+    <a class="nav-brand" href="/?home=1" aria-label="MIRSAD MASR">
       <img src="/static/mirsad-masr-emblem.png" alt="" width="40" height="40" decoding="async">
       <span class="nav-brand-text">MIRSAD MASR</span>
     </a>
-    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
     <ul class="nav-links" id="nav-links">
       <li><a href="#features">Features</a></li>
       <li><a href="#snapshot">Live snapshot</a></li>
       <li><a href="#data">Data</a></li>
       <li><a href="#faq">FAQ</a></li>
+      <li class="nav-mobile-cta"><a href="/app">Open dashboard →</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="theme-btn" id="theme" type="button">Light theme</button>
+      <button class="theme-btn" id="theme" type="button" aria-label="Toggle theme">Light</button>
       <a class="btn btn-primary btn-nav" href="/app">Open dashboard →</a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
     </div>
   </div>
 </header>
@@ -988,7 +1022,7 @@ try {
   function paintThemeButton() {
     const btn = document.getElementById("theme");
     if (!btn) return;
-    btn.textContent = currentTheme() === "dark" ? "Light theme" : "Dark theme";
+    btn.textContent = currentTheme() === "dark" ? "Light" : "Dark";
   }
   document.getElementById("theme").addEventListener("click", () => {
     const next = currentTheme() === "dark" ? "light" : "dark";
