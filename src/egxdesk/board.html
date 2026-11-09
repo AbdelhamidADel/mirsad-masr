@@ -885,6 +885,71 @@ try {
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
+  .alerts-panel {
+    margin: 0 0 16px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+  .alerts-lead {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    max-width: 70ch;
+  }
+  .alerts-form,
+  .alerts-rule-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+  }
+  .alerts-form label,
+  .alerts-rule-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+  }
+  .alerts-form input[type="email"],
+  .alerts-rule-form input,
+  .alerts-rule-form select {
+    min-width: 140px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: inherit;
+  }
+  .alerts-check {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px !important;
+  }
+  .alerts-msg {
+    margin: 8px 0 0;
+    width: 100%;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .alerts-rules {
+    list-style: none;
+    margin: 12px 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+  .alerts-rules li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 0.88rem;
+  }
   .card {
     position: relative;
     background: var(--surface);
@@ -1719,6 +1784,7 @@ try {
       <span class="live" id="market-status" role="status"><span class="dot" aria-hidden="true"></span> <span id="market-state" data-i18n="market_closed">Market closed</span></span>
       <a class="nav-pill" href="/?home=1" data-i18n="nav_home">Home</a>
       <a class="nav-pill" href="/docs" data-i18n="nav_docs">Docs</a>
+      <a class="nav-pill" href="#alerts-panel" data-i18n="nav_alerts">Alerts</a>
       <button class="lang" id="lang" type="button" aria-label="Language">
         <span class="lang-opt" data-lang-opt="en">EN</span>
         <span class="lang-sep" aria-hidden="true">|</span>
@@ -1754,6 +1820,44 @@ try {
   <section class="indices" aria-label="EGX indices" data-i18n-aria="indices_label">
     <h2 class="indices-head" data-i18n="indices">Indices</h2>
     <div class="indices-grid" id="indices" aria-busy="true"></div>
+  </section>
+  <section class="alerts-panel" id="alerts-panel" aria-label="Email alerts" data-i18n-aria="alerts_label">
+    <h2 class="indices-head" data-i18n="alerts_title">Email alerts</h2>
+    <p class="alerts-lead" data-i18n="alerts_lead">Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.</p>
+    <form class="alerts-form" id="alerts-signup" autocomplete="on">
+      <label>
+        <span data-i18n="alerts_email">Email</span>
+        <input id="alerts-email" type="email" required placeholder="you@example.com" autocomplete="email">
+      </label>
+      <label class="alerts-check">
+        <input id="alerts-digest" type="checkbox">
+        <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
+      </label>
+      <button class="nav-pill" type="submit" data-i18n="alerts_subscribe">Subscribe</button>
+      <p class="alerts-msg" id="alerts-msg" role="status"></p>
+    </form>
+    <div class="alerts-manage" id="alerts-manage" hidden>
+      <p class="alerts-manage-email" id="alerts-manage-email"></p>
+      <form class="alerts-rule-form" id="alerts-rule-form">
+        <select id="alerts-type" aria-label="Target type">
+          <option value="stock">Stock</option>
+          <option value="index">Index</option>
+          <option value="gold">Gold</option>
+          <option value="fx">FX</option>
+        </select>
+        <input id="alerts-target" type="text" placeholder="COMI / CASE30 / gold_21k / usd_egp" required>
+        <select id="alerts-kind" aria-label="Rule">
+          <option value="above">Above</option>
+          <option value="below">Below</option>
+          <option value="pct_move">±%</option>
+          <option value="points_move">± points</option>
+        </select>
+        <input id="alerts-threshold" type="number" step="any" required placeholder="130">
+        <button class="nav-pill" type="submit" data-i18n="alerts_add_rule">Add rule</button>
+      </form>
+      <ul class="alerts-rules" id="alerts-rules"></ul>
+      <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
+    </div>
   </section>
   <div class="desk">
     <section class="panel list-panel" id="list-panel" aria-label="Companies" data-i18n-aria="companies">
@@ -2015,6 +2119,21 @@ const STRINGS = {
     tip_price: "Price",
     tip_vs: "Vs start",
     tip_announce: "{date}, price {price}, {signed} versus the start of the range",
+    nav_alerts: "Alerts",
+    alerts_label: "Email alerts",
+    alerts_title: "Email alerts",
+    alerts_lead: "Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.",
+    alerts_email: "Email",
+    alerts_digest: "Daily summary at 16:30 Cairo",
+    alerts_subscribe: "Subscribe",
+    alerts_add_rule: "Add rule",
+    alerts_unsub: "Unsubscribe",
+    alerts_sent: "Check your inbox for a confirmation link.",
+    alerts_fail: "Could not subscribe. Try again later.",
+    alerts_manage_for: "Managing alerts for {email}",
+    alerts_need_confirm: "Confirm your email from the link we sent, then reopen this page.",
+    alerts_rule_added: "Rule added.",
+    alerts_unsubscribed: "Unsubscribed.",
   },
   ar: {
     loading_companies: "جاري تحميل الشركات المدرجة…",
@@ -2205,6 +2324,21 @@ const STRINGS = {
     tip_price: "السعر",
     tip_vs: "مقابل البداية",
     tip_announce: "{date}، السعر {price}، {signed} مقابل بداية النطاق",
+    nav_alerts: "تنبيهات",
+    alerts_label: "تنبيهات البريد",
+    alerts_title: "تنبيهات البريد",
+    alerts_lead: "تنبيهات أسعار وملخص يومي اختياري الساعة ١٦:٣٠ بتوقيت القاهرة عبر البريد. بلا كلمة مرور — أكّد عبر الرابط.",
+    alerts_email: "البريد",
+    alerts_digest: "ملخص يومي الساعة ١٦:٣٠ القاهرة",
+    alerts_subscribe: "اشترك",
+    alerts_add_rule: "أضف قاعدة",
+    alerts_unsub: "إلغاء الاشتراك",
+    alerts_sent: "تحقق من بريدك لرابط التأكيد.",
+    alerts_fail: "تعذر الاشتراك. حاول لاحقاً.",
+    alerts_manage_for: "إدارة تنبيهات {email}",
+    alerts_need_confirm: "أكّد بريدك من الرابط ثم أعد فتح هذه الصفحة.",
+    alerts_rule_added: "تمت إضافة القاعدة.",
+    alerts_unsubscribed: "تم إلغاء الاشتراك.",
   },
 };
 const INSTRUMENT_AR = {
@@ -5043,6 +5177,121 @@ function paintMetals(payload, metal, silent = false) {
   mSlot("also", renderMetalsExtras(payload, metal), renderMetalsFunds(payload, metal));
   mSlot("foot", renderMetalsFooter(payload));
 }
+/* ── Email alerts ─────────────────────────────────────────────────────────── */
+let alertsManageToken = "";
+const alertsSignup = document.getElementById("alerts-signup");
+const alertsManage = document.getElementById("alerts-manage");
+const alertsMsg = document.getElementById("alerts-msg");
+const alertsRules = document.getElementById("alerts-rules");
+
+function alertsTokenFromUrl() {
+  const params = new URLSearchParams(location.search);
+  return params.get("alerts") || "";
+}
+
+async function alertsSubscribe(event) {
+  event.preventDefault();
+  alertsMsg.textContent = "";
+  const email = document.getElementById("alerts-email").value.trim();
+  const digest_on = document.getElementById("alerts-digest").checked;
+  try {
+    const resp = await fetch("/v1/alerts/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, lang, digest_on }),
+    });
+    const body = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
+    alertsMsg.textContent = t("alerts_sent");
+  } catch (err) {
+    alertsMsg.textContent = err.message || t("alerts_fail");
+  }
+}
+
+async function alertsLoadManage(token) {
+  alertsManageToken = token;
+  try {
+    const resp = await fetch("/v1/alerts/manage?token=" + encodeURIComponent(token));
+    const body = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
+    alertsSignup.hidden = true;
+    alertsManage.hidden = false;
+    document.getElementById("alerts-manage-email").textContent = t("alerts_manage_for", {
+      email: body.email,
+    });
+    if (!body.confirmed) {
+      alertsMsg.textContent = t("alerts_need_confirm");
+    }
+    alertsRules.replaceChildren();
+    (body.rules || []).forEach((rule) => {
+      const li = document.createElement("li");
+      li.textContent = [
+        rule.target_type,
+        rule.target_id,
+        rule.rule_kind,
+        rule.threshold,
+      ].join(" · ");
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "chip";
+      del.textContent = "×";
+      del.addEventListener("click", async () => {
+        await fetch(
+          "/v1/alerts/rules/" + encodeURIComponent(rule.id) + "?token=" + encodeURIComponent(token),
+          { method: "DELETE" }
+        );
+        alertsLoadManage(token);
+      });
+      li.appendChild(del);
+      alertsRules.appendChild(li);
+    });
+  } catch (err) {
+    alertsMsg.textContent = err.message || t("alerts_fail");
+  }
+}
+
+async function alertsAddRule(event) {
+  event.preventDefault();
+  if (!alertsManageToken) return;
+  const body = {
+    token: alertsManageToken,
+    target_type: document.getElementById("alerts-type").value,
+    target_id: document.getElementById("alerts-target").value.trim(),
+    rule_kind: document.getElementById("alerts-kind").value,
+    threshold: Number(document.getElementById("alerts-threshold").value),
+  };
+  const resp = await fetch("/v1/alerts/rules", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    alertsMsg.textContent = data.detail || t("alerts_fail");
+    return;
+  }
+  alertsMsg.textContent = t("alerts_rule_added");
+  alertsLoadManage(alertsManageToken);
+}
+
+async function alertsUnsubscribe() {
+  if (!alertsManageToken) return;
+  await fetch("/v1/alerts/unsubscribe?token=" + encodeURIComponent(alertsManageToken), {
+    method: "POST",
+  });
+  alertsMsg.textContent = t("alerts_unsubscribed");
+  alertsManage.hidden = true;
+  alertsSignup.hidden = false;
+}
+
+if (alertsSignup) alertsSignup.addEventListener("submit", alertsSubscribe);
+const alertsRuleForm = document.getElementById("alerts-rule-form");
+if (alertsRuleForm) alertsRuleForm.addEventListener("submit", alertsAddRule);
+const alertsUnsub = document.getElementById("alerts-unsub");
+if (alertsUnsub) alertsUnsub.addEventListener("click", alertsUnsubscribe);
+const bootAlertsToken = alertsTokenFromUrl();
+if (bootAlertsToken) alertsLoadManage(bootAlertsToken);
+
 load();
 applyView(viewFromHash());
 </script>

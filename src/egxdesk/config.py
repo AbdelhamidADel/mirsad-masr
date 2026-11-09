@@ -51,5 +51,17 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
 
+    # Email alerts (Postgres + Gmail SMTP). Off until DATABASE_URL + SMTP are set.
+    alerts_enabled: bool = False
+    database_url: str = ""
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+    alerts_public_base_url: str = "http://127.0.0.1:8000"
+    alerts_tick_secret: str = ""
+    alerts_cooldown_hours_default: int = 6
+
 
 settings = Settings()

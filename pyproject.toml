@@ -31,6 +31,9 @@ dependencies = [
     "cachetools>=5.3",
     "structlog>=24.1",
     "scalar-fastapi==1.9.1",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.1",
+    "email-validator>=2.0",
 ]
 
 [project.optional-dependencies]
@@ -68,6 +71,8 @@ ignore = ["ANN401"]
 "tests/**" = ["ANN", "E501"]
 # Long index blurbs and news query strings; prefer readable literals over wraps.
 "src/egxdesk/services/desk.py" = ["E501"]
+"src/egxdesk/alerts/models.py" = ["E501"]
+"src/egxdesk/alerts/service.py" = ["E501"]
 
 # ── mypy ──────────────────────────────────────────────────────────────────────
 [tool.mypy]

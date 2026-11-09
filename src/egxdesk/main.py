@@ -15,6 +15,9 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from egxdesk import __version__
+from egxdesk.alerts.db import init_db
+from egxdesk.alerts.router import router as alerts_router
+from egxdesk.alerts.scheduler import alerts_loop
 from egxdesk.api_docs import API_DESCRIPTION, OPENAPI_TAGS, scalar_docs_response
 from egxdesk.config import settings
 from egxdesk.data.symbols import is_valid_symbol
@@ -209,6 +212,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             )
         )
 
+    app.state.alerts_task = None
+    if settings.alerts_enabled:
+        try:
+            if settings.database_url.strip():
+                init_db()
+            app.state.alerts_task = asyncio.create_task(alerts_loop(900))
+            log.info("alerts_scheduler_started")
+        except Exception as exc:
+            log.warning("alerts_scheduler_failed", error=str(exc))
+
     yield
 
     for task in app.state.quote_refresh_tasks:
@@ -216,6 +229,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     for task in app.state.quote_refresh_tasks:
         with suppress(asyncio.CancelledError):
             await task
+    if app.state.alerts_task is not None:
+        app.state.alerts_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await app.state.alerts_task
 
     log.info("mirsad_masr_stopped")
 
@@ -246,7 +263,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_origin_regex=settings.cors_origin_regex,
-    allow_methods=["GET", "DELETE"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -549,6 +566,7 @@ async def status(
     )
 
 
+v1.include_router(alerts_router)
 app.include_router(v1)
 
 

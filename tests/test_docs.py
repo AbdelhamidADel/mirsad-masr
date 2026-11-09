@@ -22,7 +22,7 @@ def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
         yield test_client
 
 
-EXPECTED_TAGS = {"Health", "Stocks", "Markets", "Metals", "Charts", "News", "Demo"}
+EXPECTED_TAGS = {"Health", "Stocks", "Markets", "Metals", "Charts", "News", "Demo", "Alerts"}
 
 
 def test_docs_returns_200(client: TestClient) -> None:

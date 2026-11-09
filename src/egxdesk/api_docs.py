@@ -42,6 +42,10 @@ OPENAPI_TAGS: list[dict[str, str]] = [
         "name": "Demo",
         "description": "Rate-limited demo quote endpoint for try-before-self-host.",
     },
+    {
+        "name": "Alerts",
+        "description": "Email price alerts and daily digests (confirm-link signup).",
+    },
 ]
 
 API_DESCRIPTION = """
