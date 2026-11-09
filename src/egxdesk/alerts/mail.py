@@ -38,14 +38,56 @@ def clear_outbox() -> None:
         _outbox.clear()
 
 
+_PUBLIC_MAIL_DOMAINS = {
+    "gmail.com",
+    "googlemail.com",
+    "yahoo.com",
+    "yahoo.co.uk",
+    "outlook.com",
+    "hotmail.com",
+    "live.com",
+    "icloud.com",
+    "me.com",
+    "aol.com",
+    "proton.me",
+    "protonmail.com",
+}
+
+
+def _email_domain(addr: str) -> str:
+    raw = addr.strip()
+    if "<" in raw and ">" in raw:
+        raw = raw[raw.rfind("<") + 1 : raw.rfind(">")].strip()
+    if "@" not in raw:
+        return ""
+    return raw.rsplit("@", 1)[-1].lower()
+
+
 def _from_addr() -> str:
     return (settings.smtp_from or settings.smtp_user or "alerts@mirsad.local").strip()
+
+
+def _resend_from_addr() -> str:
+    """Resend rejects unverified domains (e.g. gmail.com). Use onboarding sender then."""
+    configured = _from_addr()
+    domain = _email_domain(configured)
+    if domain and domain not in _PUBLIC_MAIL_DOMAINS and domain != "resend.dev":
+        if "<" in configured:
+            return configured
+        return f"MIRSAD MASR <{configured}>"
+    log.warning(
+        "resend_from_unverified",
+        configured=configured,
+        hint="Set SMTP_FROM to an address on a domain verified at resend.com/domains",
+    )
+    return "MIRSAD MASR <onboarding@resend.dev>"
 
 
 def _send_resend(*, to: str, subject: str, text: str, html: str) -> bool:
     key = settings.resend_api_key.strip()
     if not key:
         return False
+    from_addr = _resend_from_addr()
     try:
         resp = httpx.post(
             "https://api.resend.com/emails",
@@ -54,7 +96,7 @@ def _send_resend(*, to: str, subject: str, text: str, html: str) -> bool:
                 "Content-Type": "application/json",
             },
             json={
-                "from": _from_addr(),
+                "from": from_addr,
                 "to": [to],
                 "subject": subject,
                 "text": text,
