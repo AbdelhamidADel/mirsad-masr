@@ -322,6 +322,10 @@ def chart_snapshot_from_board(symbol_or_ticker: str) -> dict[str, Any]:
     }
 
 
+def _empty_index_snap() -> dict[str, float | None]:
+    return {"price": None, "change": None, "change_percent": None}
+
+
 def index_live(index_name: str) -> dict[str, float | None]:
     """Live EGX index level from ``index-data`` (``liveIndex``).
 
@@ -330,7 +334,7 @@ def index_live(index_name: str) -> dict[str, float | None]:
     """
     key = str(index_name or "").strip()
     if not key:
-        return {"price": None, "change": None, "change_percent": None}
+        return _empty_index_snap()
     now = time.monotonic()
     loaded = _index_loaded_at.get(key)
     if loaded is not None and now - loaded < _TTL and key in _index_cache:
@@ -339,12 +343,12 @@ def index_live(index_name: str) -> dict[str, float | None]:
         payload = _fetch_index_data(key)
     except Exception as exc:
         log.warning("egx_index_failed", index=key, error=str(exc))
-        empty: dict[str, float | None] = {"price": None, "change": None, "change_percent": None}
-        return empty
+        return _empty_index_snap()
     data = payload.get("data") if isinstance(payload, dict) else None
     live = data.get("liveIndex") if isinstance(data, dict) else None
+    snap: dict[str, float | None]
     if not isinstance(live, dict):
-        snap = {"price": None, "change": None, "change_percent": None}
+        snap = _empty_index_snap()
     else:
         snap = {
             "price": _num(live.get("indexClose")),
