@@ -1,0 +1,50 @@
+{
+  "data": {
+    "data": [
+      {
+        "reuters": "COMI.CA",
+        "name": "Commercial International Bank-Egypt (CIB)",
+        "nameA": "البنك التجاري الدولي -مصر (سى اى بى )",
+        "sector": "Banks",
+        "lastPrice": 128.33,
+        "chgPer": 0.61,
+        "openPrice": 127.31,
+        "prevClose": 127.31,
+        "high": 128.5,
+        "low": 127.0,
+        "volume": 1434965,
+        "trades": 1657,
+        "mc": 436164267319,
+        "currShort": "L.E",
+        "writeTime": "202611091240"
+      },
+      {
+        "reuters": "ETEL.CA",
+        "name": "Telecom Egypt",
+        "nameA": "المصرية للاتصالات",
+        "sector": "IT, Media & Communication Services",
+        "lastPrice": 50.0,
+        "chgPer": -1.2,
+        "openPrice": 50.5,
+        "prevClose": 50.61,
+        "high": 51.0,
+        "low": 49.8,
+        "volume": 1000,
+        "trades": 10,
+        "mc": 1.0,
+        "currShort": "L.E",
+        "writeTime": "202611091240"
+      }
+    ],
+    "totalCount": 3,
+    "pageNumber": 1,
+    "pageSize": 2,
+    "totalPages": 2
+  },
+  "success": true,
+  "message": "ok",
+  "totalCount": 3,
+  "pageNumber": 1,
+  "pageSize": 2,
+  "totalPages": 2
+}

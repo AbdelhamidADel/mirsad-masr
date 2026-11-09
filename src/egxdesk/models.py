@@ -24,6 +24,14 @@ ATTRIBUTIONS: dict[str, Attribution] = {
     "finnhub": Attribution(provider="Finnhub", url="https://finnhub.io"),
     "yahoo": Attribution(provider="Yahoo Finance", url="https://finance.yahoo.com"),
     "starta": Attribution(provider="Starta Markets", url="https://startamarkets.com/companies"),
+    "egx": Attribution(
+        provider="Egyptian Exchange",
+        url="https://beta.egx.com.eg/ar/market/market-watch",
+    ),
+    "investing": Attribution(
+        provider="Investing.com",
+        url="https://sa.investing.com/equities",
+    ),
 }
 
 

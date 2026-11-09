@@ -33,7 +33,7 @@ from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 from egxdesk.data.symbols import get_symbol_name
-from egxdesk.fetchers.yahoo import chart_history, chart_snapshot
+from egxdesk.fetchers.egx_watch import chart_history, chart_snapshot_from_board
 from egxdesk.models import (
     ChartBar,
     ChartResponse,
@@ -583,7 +583,9 @@ def _load_metals(metal: str) -> MetalsResponse:
 
 
 def _instrument(item: dict[str, str]) -> MarketInstrument:
-    snap = chart_snapshot(item["ticker"])
+    # FX / gold futures / Brent are not on the EGX equity board; leave empty
+    # until Investing.com (or another feed) is wired for those tickers.
+    snap = chart_snapshot_from_board(item["ticker"])
     price = _num(snap.get("price"))
     previous = _num(snap.get("previous_close"))
     change = None
@@ -612,7 +614,7 @@ def _index(item: dict[str, str]) -> IndexInsight:
     change_percent = None
     if ticker:
         try:
-            snap = chart_snapshot(ticker)
+            snap = chart_snapshot_from_board(ticker)
         except Exception:
             snap = {}
         price = _num(snap.get("price"))

@@ -21,6 +21,7 @@ from egxdesk.data.symbols import is_valid_symbol
 from egxdesk.exceptions import DemoRateLimitExceeded, SymbolNotFoundError
 from egxdesk.fetchers.alpha_vantage import AlphaVantageFetcher
 from egxdesk.fetchers.base import Fetcher
+from egxdesk.fetchers.egx_watch import EgxMarketWatchFetcher
 from egxdesk.fetchers.finnhub import FinnhubFetcher
 from egxdesk.fetchers.starta import StartaFetcher
 from egxdesk.fetchers.yahoo import YahooFetcher
@@ -143,16 +144,14 @@ class _DemoRateLimiter:
 
 
 def _build_fetchers(av_key: str, fh_key: str, enable_yahoo: bool) -> list[Fetcher]:
-    """Build the fetcher chain: Yahoo, then Starta for the names Yahoo skips.
+    """Build the fetcher chain: EGX market watch first, optional Yahoo/Starta, then keys.
 
     Providers with no key configured are silently omitted.
-    Yahoo Finance needs no key and has the best current EGX coverage.
-    Starta fills listed companies that Yahoo does not price.
+    EGX board is the primary delayed equity source. Yahoo remains opt-in only.
     """
-    fetchers: list[Fetcher] = []
+    fetchers: list[Fetcher] = [EgxMarketWatchFetcher(), StartaFetcher()]
     if enable_yahoo:
         fetchers.append(YahooFetcher())
-        fetchers.append(StartaFetcher())
     if av_key:
         fetchers.append(AlphaVantageFetcher(av_key))
     if fh_key:

@@ -32,7 +32,7 @@ OPENAPI_TAGS: list[dict[str, str]] = [
     },
     {
         "name": "Charts",
-        "description": "OHLCV bars for a single EGX listing (Yahoo Finance).",
+        "description": "Daily close/volume bars for a single EGX listing (Egyptian Exchange).",
     },
     {
         "name": "News",
@@ -52,9 +52,10 @@ quotes, macro instruments, company news, price charts, and Egypt gold/silver pag
 
 ## Data sources & delay
 
-Quotes and charts come from operator-configured providers (Yahoo Finance, Starta
-Markets, optional Alpha Vantage / Finnhub). Values are **delayed / indicative**,
-not exchange-grade real-time feeds. Cache TTL defaults to a few minutes.
+Equity quotes and charts come primarily from the Egyptian Exchange market-watch
+BFF, with Starta as equity backup and optional Alpha Vantage / Finnhub keys.
+Values are **delayed / indicative**, not exchange-grade real-time feeds. Cache
+TTL defaults to a few minutes.
 
 ## Base URL
 

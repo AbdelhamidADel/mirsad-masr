@@ -9,7 +9,7 @@ services:
     healthCheckPath: /v1/health
     envVars:
       - key: ENABLE_YAHOO_FINANCE
-        value: "true"
+        value: "false"
       - key: DEV_MODE
         value: "false"
       - key: LOG_LEVEL

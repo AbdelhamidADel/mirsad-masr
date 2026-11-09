@@ -1,0 +1,32 @@
+{
+  "data": {
+    "data": [
+      {
+        "reuters": "HRHO.CA",
+        "name": "EFG Hermes Holding",
+        "nameA": "هيرميس",
+        "sector": "Non-bank financial services",
+        "lastPrice": 20.0,
+        "chgPer": 1.0,
+        "openPrice": 19.8,
+        "prevClose": 19.8,
+        "high": 20.1,
+        "low": 19.7,
+        "volume": 500,
+        "trades": 5,
+        "mc": 1.0,
+        "currShort": "L.E",
+        "writeTime": "202611091240"
+      }
+    ],
+    "totalCount": 3,
+    "pageNumber": 2,
+    "pageSize": 2,
+    "totalPages": 2
+  },
+  "success": true,
+  "totalCount": 3,
+  "pageNumber": 2,
+  "pageSize": 2,
+  "totalPages": 2
+}
