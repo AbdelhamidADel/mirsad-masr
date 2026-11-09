@@ -131,6 +131,31 @@ def test_resend_confirm(alerts_db: None) -> None:
         assert mail._outbox and "Confirm" in mail._outbox[0]["subject"]
 
 
+def test_send_email_uses_resend_when_configured(
+    alerts_db: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mail.use_outbox(False)
+    monkeypatch.setattr(settings, "resend_api_key", "re_test")
+    monkeypatch.setattr(settings, "smtp_from", "alerts@example.com")
+
+    class _Resp:
+        status_code = 200
+        text = "{}"
+
+    called: dict[str, object] = {}
+
+    def fake_post(url: str, **kwargs: object) -> _Resp:
+        called["url"] = url
+        called["json"] = kwargs.get("json")
+        return _Resp()
+
+    monkeypatch.setattr(mail.httpx, "post", fake_post)
+    assert mail.send_email(to="a@b.co", subject="Hi", text="body") is True
+    assert called["url"] == "https://api.resend.com/emails"
+    assert called["json"]["to"] == ["a@b.co"]
+    mail.use_outbox(True)
+
+
 def test_session_window_weekdays() -> None:
     from datetime import datetime
     from zoneinfo import ZoneInfo

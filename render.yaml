@@ -22,23 +22,26 @@ services:
         value: "true"
       - key: AUTO_REFRESH_QUOTES
         value: "true"
-      # Keep false until Neon DATABASE_URL + Gmail App Password SMTP_* are set in the dashboard.
+      # Keep false until Neon DATABASE_URL + RESEND_API_KEY (or paid SMTP) are set.
       - key: ALERTS_ENABLED
         value: "false"
       - key: DATABASE_URL
+        sync: false
+      # Render free blocks SMTP 25/465/587 — use Resend HTTPS instead of Gmail SMTP.
+      - key: RESEND_API_KEY
         sync: false
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
         value: "587"
-      # Gmail address + 16-char App Password (Google Account → Security → App passwords).
       - key: SMTP_USER
         sync: false
       - key: SMTP_PASSWORD
         sync: false
+      # Verified Resend "from" address, e.g. alerts@yourdomain.com
       - key: SMTP_FROM
         sync: false
-      # Public site origin used inside confirmation emails, e.g. https://egxdesk.ashh.me
+      # Public site origin used inside confirmation emails, e.g. https://mirsad-masr.onrender.com
       - key: ALERTS_PUBLIC_BASE_URL
         sync: false
       - key: ALERTS_TICK_SECRET

@@ -1,4 +1,4 @@
-"""Gmail SMTP sender and alert email templates."""
+"""Alert email sender: Resend HTTPS (Render-safe) or Gmail SMTP (local/paid)."""
 
 from __future__ import annotations
 
@@ -7,13 +7,14 @@ from collections.abc import Callable
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import httpx
 import structlog
 
 from egxdesk.config import settings
 
 log = structlog.get_logger()
 
-# Test hook: when set, emails are appended here instead of SMTP.
+# Test hook: when set, emails are appended here instead of the network.
 _outbox: list[dict[str, str]] | None = None
 
 
@@ -30,24 +31,53 @@ def clear_outbox() -> None:
         _outbox.clear()
 
 
-def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> bool:
-    """Send one email. Returns False if SMTP is not configured or send fails."""
-    payload = {
-        "to": to,
-        "subject": subject,
-        "text": text,
-        "html": html or text,
-    }
-    if _outbox is not None:
-        _outbox.append(payload)
+def _from_addr() -> str:
+    return (settings.smtp_from or settings.smtp_user or "alerts@mirsad.local").strip()
+
+
+def _send_resend(*, to: str, subject: str, text: str, html: str) -> bool:
+    key = settings.resend_api_key.strip()
+    if not key:
+        return False
+    try:
+        resp = httpx.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": _from_addr(),
+                "to": [to],
+                "subject": subject,
+                "text": text,
+                "html": html,
+            },
+            timeout=30.0,
+        )
+        if resp.status_code >= 400:
+            log.warning(
+                "email_send_failed",
+                provider="resend",
+                to=to,
+                status=resp.status_code,
+                error=resp.text[:300],
+            )
+            return False
+        log.info("email_sent", provider="resend", to=to, subject=subject)
         return True
+    except Exception as exc:
+        log.warning("email_send_failed", provider="resend", to=to, error=str(exc))
+        return False
+
+
+def _send_smtp(*, to: str, subject: str, text: str, html: str) -> bool:
     user = settings.smtp_user.strip()
     # Gmail App Passwords are often pasted with spaces ("xxxx xxxx ..."); SMTP wants 16 chars.
     password = "".join(settings.smtp_password.split())
     if not user or not password:
-        log.warning("smtp_not_configured")
         return False
-    from_addr = (settings.smtp_from or user).strip()
+    from_addr = _from_addr()
     host = (settings.smtp_host or "smtp.gmail.com").strip()
     port = int(settings.smtp_port or 587)
     msg = MIMEMultipart("alternative")
@@ -55,8 +85,7 @@ def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> 
     msg["From"] = from_addr
     msg["To"] = to
     msg.attach(MIMEText(text, "plain", "utf-8"))
-    if html:
-        msg.attach(MIMEText(html, "html", "utf-8"))
+    msg.attach(MIMEText(html, "html", "utf-8"))
     try:
         with smtplib.SMTP(host, port, timeout=30) as smtp:
             smtp.ehlo()
@@ -64,11 +93,33 @@ def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> 
             smtp.ehlo()
             smtp.login(user, password)
             smtp.sendmail(from_addr, [to], msg.as_string())
-        log.info("email_sent", to=to, subject=subject)
+        log.info("email_sent", provider="smtp", to=to, subject=subject)
         return True
     except Exception as exc:
-        log.warning("email_send_failed", to=to, error=str(exc))
+        log.warning("email_send_failed", provider="smtp", to=to, error=str(exc))
         return False
+
+
+def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> bool:
+    """Send one email. Prefers Resend (HTTPS); falls back to SMTP."""
+    payload_html = html or text
+    if _outbox is not None:
+        _outbox.append(
+            {
+                "to": to,
+                "subject": subject,
+                "text": text,
+                "html": payload_html,
+            }
+        )
+        return True
+    if settings.resend_api_key.strip():
+        return _send_resend(to=to, subject=subject, text=text, html=payload_html)
+    if _send_smtp(to=to, subject=subject, text=text, html=payload_html):
+        return True
+    if not settings.smtp_user.strip() or not "".join(settings.smtp_password.split()):
+        log.warning("smtp_not_configured")
+    return False
 
 
 def _links(manage_token: str) -> tuple[str, str]:

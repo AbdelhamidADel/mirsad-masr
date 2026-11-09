@@ -51,9 +51,11 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
 
-    # Email alerts (Postgres + Gmail SMTP). Off until DATABASE_URL + SMTP are set.
+    # Email alerts (Postgres + mail). Off until DATABASE_URL + mail are set.
+    # Prefer RESEND_API_KEY on Render free (SMTP ports 25/465/587 are blocked).
     alerts_enabled: bool = False
     database_url: str = ""
+    resend_api_key: str = ""
     smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 587
     smtp_user: str = ""
