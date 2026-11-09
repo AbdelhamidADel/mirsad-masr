@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import smtplib
 from collections.abc import Callable
 from email.mime.multipart import MIMEMultipart
@@ -13,6 +14,11 @@ import structlog
 from egxdesk.config import settings
 
 log = structlog.get_logger()
+
+
+def _on_render_free_smtp_blocked() -> bool:
+    """Render free web services block outbound SMTP (25/465/587)."""
+    return os.environ.get("RENDER", "").lower() in {"1", "true", "yes"}
 
 # Test hook: when set, emails are appended here instead of the network.
 _outbox: list[dict[str, str]] | None = None
@@ -101,7 +107,7 @@ def _send_smtp(*, to: str, subject: str, text: str, html: str) -> bool:
 
 
 def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> bool:
-    """Send one email. Prefers Resend (HTTPS); falls back to SMTP."""
+    """Send one email. Prefers Resend (HTTPS); falls back to SMTP off Render."""
     payload_html = html or text
     if _outbox is not None:
         _outbox.append(
@@ -115,6 +121,15 @@ def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> 
         return True
     if settings.resend_api_key.strip():
         return _send_resend(to=to, subject=subject, text=text, html=payload_html)
+    # Do not attempt Gmail SMTP on Render — free plans return Errno 101 unreachable.
+    if _on_render_free_smtp_blocked():
+        log.warning(
+            "email_send_failed",
+            provider="none",
+            to=to,
+            error="RESEND_API_KEY is required on Render (SMTP ports are blocked).",
+        )
+        return False
     if _send_smtp(to=to, subject=subject, text=text, html=payload_html):
         return True
     if not settings.smtp_user.strip() or not "".join(settings.smtp_password.split()):
