@@ -1,15 +1,8 @@
 name: Docker
 
+# Optional GHCR publish / Dokploy trigger. Render builds from the repo Dockerfile directly.
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
-
-concurrency:
-  group: docker-main
-  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -19,13 +12,8 @@ jobs:
   docker:
     name: Build Docker image
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success')
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -64,7 +52,6 @@ jobs:
             echo "DOKPLOY_DEPLOY_URL not set; skipping Dokploy trigger"
             exit 0
           fi
-          SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
           curl --fail-with-body --show-error --silent \
             --request POST \
             --header "Content-Type: application/json" \
@@ -73,12 +60,12 @@ jobs:
               "ref": "refs/heads/main",
               "repository": { "full_name": "'"$GITHUB_REPOSITORY"'" },
               "head_commit": {
-                "id": "'"$SHA"'",
+                "id": "'"$GITHUB_SHA"'",
                 "message": "Docker image published by GitHub Actions"
               },
               "commits": [
                 {
-                  "id": "'"$SHA"'",
+                  "id": "'"$GITHUB_SHA"'",
                   "message": "Docker image published by GitHub Actions",
                   "modified": []
                 }
