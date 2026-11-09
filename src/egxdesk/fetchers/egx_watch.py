@@ -90,11 +90,7 @@ def load_board(page_size: int = 250, *, force: bool = False) -> dict[str, dict[s
     cache unless ``force`` is set.
     """
     global _board_cache, _board_loaded_at
-    if (
-        not force
-        and _board_cache is not None
-        and time.monotonic() - _board_loaded_at < _TTL
-    ):
+    if not force and _board_cache is not None and time.monotonic() - _board_loaded_at < _TTL:
         return _board_cache
     first = _fetch_page(1, page_size)
     rows = list(_page_rows(first))
@@ -115,11 +111,7 @@ def _fetch_page(page: int, page_size: int = _PAGE_SIZE) -> dict[str, Any]:
     url = f"{_BOARD}?{query}"
     request = urllib.request.Request(
         url,
-        headers={
-            "accept": "application/json",
-            "x-egx-bff-request": "1",
-            "User-Agent": "MirsadMasr/0.1",
-        },
+        headers=_egx_headers(),
         method="GET",
     )
     with urllib.request.urlopen(request, timeout=30) as response:
@@ -127,6 +119,18 @@ def _fetch_page(page: int, page_size: int = _PAGE_SIZE) -> dict[str, Any]:
     if not isinstance(payload, dict) or not payload.get("success", True):
         raise RuntimeError(f"egx market-watch page {page} failed")
     return cast(dict[str, Any], payload)
+
+
+def _egx_headers() -> dict[str, str]:
+    return {
+        "accept": "application/json",
+        "x-egx-bff-request": "1",
+        "User-Agent": (
+            "Mozilla/5.0 (compatible; MirsadMasr/0.1; +https://github.com/AbdelhamidADel/mirsad-masr)"
+        ),
+        "Referer": "https://beta.egx.com.eg/ar/market/market-watch",
+        "Origin": "https://beta.egx.com.eg",
+    }
 
 
 def _page_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -303,11 +307,7 @@ def _price_volume_points(isin: str, days: int) -> list[dict[str, Any]]:
     url = f"{_POINTS}?{query}"
     request = urllib.request.Request(
         url,
-        headers={
-            "accept": "application/json",
-            "x-egx-bff-request": "1",
-            "User-Agent": "MirsadMasr/0.1",
-        },
+        headers=_egx_headers(),
         method="GET",
     )
     with urllib.request.urlopen(request, timeout=45) as response:
