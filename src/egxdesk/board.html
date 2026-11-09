@@ -1956,6 +1956,85 @@ try {
   </section>
   </main>
 </div>
+
+<div class="alerts-modal" id="alerts-modal" hidden>
+  <div class="alerts-backdrop" id="alerts-backdrop" tabindex="-1"></div>
+  <div class="alerts-dialog" role="dialog" aria-modal="true" aria-labelledby="alerts-title">
+    <div class="alerts-dialog-head">
+      <h2 id="alerts-title" data-i18n="alerts_title">Email alerts</h2>
+      <button type="button" class="alerts-close" id="alerts-close" aria-label="Close">×</button>
+    </div>
+    <p class="alerts-lead" data-i18n="alerts_lead">Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.</p>
+    <form class="alerts-form" id="alerts-signup" autocomplete="on">
+      <label>
+        <span data-i18n="alerts_email">Email</span>
+        <input id="alerts-email" type="email" required placeholder="you@example.com" autocomplete="email">
+      </label>
+      <label class="alerts-check">
+        <input id="alerts-digest" type="checkbox">
+        <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
+      </label>
+      <div class="alerts-actions">
+        <button class="nav-pill" type="submit" data-i18n="alerts_subscribe">Subscribe</button>
+      </div>
+      <p class="alerts-msg" id="alerts-msg" role="status"></p>
+    </form>
+    <div class="alerts-manage" id="alerts-manage" hidden>
+      <p class="alerts-manage-email" id="alerts-manage-email"></p>
+      <p class="alerts-lead" data-i18n="alerts_pick">Choose what to watch, then set a rule.</p>
+      <div class="alerts-cats" id="alerts-cats" role="group" aria-label="Alert target">
+        <button class="chip" type="button" data-cat="index" aria-pressed="false" data-i18n="alerts_cat_index">Indices</button>
+        <button class="chip" type="button" data-cat="usd" aria-pressed="false" data-i18n="alerts_cat_usd">US dollar</button>
+        <button class="chip" type="button" data-cat="eur" aria-pressed="false" data-i18n="alerts_cat_eur">Euro</button>
+        <button class="chip" type="button" data-cat="brent" aria-pressed="false" data-i18n="alerts_cat_brent">Brent oil</button>
+        <button class="chip" type="button" data-cat="gold" aria-pressed="false" data-i18n="alerts_cat_gold">Gold</button>
+        <button class="chip" type="button" data-cat="stock" aria-pressed="true" data-i18n="alerts_cat_stock">Stocks</button>
+      </div>
+      <form class="alerts-rule-form" id="alerts-rule-form">
+        <input type="hidden" id="alerts-type" value="stock">
+        <input type="hidden" id="alerts-target" value="">
+        <label id="alerts-index-wrap" hidden>
+          <span data-i18n="alerts_index">Index</span>
+          <select id="alerts-index">
+            <option value="CASE30">EGX 30</option>
+            <option value="EGX_SHARIAH">EGX Shariah</option>
+            <option value="EGX35LV">EGX 35 LV</option>
+            <option value="EGX100_EWI">EGX 100 EWI</option>
+            <option value="EGX70_EWI">EGX 70 EWI</option>
+            <option value="EGX30_CAP">EGX 30 Capped</option>
+            <option value="EGX30_TR">EGX 30 TR</option>
+            <option value="TAMAYUZ">Tamayuz</option>
+          </select>
+        </label>
+        <label class="alerts-stock-wrap" id="alerts-stock-wrap">
+          <span data-i18n="alerts_stock">Stock (symbol or company)</span>
+          <input id="alerts-stock-q" type="search" placeholder="COMI or Commercial International Bank" autocomplete="off">
+          <ul class="alerts-stock-list" id="alerts-stock-list" hidden></ul>
+          <input type="hidden" id="alerts-stock-symbol" value="">
+        </label>
+        <label>
+          <span data-i18n="alerts_rule">Rule</span>
+          <select id="alerts-kind">
+            <option value="above" data-i18n="alerts_above">Above</option>
+            <option value="below" data-i18n="alerts_below">Below</option>
+            <option value="pct_move" data-i18n="alerts_pct">±% move</option>
+            <option value="points_move" data-i18n="alerts_points">± points</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n="alerts_threshold">Level / threshold</span>
+          <input id="alerts-threshold" type="number" step="any" required placeholder="130">
+        </label>
+        <div class="alerts-actions">
+          <button class="nav-pill" type="submit" data-i18n="alerts_add_rule">Add rule</button>
+          <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
+        </div>
+      </form>
+      <ul class="alerts-rules" id="alerts-rules"></ul>
+    </div>
+  </div>
+</div>
+
 <script>
 const status = document.getElementById("status");
 const rowsEl = document.getElementById("rows");
@@ -5299,17 +5378,20 @@ function alertsSetCat(cat) {
   });
   const typeEl = document.getElementById("alerts-type");
   const targetEl = document.getElementById("alerts-target");
+  if (!typeEl || !targetEl) return;
   const indexWrap = document.getElementById("alerts-index-wrap");
   const stockWrap = document.getElementById("alerts-stock-wrap");
   if (indexWrap) indexWrap.hidden = cat !== "index";
   if (stockWrap) stockWrap.hidden = cat !== "stock";
   if (alertsStockList) alertsStockList.hidden = true;
+  const stockSym = document.getElementById("alerts-stock-symbol");
+  const indexEl = document.getElementById("alerts-index");
   if (cat === "stock") {
     typeEl.value = "stock";
-    targetEl.value = document.getElementById("alerts-stock-symbol").value || "";
+    targetEl.value = (stockSym && stockSym.value) || "";
   } else if (cat === "index") {
     typeEl.value = "index";
-    targetEl.value = document.getElementById("alerts-index").value;
+    targetEl.value = (indexEl && indexEl.value) || "CASE30";
   } else if (cat === "gold") {
     typeEl.value = "gold";
     targetEl.value = "gold_21k";
@@ -5522,90 +5604,12 @@ if (alertsStockQ) {
     if (alertsStockQ.value.trim()) alertsRenderStockList(alertsStockQ.value);
   });
 }
+load();
+applyView(viewFromHash());
+
 const bootAlertsToken = alertsTokenFromUrl();
 if (bootAlertsToken) alertsLoadManage(bootAlertsToken);
 else alertsSetCat("stock");
-
-load();
-applyView(viewFromHash());
 </script>
-
-<div class="alerts-modal" id="alerts-modal" hidden>
-  <div class="alerts-backdrop" id="alerts-backdrop" tabindex="-1"></div>
-  <div class="alerts-dialog" role="dialog" aria-modal="true" aria-labelledby="alerts-title">
-    <div class="alerts-dialog-head">
-      <h2 id="alerts-title" data-i18n="alerts_title">Email alerts</h2>
-      <button type="button" class="alerts-close" id="alerts-close" aria-label="Close">×</button>
-    </div>
-    <p class="alerts-lead" data-i18n="alerts_lead">Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.</p>
-    <form class="alerts-form" id="alerts-signup" autocomplete="on">
-      <label>
-        <span data-i18n="alerts_email">Email</span>
-        <input id="alerts-email" type="email" required placeholder="you@example.com" autocomplete="email">
-      </label>
-      <label class="alerts-check">
-        <input id="alerts-digest" type="checkbox">
-        <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
-      </label>
-      <div class="alerts-actions">
-        <button class="nav-pill" type="submit" data-i18n="alerts_subscribe">Subscribe</button>
-      </div>
-      <p class="alerts-msg" id="alerts-msg" role="status"></p>
-    </form>
-    <div class="alerts-manage" id="alerts-manage" hidden>
-      <p class="alerts-manage-email" id="alerts-manage-email"></p>
-      <p class="alerts-lead" data-i18n="alerts_pick">Choose what to watch, then set a rule.</p>
-      <div class="alerts-cats" id="alerts-cats" role="group" aria-label="Alert target">
-        <button class="chip" type="button" data-cat="index" aria-pressed="false" data-i18n="alerts_cat_index">Indices</button>
-        <button class="chip" type="button" data-cat="usd" aria-pressed="false" data-i18n="alerts_cat_usd">US dollar</button>
-        <button class="chip" type="button" data-cat="eur" aria-pressed="false" data-i18n="alerts_cat_eur">Euro</button>
-        <button class="chip" type="button" data-cat="brent" aria-pressed="false" data-i18n="alerts_cat_brent">Brent oil</button>
-        <button class="chip" type="button" data-cat="gold" aria-pressed="false" data-i18n="alerts_cat_gold">Gold</button>
-        <button class="chip" type="button" data-cat="stock" aria-pressed="true" data-i18n="alerts_cat_stock">Stocks</button>
-      </div>
-      <form class="alerts-rule-form" id="alerts-rule-form">
-        <input type="hidden" id="alerts-type" value="stock">
-        <input type="hidden" id="alerts-target" value="">
-        <label id="alerts-index-wrap" hidden>
-          <span data-i18n="alerts_index">Index</span>
-          <select id="alerts-index">
-            <option value="CASE30">EGX 30</option>
-            <option value="EGX_SHARIAH">EGX Shariah</option>
-            <option value="EGX35LV">EGX 35 LV</option>
-            <option value="EGX100_EWI">EGX 100 EWI</option>
-            <option value="EGX70_EWI">EGX 70 EWI</option>
-            <option value="EGX30_CAP">EGX 30 Capped</option>
-            <option value="EGX30_TR">EGX 30 TR</option>
-            <option value="TAMAYUZ">Tamayuz</option>
-          </select>
-        </label>
-        <label class="alerts-stock-wrap" id="alerts-stock-wrap">
-          <span data-i18n="alerts_stock">Stock (symbol or company)</span>
-          <input id="alerts-stock-q" type="search" placeholder="COMI or Commercial International Bank" autocomplete="off">
-          <ul class="alerts-stock-list" id="alerts-stock-list" hidden></ul>
-          <input type="hidden" id="alerts-stock-symbol" value="">
-        </label>
-        <label>
-          <span data-i18n="alerts_rule">Rule</span>
-          <select id="alerts-kind">
-            <option value="above" data-i18n="alerts_above">Above</option>
-            <option value="below" data-i18n="alerts_below">Below</option>
-            <option value="pct_move" data-i18n="alerts_pct">±% move</option>
-            <option value="points_move" data-i18n="alerts_points">± points</option>
-          </select>
-        </label>
-        <label>
-          <span data-i18n="alerts_threshold">Level / threshold</span>
-          <input id="alerts-threshold" type="number" step="any" required placeholder="130">
-        </label>
-        <div class="alerts-actions">
-          <button class="nav-pill" type="submit" data-i18n="alerts_add_rule">Add rule</button>
-          <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
-        </div>
-      </form>
-      <ul class="alerts-rules" id="alerts-rules"></ul>
-    </div>
-  </div>
-</div>
 </body>
 </html>
