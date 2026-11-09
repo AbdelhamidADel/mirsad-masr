@@ -377,12 +377,13 @@ async def get_chart(symbol: str, range_key: str) -> ChartResponse:
     symbol = symbol.upper()
     payload = await _cached(f"chart:{symbol}:{range_key}", lambda: chart_history(symbol, range_key))
     ticker = payload.get("ticker")
+    source = payload.get("source") or (f"Egyptian Exchange ({ticker})" if ticker else None)
     return ChartResponse(
         symbol=symbol,
         currency=payload.get("currency"),
         range=range_key,
         interval=payload.get("interval") or "",
-        source=f"Egyptian Exchange ({ticker})" if ticker else None,
+        source=source,
         bars=[ChartBar(**bar) for bar in payload.get("bars") or []],
     )
 

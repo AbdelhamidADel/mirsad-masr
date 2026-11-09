@@ -251,7 +251,7 @@ def chart_history(symbol: str, range_key: str) -> dict[str, Any]:
     if not isin:
         return {"ticker": reuters or None, "currency": "EGP", "interval": "1d", "bars": []}
     points = _price_volume_points(isin, days)
-    bars = []
+    closes: list[tuple[str, float, int | None]] = []
     for point in points:
         close = _num(point.get("closePrice"))
         if close is None:
@@ -259,21 +259,38 @@ def chart_history(symbol: str, range_key: str) -> dict[str, Any]:
         stamp = str(point.get("tradeDate") or "")[:10]
         if not stamp:
             continue
-        volume = _int(point.get("tradeVolume"))
+        closes.append((stamp, round(close, 4), _int(point.get("tradeVolume"))))
+    # Fold the live board lastPrice onto today so the chart tip matches the quote.
+    live = _num(row.get("lastPrice"))
+    today = datetime.now(_CAIRO).strftime("%Y-%m-%d")
+    if live is not None:
+        live = round(live, 4)
+        volume = _int(row.get("volume"))
+        if closes and closes[-1][0] == today:
+            closes[-1] = (today, live, volume if volume is not None else closes[-1][2])
+        elif not closes or closes[-1][0] < today:
+            closes.append((today, live, volume))
+    bars = []
+    previous: float | None = None
+    for stamp, close, volume in closes:
+        open_price = previous if previous is not None else close
         bars.append(
             {
                 "time": stamp,
-                "open": close,
-                "high": close,
-                "low": close,
-                "close": round(close, 4),
+                "open": open_price,
+                "high": max(open_price, close),
+                "low": min(open_price, close),
+                "close": close,
                 "volume": volume,
             }
         )
+        previous = close
     return {
         "ticker": reuters or isin,
         "currency": _currency(row.get("currShort") or row.get("curr")),
         "interval": "1d",
+        "style": "candle",
+        "source": f"Egyptian Exchange ({reuters or isin})",
         "bars": bars,
     }
 

@@ -69,7 +69,7 @@ def test_chart_history_builds_bars_from_points(monkeypatch: pytest.MonkeyPatch) 
         "reuters": "COMI.CA",
         "isin": "EGS60121C018",
         "currShort": "L.E",
-        "lastPrice": 128.0,
+        # No lastPrice → do not append a live "today" tip bar in this unit test.
     }
     monkeypatch.setattr(
         egx_watch,
@@ -86,6 +86,37 @@ def test_chart_history_builds_bars_from_points(monkeypatch: pytest.MonkeyPatch) 
     )
     payload = egx_watch.chart_history("COMI", "1mo")
     assert payload["ticker"] == "COMI.CA"
+    assert payload["source"] == "Egyptian Exchange (COMI.CA)"
     assert len(payload["bars"]) == 2
-    assert payload["bars"][-1]["close"] == 128.0
+    assert payload["bars"][0]["open"] == 120.0
+    assert payload["bars"][1]["open"] == 120.0  # previous close
+    assert payload["bars"][1]["close"] == 128.0
+    assert payload["bars"][1]["high"] == 128.0
+    assert payload["bars"][1]["low"] == 120.0
     assert payload["bars"][-1]["volume"] == 20
+
+
+def test_chart_history_appends_live_board_price(monkeypatch: pytest.MonkeyPatch) -> None:
+    board_row = {
+        "reuters": "COMI.CA",
+        "isin": "EGS60121C018",
+        "currShort": "L.E",
+        "lastPrice": 129.5,
+        "volume": 99,
+    }
+    monkeypatch.setattr(
+        egx_watch,
+        "load_board",
+        lambda page_size=250, force=False: {"COMI": board_row, "COMI.CA": board_row},
+    )
+    monkeypatch.setattr(
+        egx_watch,
+        "_price_volume_points",
+        lambda isin, days: [
+            {"tradeDate": "2026-11-08T00:00:00", "closePrice": 128.0, "tradeVolume": 20},
+        ],
+    )
+    payload = egx_watch.chart_history("COMI", "1mo")
+    assert payload["bars"][-1]["close"] == 129.5
+    assert payload["bars"][-1]["open"] == 128.0
+    assert payload["bars"][-1]["volume"] == 99

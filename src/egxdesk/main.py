@@ -370,15 +370,15 @@ async def chart(
             alias="range",
             description=(
                 "Lookback window: `1d`, `1mo`, `3mo`, `6mo`, `ytd`, `1y`, `5y`, `10y`, or `max`. "
-                "Unknown values fall back to `1mo`. Intraday (`1d`) is often empty on Yahoo."
+                "Unknown values fall back to `1mo`. Equity bars are daily EGX closes."
             ),
             examples=["1mo"],
         ),
     ] = "1mo",
 ) -> ChartResponse:
-    """Daily or monthly Yahoo OHLCV bars for one listing. Currency is usually EGP.
+    """Daily EGX OHLCV bars for one listing. Currency is usually EGP.
 
-    Bars may be sparse for short ranges. Not real-time.
+    Open/high/low are synthesized from consecutive closes. Not real-time.
     """
     if not is_valid_symbol(symbol):
         raise SymbolNotFoundError(symbol.upper())

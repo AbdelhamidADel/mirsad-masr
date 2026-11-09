@@ -3181,7 +3181,13 @@ function paintChart(host, payload) {
     max += pad;
     const yOf = (value) => plot.y + ((max - value) / (max - min)) * plot.h;
     const slot = plot.w / bars.length;
-    const candles = slot >= 4;
+    const hasBodies = bars.some((bar) => {
+      const open = Number(bar.open ?? bar.close);
+      const close = Number(bar.close);
+      return Math.abs(close - open) > 1e-9;
+    });
+    // Prefer candles when bars have real open→close bodies; otherwise a smooth line.
+    const candles = hasBodies && slot >= 3.5;
     ctx.strokeStyle = accent;
     ctx.lineWidth = 1;
     ctx.setLineDash([3, 4]);
