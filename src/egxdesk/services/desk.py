@@ -33,7 +33,8 @@ from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 from egxdesk.data.symbols import get_symbol_name
-from egxdesk.fetchers.egx_watch import chart_history, chart_snapshot_from_board
+from egxdesk.fetchers.egx_watch import chart_history
+from egxdesk.fetchers.yahoo import chart_snapshot as yahoo_chart_snapshot
 from egxdesk.models import (
     ChartBar,
     ChartResponse,
@@ -583,9 +584,9 @@ def _load_metals(metal: str) -> MetalsResponse:
 
 
 def _instrument(item: dict[str, str]) -> MarketInstrument:
-    # FX / gold futures / Brent are not on the EGX equity board; leave empty
-    # until Investing.com (or another feed) is wired for those tickers.
-    snap = chart_snapshot_from_board(item["ticker"])
+    # FX / gold futures / Brent are not on the EGX equity board. Keep Yahoo
+    # snapshots for these strip cards until Investing.com (or another feed) lands.
+    snap = _external_snapshot(item["ticker"])
     price = _num(snap.get("price"))
     previous = _num(snap.get("previous_close"))
     change = None
@@ -614,7 +615,7 @@ def _index(item: dict[str, str]) -> IndexInsight:
     change_percent = None
     if ticker:
         try:
-            snap = chart_snapshot_from_board(ticker)
+            snap = _external_snapshot(ticker)
         except Exception:
             snap = {}
         price = _num(snap.get("price"))
@@ -635,6 +636,14 @@ def _index(item: dict[str, str]) -> IndexInsight:
         name_ar=item.get("name_ar"),
         description_ar=item.get("description_ar"),
     )
+
+
+def _external_snapshot(ticker: str) -> dict[str, Any]:
+    """Yahoo snapshot for non-equity strip/index tickers (not EGX board rows)."""
+    try:
+        return yahoo_chart_snapshot(ticker)
+    except Exception:
+        return {"price": None}
 
 
 def _company_news(symbol: str, company: str | None, lang: str = "en") -> list[Headline]:
