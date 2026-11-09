@@ -42,11 +42,14 @@ def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> 
         _outbox.append(payload)
         return True
     user = settings.smtp_user.strip()
-    password = settings.smtp_password.strip()
+    # Gmail App Passwords are often pasted with spaces ("xxxx xxxx ..."); SMTP wants 16 chars.
+    password = "".join(settings.smtp_password.split())
     if not user or not password:
         log.warning("smtp_not_configured")
         return False
     from_addr = (settings.smtp_from or user).strip()
+    host = (settings.smtp_host or "smtp.gmail.com").strip()
+    port = int(settings.smtp_port or 587)
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = from_addr
@@ -55,7 +58,7 @@ def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> 
     if html:
         msg.attach(MIMEText(html, "html", "utf-8"))
     try:
-        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=30) as smtp:
+        with smtplib.SMTP(host, port, timeout=30) as smtp:
             smtp.ehlo()
             smtp.starttls()
             smtp.ehlo()
