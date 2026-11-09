@@ -2039,7 +2039,7 @@ try {
       <span class="live" id="market-status" role="status"><span class="dot" aria-hidden="true"></span> <span id="market-state" data-i18n="market_closed">Market closed</span></span>
       <a class="nav-pill" href="/?home=1" data-i18n="nav_home">Home</a>
       <a class="nav-pill" href="/docs" data-i18n="nav_docs">Docs</a>
-      <button class="nav-pill" type="button" id="alerts-open" data-i18n="nav_alerts">Alerts</button>
+      <button class="nav-pill" type="button" id="alerts-open" data-i18n="nav_alerts" hidden>Alerts</button>
       <button class="lang" id="lang" type="button" aria-label="Language">
         <span class="lang-opt" data-lang-opt="en">EN</span>
         <span class="lang-sep" aria-hidden="true">|</span>
@@ -6103,10 +6103,16 @@ async function alertsUnsubscribe() {
   }
 }
 
+// Set true when Resend/domain mail is ready.
+const ALERTS_UI_ENABLED = false;
+
 const alertsOpen = document.getElementById("alerts-open");
-if (alertsOpen) alertsOpen.addEventListener("click", () => {
-  openAlertsModal();
-});
+if (ALERTS_UI_ENABLED && alertsOpen) {
+  alertsOpen.hidden = false;
+  alertsOpen.addEventListener("click", () => {
+    openAlertsModal();
+  });
+}
 const alertsClose = document.getElementById("alerts-close");
 if (alertsClose) alertsClose.addEventListener("click", closeAlertsModal);
 const alertsBackdrop = document.getElementById("alerts-backdrop");
@@ -6152,9 +6158,11 @@ document.addEventListener("click", (event) => {
 load();
 applyView(viewFromHash());
 
-const bootAlertsToken = alertsTokenFromUrl();
-if (bootAlertsToken) alertsLoadManage(bootAlertsToken);
-else alertsSyncCatsUi();
+if (ALERTS_UI_ENABLED) {
+  const bootAlertsToken = alertsTokenFromUrl();
+  if (bootAlertsToken) alertsLoadManage(bootAlertsToken);
+  else alertsSyncCatsUi();
+}
 </script>
 </body>
 </html>
