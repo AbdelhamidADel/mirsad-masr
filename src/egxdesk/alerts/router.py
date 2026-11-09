@@ -54,14 +54,19 @@ def subscribe(body: SubscribeBody) -> dict[str, Any]:
     _require_db()
     try:
         with session_scope() as session:
-            row = service.subscribe(session, body.email, body.lang, body.digest_on)
+            row, email_sent = service.subscribe(session, body.email, body.lang, body.digest_on)
             return {
                 "ok": True,
                 "email": row.email,
                 "lang": row.lang,
                 "digest_on": row.digest_on,
                 "manage_token": row.manage_token,
-                "message": "Check your inbox for a confirmation link.",
+                "email_sent": email_sent,
+                "message": (
+                    "Check your inbox for a confirmation link."
+                    if email_sent
+                    else "Subscribed, but confirmation email could not be sent."
+                ),
             }
     except service.AlreadyRegisteredError as exc:
         raise HTTPException(status_code=409, detail="already registered") from exc
@@ -164,6 +169,24 @@ def unsubscribe_email(body: UnsubscribeEmailBody) -> dict[str, Any]:
         if row is None:
             raise HTTPException(status_code=404, detail="Subscriber not found.")
         return {"ok": True, "email": row.email, "soft_deleted": True}
+
+
+@router.post("/resend-confirm")
+def resend_confirm(body: TokenBody) -> dict[str, Any]:
+    """Resend confirmation email for an unconfirmed manage token."""
+    _require_db()
+    with session_scope() as session:
+        row, email_sent = service.resend_confirm(session, body.token)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Subscriber not found.")
+        if row.confirmed_at is not None:
+            return {"ok": True, "email": row.email, "already_confirmed": True, "email_sent": False}
+        if not email_sent:
+            raise HTTPException(
+                status_code=503,
+                detail="Confirmation email could not be sent. Check SMTP settings.",
+            )
+        return {"ok": True, "email": row.email, "email_sent": True}
 
 
 @router.post("/tick")

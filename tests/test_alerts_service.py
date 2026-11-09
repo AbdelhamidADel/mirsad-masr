@@ -29,7 +29,8 @@ def alerts_db(tmp_path, monkeypatch: pytest.MonkeyPatch):
 
 def test_subscribe_confirm_add_rule(alerts_db: None) -> None:
     with session_scope() as session:
-        sub = service.subscribe(session, "User@Example.com", "en", digest_on=True)
+        sub, sent = service.subscribe(session, "User@Example.com", "en", digest_on=True)
+        assert sent is True
         assert sub.email == "user@example.com"
         assert sub.confirmed_at is None
         token = sub.confirm_token
@@ -63,7 +64,7 @@ def test_evaluate_fires_with_mocked_price(alerts_db: None, monkeypatch: pytest.M
         lambda tt, tid: {"price": 150.0, "previous": 100.0, "label": "COMI.CA"},
     )
     with session_scope() as session:
-        sub = service.subscribe(session, "a@b.co", "en", False)
+        sub, _sent = service.subscribe(session, "a@b.co", "en", False)
         service.confirm(session, sub.confirm_token or "")
         manage = sub.manage_token
         service.add_rule(
@@ -85,7 +86,7 @@ def test_evaluate_fires_with_mocked_price(alerts_db: None, monkeypatch: pytest.M
 
 def test_unsubscribe_stops_digest(alerts_db: None) -> None:
     with session_scope() as session:
-        sub = service.subscribe(session, "x@y.z", "ar", True)
+        sub, _sent = service.subscribe(session, "x@y.z", "ar", True)
         service.confirm(session, sub.confirm_token or "")
         service.unsubscribe(session, sub.manage_token)
         payload = service.manage_payload(session, sub.manage_token)
@@ -105,18 +106,29 @@ def test_already_registered_rejects_active_email(alerts_db: None) -> None:
 
 def test_soft_deleted_can_resubscribe(alerts_db: None) -> None:
     with session_scope() as session:
-        sub = service.subscribe(session, "back@ex.com", "en", True)
+        sub, _sent = service.subscribe(session, "back@ex.com", "en", True)
         service.confirm(session, sub.confirm_token or "")
         manage = sub.manage_token
         service.unsubscribe(session, manage)
     with session_scope() as session:
-        again = service.subscribe(session, "back@ex.com", "ar", False)
+        again, sent = service.subscribe(session, "back@ex.com", "ar", False)
+        assert sent is True
         assert again.unsubscribed_at is None
         assert again.confirmed_at is None
         assert again.confirm_token
     with session_scope() as session:
         gone = service.unsubscribe_by_email(session, "missing@ex.com")
         assert gone is None
+
+
+def test_resend_confirm(alerts_db: None) -> None:
+    with session_scope() as session:
+        sub, _sent = service.subscribe(session, "again@ex.com", "en", False)
+        manage = sub.manage_token
+        mail.clear_outbox()
+        row, sent = service.resend_confirm(session, manage)
+        assert row is not None and sent is True
+        assert mail._outbox and "Confirm" in mail._outbox[0]["subject"]
 
 
 def test_session_window_weekdays() -> None:

@@ -961,7 +961,8 @@ try {
   .alerts-actions button[hidden],
   .alerts-stock-list[hidden],
   #alerts-manage-email[hidden],
-  #alerts-add-rule[hidden] {
+  #alerts-add-rule[hidden],
+  #alerts-resend[hidden] {
     display: none !important;
   }
   .alerts-form input[type="email"],
@@ -2183,6 +2184,7 @@ try {
       <div class="alerts-actions">
         <button class="nav-pill" type="submit" id="alerts-submit" data-i18n="alerts_subscribe">Subscribe</button>
         <button class="nav-pill" type="button" id="alerts-add-rule" hidden data-i18n="alerts_add_rule">Add rule</button>
+        <button class="nav-pill" type="button" id="alerts-resend" hidden data-i18n="alerts_resend">Resend confirmation</button>
         <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
       </div>
       <p class="alerts-msg" id="alerts-msg" role="status"></p>
@@ -2410,12 +2412,16 @@ const STRINGS = {
     alerts_add_rule: "Add rule",
     alerts_unsub: "Unsubscribe",
     alerts_sent: "Check your inbox for a confirmation link.",
+    alerts_smtp_fail: "Saved, but confirmation email was not sent. Set SMTP_USER and SMTP_PASSWORD on the server (Gmail App Password), then use Resend confirmation.",
     alerts_fail: "Could not subscribe. Try again later.",
     alerts_already: "This email is already registered. Unsubscribe first, or manage alerts from your confirmation link.",
     alerts_unsub_need_email: "Enter the registered email to unsubscribe.",
     alerts_unsub_missing: "No active subscription found for that email.",
     alerts_manage_for: "Managing alerts for {email}",
     alerts_need_confirm: "Confirm your email from the link we sent, then reopen this page.",
+    alerts_resend: "Resend confirmation",
+    alerts_resend_ok: "Confirmation email sent. Check your inbox.",
+    alerts_resend_fail: "Could not send confirmation email. Check SMTP settings on the server.",
     alerts_rule_added: "Rule added.",
     alerts_unsubscribed: "Unsubscribed. Your record was kept as inactive.",
     alerts_pick: "Choose one or more to watch, then set a rule.",
@@ -2644,12 +2650,16 @@ const STRINGS = {
     alerts_add_rule: "أضف قاعدة",
     alerts_unsub: "إلغاء الاشتراك",
     alerts_sent: "تحقق من بريدك لرابط التأكيد.",
+    alerts_smtp_fail: "تم الحفظ، لكن تعذر إرسال بريد التأكيد. عيّن SMTP_USER وSMTP_PASSWORD على السيرفر (كلمة مرور تطبيقات Gmail) ثم استخدم إعادة إرسال التأكيد.",
     alerts_fail: "تعذر الاشتراك. حاول لاحقاً.",
     alerts_already: "هذا البريد مسجّل بالفعل. ألغِ الاشتراك أولاً، أو أدِر التنبيهات من رابط التأكيد.",
     alerts_unsub_need_email: "أدخل البريد المسجّل لإلغاء الاشتراك.",
     alerts_unsub_missing: "لا يوجد اشتراك نشط لهذا البريد.",
     alerts_manage_for: "إدارة تنبيهات {email}",
     alerts_need_confirm: "أكّد بريدك من الرابط ثم أعد فتح هذه الصفحة.",
+    alerts_resend: "إعادة إرسال التأكيد",
+    alerts_resend_ok: "تم إرسال بريد التأكيد. تحقق من صندوق الوارد.",
+    alerts_resend_fail: "تعذر إرسال بريد التأكيد. راجع إعدادات SMTP على السيرفر.",
     alerts_rule_added: "تمت إضافة القاعدة.",
     alerts_unsubscribed: "تم إلغاء الاشتراك. بقي السجل غير نشط في قاعدة البيانات.",
     alerts_pick: "اختر واحداً أو أكثر للمتابعة ثم عيّن القاعدة.",
@@ -5537,6 +5547,7 @@ const alertsRules = document.getElementById("alerts-rules");
 const alertsAdvancedHost = document.getElementById("alerts-advanced-host");
 const alertsSubmit = document.getElementById("alerts-submit");
 const alertsAddRuleBtn = document.getElementById("alerts-add-rule");
+const alertsResendBtn = document.getElementById("alerts-resend");
 const alertsUnsubBtn = document.getElementById("alerts-unsub");
 const alertsEmailWrap = document.getElementById("alerts-email-wrap");
 const alertsManageEmail = document.getElementById("alerts-manage-email");
@@ -5938,6 +5949,7 @@ function alertsEnterManageMode(email, confirmed) {
   if (alertsEmailWrap) alertsEmailWrap.hidden = true;
   if (alertsSubmit) alertsSubmit.hidden = true;
   if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = false;
+  if (alertsResendBtn) alertsResendBtn.hidden = !!confirmed;
   if (alertsManageEmail) {
     alertsManageEmail.hidden = false;
     alertsManageEmail.textContent = t("alerts_manage_for", { email: email || "" });
@@ -5969,16 +5981,41 @@ async function alertsSubscribe(event) {
     }
     if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
     alertsManageToken = body.manage_token || "";
+    const mailNote = body.email_sent ? t("alerts_sent") : t("alerts_smtp_fail");
     if (alertsManageToken) {
       const ok = await alertsPostRule(alertsManageToken);
-      if (ok) alertsMsg.textContent = t("alerts_sent") + " " + t("alerts_rule_added");
-      else alertsMsg.textContent = t("alerts_sent");
+      alertsMsg.textContent = ok ? mailNote + " " + t("alerts_rule_added") : mailNote;
       if (alertsManageToken) await alertsLoadManage(alertsManageToken);
     } else {
-      alertsMsg.textContent = t("alerts_sent");
+      alertsMsg.textContent = mailNote;
     }
   } catch (err) {
     alertsMsg.textContent = err.message || t("alerts_fail");
+  }
+}
+
+async function alertsResendConfirm() {
+  if (!alertsManageToken) return;
+  alertsMsg.textContent = "";
+  try {
+    const resp = await fetch("/v1/alerts/resend-confirm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: alertsManageToken }),
+    });
+    const body = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      alertsMsg.textContent = body.detail || t("alerts_resend_fail");
+      return;
+    }
+    if (body.already_confirmed) {
+      if (alertsResendBtn) alertsResendBtn.hidden = true;
+      alertsMsg.textContent = "";
+      return;
+    }
+    alertsMsg.textContent = body.email_sent ? t("alerts_resend_ok") : t("alerts_resend_fail");
+  } catch (err) {
+    alertsMsg.textContent = err.message || t("alerts_resend_fail");
   }
 }
 
@@ -6056,6 +6093,7 @@ async function alertsUnsubscribe() {
     if (alertsEmailWrap) alertsEmailWrap.hidden = false;
     if (alertsSubmit) alertsSubmit.hidden = false;
     if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = true;
+    if (alertsResendBtn) alertsResendBtn.hidden = true;
     if (alertsManageEmail) alertsManageEmail.hidden = true;
     const emailInput = document.getElementById("alerts-email");
     if (emailInput) emailInput.required = true;
@@ -6087,6 +6125,7 @@ document.addEventListener("keydown", (event) => {
 });
 if (alertsSignup) alertsSignup.addEventListener("submit", alertsSubscribe);
 if (alertsAddRuleBtn) alertsAddRuleBtn.addEventListener("click", alertsAddRuleClick);
+if (alertsResendBtn) alertsResendBtn.addEventListener("click", alertsResendConfirm);
 if (alertsUnsubBtn) alertsUnsubBtn.addEventListener("click", alertsUnsubscribe);
 document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
   btn.addEventListener("click", () => alertsToggleCat(btn.getAttribute("data-cat")));

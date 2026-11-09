@@ -22,6 +22,7 @@ services:
         value: "true"
       - key: AUTO_REFRESH_QUOTES
         value: "true"
+      # Keep false until Neon DATABASE_URL + Gmail App Password SMTP_* are set in the dashboard.
       - key: ALERTS_ENABLED
         value: "false"
       - key: DATABASE_URL
@@ -30,12 +31,14 @@ services:
         value: smtp.gmail.com
       - key: SMTP_PORT
         value: "587"
+      # Gmail address + 16-char App Password (Google Account → Security → App passwords).
       - key: SMTP_USER
         sync: false
       - key: SMTP_PASSWORD
         sync: false
       - key: SMTP_FROM
         sync: false
+      # Public site origin used inside confirmation emails, e.g. https://egxdesk.ashh.me
       - key: ALERTS_PUBLIC_BASE_URL
         sync: false
       - key: ALERTS_TICK_SECRET

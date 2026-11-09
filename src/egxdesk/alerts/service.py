@@ -37,7 +37,7 @@ class AlreadyRegisteredError(ValueError):
 
 def subscribe(
     session: Session, email: str, lang: str = "en", digest_on: bool = False
-) -> Subscriber:
+) -> tuple[Subscriber, bool]:
     normalized = email.strip().lower()
     if "@" not in normalized or "." not in normalized.split("@", 1)[-1]:
         raise ValueError("invalid email")
@@ -72,8 +72,23 @@ def subscribe(
         for rule in row.rules:
             rule.active = False
     session.flush()
-    mail.confirm_email(row.lang, row.email, confirm)
-    return row
+    sent = mail.confirm_email(row.lang, row.email, confirm)
+    return row, sent
+
+
+def resend_confirm(session: Session, token: str) -> tuple[Subscriber | None, bool]:
+    """Issue a fresh confirm token and email it. Returns (subscriber, email_sent)."""
+    row = get_by_manage_token(session, token)
+    if row is None or row.unsubscribed_at is not None:
+        return None, False
+    if row.confirmed_at is not None:
+        return row, False
+    confirm = _token()
+    row.confirm_token = confirm
+    row.confirm_expires_at = _utcnow() + timedelta(hours=24)
+    session.flush()
+    sent = mail.confirm_email(row.lang, row.email, confirm)
+    return row, sent
 
 
 def confirm(session: Session, token: str) -> Subscriber | None:
