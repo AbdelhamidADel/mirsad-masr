@@ -955,7 +955,18 @@ try {
     gap: 4px;
     font-size: 0.85rem;
   }
+  .alerts-form label[hidden],
+  .alerts-form .alerts-advanced[hidden],
+  .alerts-form button[hidden],
+  .alerts-actions button[hidden],
+  .alerts-stock-list[hidden],
+  #alerts-manage-email[hidden],
+  #alerts-add-rule[hidden] {
+    display: none !important;
+  }
   .alerts-form input[type="email"],
+  .alerts-form input[type="number"],
+  .alerts-form select,
   .alerts-rule-form input,
   .alerts-rule-form select {
     width: 100%;
@@ -964,6 +975,160 @@ try {
     border-radius: 10px;
     background: var(--bg);
     color: inherit;
+  }
+  .alerts-field-label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+  .alerts-ms {
+    position: relative;
+    display: grid;
+    gap: 6px;
+  }
+  .alerts-ms-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  .alerts-ms-trigger:hover,
+  .alerts-ms-trigger[aria-expanded="true"] {
+    border-color: var(--accent-ink);
+  }
+  .alerts-ms-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    min-width: 0;
+  }
+  .alerts-ms-placeholder { color: var(--muted); }
+  .alerts-ms-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .alerts-ms-chip button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    line-height: 1;
+  }
+  .alerts-ms-more { color: var(--muted); font-size: 0.78rem; }
+  .alerts-ms-caret {
+    color: var(--muted);
+    flex: 0 0 auto;
+  }
+  .alerts-ms-panel {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 4px);
+    z-index: 5;
+    display: grid;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-alt);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  }
+  .alerts-ms-panel[hidden] { display: none !important; }
+  .alerts-ms-search {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: inherit;
+    font: inherit;
+  }
+  .alerts-ms-options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 220px;
+    overflow: auto;
+    display: grid;
+    gap: 2px;
+  }
+  .alerts-ms-options button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  .alerts-ms-options button:hover,
+  .alerts-ms-options button:focus-visible {
+    background: var(--line);
+  }
+  .alerts-ms-options button[aria-selected="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .alerts-ms-check {
+    width: 1em;
+    flex: 0 0 auto;
+    opacity: 0.35;
+  }
+  .alerts-ms-options button[aria-selected="true"] .alerts-ms-check { opacity: 1; }
+  .alerts-ms-empty {
+    padding: 10px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .alerts-advanced-host {
+    display: grid;
+    gap: 8px;
+  }
+  .alerts-advanced {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: grid;
+    gap: 8px;
+  }
+  .alerts-advanced > summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    list-style: none;
+  }
+  .alerts-advanced > summary::-webkit-details-marker { display: none; }
+  .alerts-advanced[open] > summary { margin-bottom: 4px; }
+  .alerts-advanced label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
   }
   .alerts-check {
     flex-direction: row !important;
@@ -1981,7 +2146,7 @@ try {
         <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
       </label>
       <p class="alerts-lead" data-i18n="alerts_pick">Choose what to watch, then set a rule.</p>
-      <div class="alerts-cats" id="alerts-cats" role="group" aria-label="Alert target">
+      <div class="alerts-cats" id="alerts-cats" role="group" aria-multiselectable="true" aria-label="Alert targets">
         <button class="chip" type="button" data-cat="index" aria-pressed="false" data-i18n="alerts_cat_index">Indices</button>
         <button class="chip" type="button" data-cat="usd" aria-pressed="false" data-i18n="alerts_cat_usd">US dollar</button>
         <button class="chip" type="button" data-cat="eur" aria-pressed="false" data-i18n="alerts_cat_eur">Euro</button>
@@ -1989,44 +2154,36 @@ try {
         <button class="chip" type="button" data-cat="gold" aria-pressed="false" data-i18n="alerts_cat_gold">Gold</button>
         <button class="chip" type="button" data-cat="stock" aria-pressed="true" data-i18n="alerts_cat_stock">Stocks</button>
       </div>
-      <input type="hidden" id="alerts-type" value="stock">
-      <input type="hidden" id="alerts-target" value="">
-      <label id="alerts-index-wrap" hidden>
-        <span data-i18n="alerts_index">Index</span>
-        <select id="alerts-index">
-          <option value="CASE30">EGX 30</option>
-          <option value="EGX_SHARIAH">EGX Shariah</option>
-          <option value="EGX35LV">EGX 35 LV</option>
-          <option value="EGX100_EWI">EGX 100 EWI</option>
-          <option value="EGX70_EWI">EGX 70 EWI</option>
-          <option value="EGX30_CAP">EGX 30 Capped</option>
-          <option value="EGX30_TR">EGX 30 TR</option>
-          <option value="TAMAYUZ">Tamayuz</option>
-        </select>
-      </label>
-      <label class="alerts-stock-wrap" id="alerts-stock-wrap">
-        <span data-i18n="alerts_stock">Stock (symbol or company)</span>
-        <input id="alerts-stock-q" type="search" placeholder="COMI or Commercial International Bank" autocomplete="off">
-        <ul class="alerts-stock-list" id="alerts-stock-list" hidden></ul>
-        <input type="hidden" id="alerts-stock-symbol" value="">
-      </label>
-      <label>
-        <span data-i18n="alerts_rule">Rule</span>
-        <select id="alerts-kind">
-          <option value="above" data-i18n="alerts_above">Above</option>
-          <option value="below" data-i18n="alerts_below">Below</option>
-          <option value="pct_move" data-i18n="alerts_pct">±% move</option>
-          <option value="points_move" data-i18n="alerts_points">± points</option>
-        </select>
-      </label>
-      <label>
-        <span data-i18n="alerts_threshold">Level / threshold</span>
-        <input id="alerts-threshold" type="number" step="any" required placeholder="130">
-      </label>
+      <div id="alerts-index-wrap" hidden>
+        <span class="alerts-field-label" data-i18n="alerts_index">Indices</span>
+        <div class="alerts-ms" id="alerts-index-ms" data-ms="index">
+          <button type="button" class="alerts-ms-trigger" id="alerts-index-trigger" aria-expanded="false" aria-haspopup="listbox" aria-controls="alerts-index-panel">
+            <span class="alerts-ms-summary" id="alerts-index-summary"></span>
+            <span class="alerts-ms-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="alerts-ms-panel" id="alerts-index-panel" hidden>
+            <ul class="alerts-ms-options" id="alerts-index-options" role="listbox" aria-multiselectable="true" aria-label="Indices"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="alerts-stock-wrap" id="alerts-stock-wrap">
+        <span class="alerts-field-label" data-i18n="alerts_stock">Stocks</span>
+        <div class="alerts-ms" id="alerts-stock-ms" data-ms="stock">
+          <button type="button" class="alerts-ms-trigger" id="alerts-stock-trigger" aria-expanded="false" aria-haspopup="listbox" aria-controls="alerts-stock-panel">
+            <span class="alerts-ms-summary" id="alerts-stock-summary"></span>
+            <span class="alerts-ms-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="alerts-ms-panel" id="alerts-stock-panel" hidden>
+            <input class="alerts-ms-search" id="alerts-stock-search" type="search" autocomplete="off" data-i18n-placeholder="alerts_stock_search" placeholder="Search symbol or company">
+            <ul class="alerts-ms-options" id="alerts-stock-options" role="listbox" aria-multiselectable="true" aria-label="Stocks"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="alerts-advanced-host" id="alerts-advanced-host"></div>
       <div class="alerts-actions">
         <button class="nav-pill" type="submit" id="alerts-submit" data-i18n="alerts_subscribe">Subscribe</button>
         <button class="nav-pill" type="button" id="alerts-add-rule" hidden data-i18n="alerts_add_rule">Add rule</button>
-        <button class="chip" type="button" id="alerts-unsub" hidden data-i18n="alerts_unsub">Unsubscribe</button>
+        <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
       </div>
       <p class="alerts-msg" id="alerts-msg" role="status"></p>
     </form>
@@ -2254,26 +2411,38 @@ const STRINGS = {
     alerts_unsub: "Unsubscribe",
     alerts_sent: "Check your inbox for a confirmation link.",
     alerts_fail: "Could not subscribe. Try again later.",
+    alerts_already: "This email is already registered. Unsubscribe first, or manage alerts from your confirmation link.",
+    alerts_unsub_need_email: "Enter the registered email to unsubscribe.",
+    alerts_unsub_missing: "No active subscription found for that email.",
     alerts_manage_for: "Managing alerts for {email}",
     alerts_need_confirm: "Confirm your email from the link we sent, then reopen this page.",
     alerts_rule_added: "Rule added.",
-    alerts_unsubscribed: "Unsubscribed.",
-    alerts_pick: "Choose what to watch, then set a rule.",
+    alerts_unsubscribed: "Unsubscribed. Your record was kept as inactive.",
+    alerts_pick: "Choose one or more to watch, then set a rule.",
     alerts_cat_index: "Indices",
     alerts_cat_usd: "US dollar",
     alerts_cat_eur: "Euro",
     alerts_cat_brent: "Brent oil",
     alerts_cat_gold: "Gold",
     alerts_cat_stock: "Stocks",
-    alerts_index: "Index",
-    alerts_stock: "Stock (symbol or company)",
+    alerts_index: "Indices",
+    alerts_stock: "Stocks",
+    alerts_stock_pick: "Choose stocks…",
+    alerts_index_pick: "Choose indices…",
+    alerts_stock_search: "Search symbol or company",
+    alerts_selected_n: "{n} selected",
+    alerts_advanced: "Advanced rule",
+    alerts_advanced_for: "Advanced rule — {name}",
     alerts_rule: "Rule",
     alerts_above: "Above",
     alerts_below: "Below",
     alerts_pct: "±% move",
     alerts_points: "± points",
     alerts_threshold: "Level / threshold",
-    alerts_pick_stock: "Pick a stock from the list.",
+    alerts_pick_stock: "Pick at least one stock from the list.",
+    alerts_pick_index: "Pick at least one index from the list.",
+    alerts_need_threshold: "Set a level / threshold for each selected market.",
+    alerts_need_cat: "Select at least one market to watch.",
     alerts_no_stock: "No matching companies.",
   },
   ar: {
@@ -2476,26 +2645,38 @@ const STRINGS = {
     alerts_unsub: "إلغاء الاشتراك",
     alerts_sent: "تحقق من بريدك لرابط التأكيد.",
     alerts_fail: "تعذر الاشتراك. حاول لاحقاً.",
+    alerts_already: "هذا البريد مسجّل بالفعل. ألغِ الاشتراك أولاً، أو أدِر التنبيهات من رابط التأكيد.",
+    alerts_unsub_need_email: "أدخل البريد المسجّل لإلغاء الاشتراك.",
+    alerts_unsub_missing: "لا يوجد اشتراك نشط لهذا البريد.",
     alerts_manage_for: "إدارة تنبيهات {email}",
     alerts_need_confirm: "أكّد بريدك من الرابط ثم أعد فتح هذه الصفحة.",
     alerts_rule_added: "تمت إضافة القاعدة.",
-    alerts_unsubscribed: "تم إلغاء الاشتراك.",
-    alerts_pick: "اختر ما تريد متابعته ثم عيّن القاعدة.",
+    alerts_unsubscribed: "تم إلغاء الاشتراك. بقي السجل غير نشط في قاعدة البيانات.",
+    alerts_pick: "اختر واحداً أو أكثر للمتابعة ثم عيّن القاعدة.",
     alerts_cat_index: "المؤشرات",
     alerts_cat_usd: "الدولار",
     alerts_cat_eur: "اليورو",
     alerts_cat_brent: "خام برنت",
     alerts_cat_gold: "الذهب",
     alerts_cat_stock: "الأسهم",
-    alerts_index: "المؤشر",
-    alerts_stock: "سهم (رمز أو اسم الشركة)",
+    alerts_index: "المؤشرات",
+    alerts_stock: "الأسهم",
+    alerts_stock_pick: "اختر أسهماً…",
+    alerts_index_pick: "اختر مؤشرات…",
+    alerts_stock_search: "ابحث بالرمز أو اسم الشركة",
+    alerts_selected_n: "{n} محدّد",
+    alerts_advanced: "خيارات متقدمة للقاعدة",
+    alerts_advanced_for: "خيارات متقدمة — {name}",
     alerts_rule: "القاعدة",
     alerts_above: "أعلى من",
     alerts_below: "أقل من",
     alerts_pct: "تغير ٪",
     alerts_points: "تغير بالنقاط",
     alerts_threshold: "المستوى / الحد",
-    alerts_pick_stock: "اختر سهماً من القائمة.",
+    alerts_pick_stock: "اختر سهماً واحداً على الأقل من القائمة.",
+    alerts_pick_index: "اختر مؤشراً واحداً على الأقل من القائمة.",
+    alerts_need_threshold: "عيّن المستوى / الحد لكل سوق مختار.",
+    alerts_need_cat: "اختر سوقاً واحداً على الأقل للمتابعة.",
     alerts_no_stock: "لا شركات مطابقة.",
   },
 };
@@ -3907,6 +4088,7 @@ async function load() {
     setStatus("listed_n", { n: companies.length });
     paintSectors();
     renderList();
+    if (typeof alertsFillStockSelect === "function") alertsFillStockSelect();
     const start = companies.find((company) => company.symbol === symbolFromHash()) || companies.find((company) => company.symbol === "COMI") || companies[0];
     if (start) select(start.symbol);
   }
@@ -5337,36 +5519,42 @@ function paintMetals(payload, metal, silent = false) {
 }
 /* ── Email alerts (popup) ─────────────────────────────────────────────────── */
 let alertsManageToken = "";
-let alertsCat = "stock";
+const alertsCats = new Set(["stock"]);
+const alertsRuleState = Object.create(null);
+const ALERTS_CAT_ORDER = ["index", "usd", "eur", "brent", "gold", "stock"];
+const ALERTS_CAT_I18N = {
+  index: "alerts_cat_index",
+  usd: "alerts_cat_usd",
+  eur: "alerts_cat_eur",
+  brent: "alerts_cat_brent",
+  gold: "alerts_cat_gold",
+  stock: "alerts_cat_stock",
+};
 const alertsModal = document.getElementById("alerts-modal");
 const alertsSignup = document.getElementById("alerts-signup");
 const alertsMsg = document.getElementById("alerts-msg");
 const alertsRules = document.getElementById("alerts-rules");
-const alertsStockList = document.getElementById("alerts-stock-list");
-const alertsStockQ = document.getElementById("alerts-stock-q");
+const alertsAdvancedHost = document.getElementById("alerts-advanced-host");
 const alertsSubmit = document.getElementById("alerts-submit");
 const alertsAddRuleBtn = document.getElementById("alerts-add-rule");
 const alertsUnsubBtn = document.getElementById("alerts-unsub");
 const alertsEmailWrap = document.getElementById("alerts-email-wrap");
 const alertsManageEmail = document.getElementById("alerts-manage-email");
+const alertsIndexSelected = new Set(["CASE30"]);
+const alertsStockSelected = new Set();
+const ALERTS_INDEX_OPTIONS = [
+  { id: "CASE30", label: "EGX 30" },
+  { id: "EGX_SHARIAH", label: "EGX Shariah" },
+  { id: "EGX35LV", label: "EGX 35 LV" },
+  { id: "EGX100_EWI", label: "EGX 100 EWI" },
+  { id: "EGX70_EWI", label: "EGX 70 EWI" },
+  { id: "EGX30_CAP", label: "EGX 30 Capped" },
+  { id: "EGX30_TR", label: "EGX 30 TR" },
+  { id: "TAMAYUZ", label: "Tamayuz" },
+];
 
 function alertsTokenFromUrl() {
   return new URLSearchParams(location.search).get("alerts") || "";
-}
-
-function openAlertsModal() {
-  if (!alertsModal) return;
-  alertsModal.hidden = false;
-  document.body.style.overflow = "hidden";
-  const email = document.getElementById("alerts-email");
-  if (email && !alertsManageToken) email.focus();
-}
-
-function closeAlertsModal() {
-  if (!alertsModal) return;
-  alertsModal.hidden = true;
-  document.body.style.overflow = "";
-  if (alertsStockList) alertsStockList.hidden = true;
 }
 
 function alertsCompanyLabel(company) {
@@ -5374,151 +5562,391 @@ function alertsCompanyLabel(company) {
   return (company.symbol || "") + " — " + (name || company.symbol || "");
 }
 
-function alertsSetCat(cat) {
-  alertsCat = cat;
-  document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
-    btn.setAttribute("aria-pressed", btn.getAttribute("data-cat") === cat ? "true" : "false");
+function alertsMsEls(kind) {
+  return {
+    root: document.getElementById("alerts-" + kind + "-ms"),
+    trigger: document.getElementById("alerts-" + kind + "-trigger"),
+    panel: document.getElementById("alerts-" + kind + "-panel"),
+    summary: document.getElementById("alerts-" + kind + "-summary"),
+    options: document.getElementById("alerts-" + kind + "-options"),
+    search: document.getElementById("alerts-" + kind + "-search"),
+  };
+}
+
+function alertsSelectedSet(kind) {
+  return kind === "index" ? alertsIndexSelected : alertsStockSelected;
+}
+
+function alertsCloseMs(kind) {
+  const els = alertsMsEls(kind);
+  if (!els.panel || !els.trigger) return;
+  els.panel.hidden = true;
+  els.trigger.setAttribute("aria-expanded", "false");
+}
+
+function alertsCloseAllMs(except) {
+  ["index", "stock"].forEach((kind) => {
+    if (kind !== except) alertsCloseMs(kind);
   });
-  const typeEl = document.getElementById("alerts-type");
-  const targetEl = document.getElementById("alerts-target");
-  if (!typeEl || !targetEl) return;
-  const indexWrap = document.getElementById("alerts-index-wrap");
-  const stockWrap = document.getElementById("alerts-stock-wrap");
-  if (indexWrap) indexWrap.hidden = cat !== "index";
-  if (stockWrap) stockWrap.hidden = cat !== "stock";
-  if (alertsStockList) alertsStockList.hidden = true;
-  const stockSym = document.getElementById("alerts-stock-symbol");
-  const indexEl = document.getElementById("alerts-index");
-  if (cat === "stock") {
-    typeEl.value = "stock";
-    targetEl.value = (stockSym && stockSym.value) || "";
-  } else if (cat === "index") {
-    typeEl.value = "index";
-    targetEl.value = (indexEl && indexEl.value) || "CASE30";
-  } else if (cat === "gold") {
-    typeEl.value = "gold";
-    targetEl.value = "gold_21k";
-  } else if (cat === "usd") {
-    typeEl.value = "fx";
-    targetEl.value = "usd_egp";
-  } else if (cat === "eur") {
-    typeEl.value = "fx";
-    targetEl.value = "eur_egp";
-  } else if (cat === "brent") {
-    typeEl.value = "fx";
-    targetEl.value = "brent";
+}
+
+function alertsToggleMs(kind) {
+  const els = alertsMsEls(kind);
+  if (!els.panel || !els.trigger) return;
+  const open = els.panel.hidden;
+  alertsCloseAllMs(kind);
+  els.panel.hidden = !open;
+  els.trigger.setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) {
+    if (kind === "stock") alertsRenderStockOptions(els.search ? els.search.value : "");
+    else alertsRenderIndexOptions();
+    if (els.search) els.search.focus();
   }
 }
 
-function alertsFilterStocks(query) {
-  const q = String(query || "").trim().toLowerCase();
-  if (!q || !companies.length) return [];
-  return companies
-    .filter((company) => {
-      const hay = [
-        company.symbol,
-        company.name,
-        company.name_ar,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return hay.includes(q);
-    })
-    .slice(0, 12);
+function alertsPaintMsSummary(kind) {
+  const els = alertsMsEls(kind);
+  if (!els.summary) return;
+  const selected = [...alertsSelectedSet(kind)];
+  els.summary.replaceChildren();
+  if (!selected.length) {
+    const ph = document.createElement("span");
+    ph.className = "alerts-ms-placeholder";
+    ph.textContent = t(kind === "index" ? "alerts_index_pick" : "alerts_stock_pick");
+    els.summary.appendChild(ph);
+    return;
+  }
+  const labels =
+    kind === "index"
+      ? Object.fromEntries(ALERTS_INDEX_OPTIONS.map((row) => [row.id, row.label]))
+      : Object.fromEntries(
+          companies.map((company) => [company.symbol, company.symbol])
+        );
+  selected.slice(0, 3).forEach((id) => {
+    const chip = document.createElement("span");
+    chip.className = "alerts-ms-chip";
+    const text = document.createElement("span");
+    text.textContent = labels[id] || id;
+    const clear = document.createElement("button");
+    clear.type = "button";
+    clear.setAttribute("aria-label", "Remove");
+    clear.textContent = "×";
+    clear.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      alertsSelectedSet(kind).delete(id);
+      alertsPaintMsSummary(kind);
+      if (kind === "index") alertsRenderIndexOptions();
+      else alertsRenderStockOptions(els.search ? els.search.value : "");
+    });
+    chip.append(text, clear);
+    els.summary.appendChild(chip);
+  });
+  if (selected.length > 3) {
+    const more = document.createElement("span");
+    more.className = "alerts-ms-more";
+    more.textContent = t("alerts_selected_n", { n: selected.length });
+    els.summary.appendChild(more);
+  }
 }
 
-function alertsRenderStockList(query) {
-  if (!alertsStockList) return;
-  const hits = alertsFilterStocks(query);
-  alertsStockList.replaceChildren();
+function alertsOptionButton(id, label, selected) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.setAttribute("role", "option");
+  btn.setAttribute("aria-selected", selected ? "true" : "false");
+  btn.dataset.value = id;
+  const mark = document.createElement("span");
+  mark.className = "alerts-ms-check";
+  mark.setAttribute("aria-hidden", "true");
+  mark.textContent = selected ? "✓" : "○";
+  const text = document.createElement("span");
+  text.textContent = label;
+  btn.append(mark, text);
+  return btn;
+}
+
+function alertsRenderIndexOptions() {
+  const els = alertsMsEls("index");
+  if (!els.options) return;
+  els.options.replaceChildren();
+  ALERTS_INDEX_OPTIONS.forEach((row) => {
+    const selected = alertsIndexSelected.has(row.id);
+    const btn = alertsOptionButton(row.id, row.label, selected);
+    btn.addEventListener("click", () => {
+      if (alertsIndexSelected.has(row.id)) alertsIndexSelected.delete(row.id);
+      else alertsIndexSelected.add(row.id);
+      alertsPaintMsSummary("index");
+      alertsRenderIndexOptions();
+    });
+    const li = document.createElement("li");
+    li.appendChild(btn);
+    els.options.appendChild(li);
+  });
+  alertsPaintMsSummary("index");
+}
+
+function alertsRenderStockOptions(query) {
+  const els = alertsMsEls("stock");
+  if (!els.options) return;
+  els.options.replaceChildren();
+  const q = String(query || "").trim().toLowerCase();
+  const hits = companies
+    .filter((company) => {
+      if (!q) return true;
+      const hay = [company.symbol, company.name, company.name_ar].filter(Boolean).join(" ").toLowerCase();
+      return hay.includes(q);
+    })
+    .slice(0, q ? 80 : 120);
   if (!hits.length) {
     const empty = document.createElement("li");
+    empty.className = "alerts-ms-empty";
     empty.textContent = t("alerts_no_stock");
-    alertsStockList.appendChild(empty);
-    alertsStockList.hidden = false;
+    els.options.appendChild(empty);
+    alertsPaintMsSummary("stock");
     return;
   }
   hits.forEach((company) => {
-    const li = document.createElement("li");
-    const btn = document.createElement("button");
-    btn.type = "button";
-    const sym = document.createElement("span");
-    sym.className = "sym";
-    sym.textContent = company.symbol;
-    const nm = document.createElement("span");
-    nm.className = "nm";
-    nm.textContent = lang === "ar" && company.name_ar ? company.name_ar : company.name;
-    btn.append(sym, nm);
+    const selected = alertsStockSelected.has(company.symbol);
+    const btn = alertsOptionButton(company.symbol, alertsCompanyLabel(company), selected);
     btn.addEventListener("click", () => {
-      document.getElementById("alerts-stock-symbol").value = company.symbol;
-      document.getElementById("alerts-target").value = company.symbol;
-      document.getElementById("alerts-type").value = "stock";
-      alertsStockQ.value = alertsCompanyLabel(company);
-      alertsStockList.hidden = true;
+      if (alertsStockSelected.has(company.symbol)) alertsStockSelected.delete(company.symbol);
+      else alertsStockSelected.add(company.symbol);
+      alertsPaintMsSummary("stock");
+      alertsRenderStockOptions(els.search ? els.search.value : "");
     });
+    const li = document.createElement("li");
     li.appendChild(btn);
-    alertsStockList.appendChild(li);
+    els.options.appendChild(li);
   });
-  alertsStockList.hidden = false;
+  alertsPaintMsSummary("stock");
 }
 
-function alertsResolveTarget() {
-  if (alertsCat === "stock") {
-    const sym = document.getElementById("alerts-stock-symbol").value.trim();
-    return { type: "stock", id: sym };
+function alertsFillStockSelect() {
+  alertsRenderStockOptions(alertsMsEls("stock").search ? alertsMsEls("stock").search.value : "");
+}
+
+function alertsSaveRuleState() {
+  if (!alertsAdvancedHost) return;
+  alertsAdvancedHost.querySelectorAll("details[data-cat]").forEach((panel) => {
+    const cat = panel.getAttribute("data-cat");
+    const kindEl = panel.querySelector('[data-role="kind"]');
+    const thrEl = panel.querySelector('[data-role="threshold"]');
+    alertsRuleState[cat] = {
+      kind: kindEl ? kindEl.value : "above",
+      threshold: thrEl ? thrEl.value : "",
+      open: panel.open,
+    };
+  });
+}
+
+function alertsRuleOptionsHtml() {
+  return [
+    ["above", "alerts_above"],
+    ["below", "alerts_below"],
+    ["pct_move", "alerts_pct"],
+    ["points_move", "alerts_points"],
+  ]
+    .map(([value, key]) => `<option value="${value}">${t(key)}</option>`)
+    .join("");
+}
+
+function alertsRenderAdvanced() {
+  if (!alertsAdvancedHost) return;
+  alertsSaveRuleState();
+  alertsAdvancedHost.replaceChildren();
+  ALERTS_CAT_ORDER.filter((cat) => alertsCats.has(cat)).forEach((cat) => {
+    const saved = alertsRuleState[cat] || { kind: "above", threshold: "", open: false };
+    const details = document.createElement("details");
+    details.className = "alerts-advanced";
+    details.dataset.cat = cat;
+    details.open = saved.open === true;
+    const summary = document.createElement("summary");
+    summary.textContent = t("alerts_advanced_for", { name: t(ALERTS_CAT_I18N[cat]) });
+    details.appendChild(summary);
+
+    const kindLabel = document.createElement("label");
+    const kindSpan = document.createElement("span");
+    kindSpan.textContent = t("alerts_rule");
+    const kindSelect = document.createElement("select");
+    kindSelect.dataset.role = "kind";
+    kindSelect.innerHTML = alertsRuleOptionsHtml();
+    kindSelect.value = saved.kind || "above";
+    kindLabel.append(kindSpan, kindSelect);
+
+    const thrLabel = document.createElement("label");
+    const thrSpan = document.createElement("span");
+    thrSpan.textContent = t("alerts_threshold");
+    const thrInput = document.createElement("input");
+    thrInput.type = "number";
+    thrInput.step = "any";
+    thrInput.placeholder = "130";
+    thrInput.dataset.role = "threshold";
+    thrInput.value = saved.threshold || "";
+    thrLabel.append(thrSpan, thrInput);
+
+    details.append(kindLabel, thrLabel);
+    alertsAdvancedHost.appendChild(details);
+  });
+}
+
+function openAlertsModal() {
+  if (!alertsModal) return;
+  alertsFillStockSelect();
+  alertsModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  alertsSyncCatsUi();
+  const email = document.getElementById("alerts-email");
+  if (email && !alertsManageToken) email.focus();
+}
+
+function closeAlertsModal() {
+  if (!alertsModal) return;
+  alertsSaveRuleState();
+  alertsModal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function alertsToggleCat(cat) {
+  if (!cat) return;
+  if (alertsCats.has(cat)) {
+    if (alertsCats.size === 1) return;
+    alertsCats.delete(cat);
+  } else {
+    alertsCats.add(cat);
   }
-  if (alertsCat === "index") {
-    return { type: "index", id: document.getElementById("alerts-index").value };
+  alertsSyncCatsUi();
+}
+
+function alertsSyncCatsUi() {
+  document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
+    const on = alertsCats.has(btn.getAttribute("data-cat"));
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  const indexWrap = document.getElementById("alerts-index-wrap");
+  const stockWrap = document.getElementById("alerts-stock-wrap");
+  const hasIndex = alertsCats.has("index");
+  const hasStock = alertsCats.has("stock");
+  if (indexWrap) indexWrap.hidden = !hasIndex;
+  if (stockWrap) stockWrap.hidden = !hasStock;
+  if (!hasIndex) alertsCloseMs("index");
+  if (!hasStock) alertsCloseMs("stock");
+  if (hasIndex) alertsRenderIndexOptions();
+  if (hasStock) alertsFillStockSelect();
+  alertsRenderAdvanced();
+}
+
+function alertsRuleForCat(cat) {
+  const panel = alertsAdvancedHost && alertsAdvancedHost.querySelector(`details[data-cat="${cat}"]`);
+  if (panel) {
+    const kindEl = panel.querySelector('[data-role="kind"]');
+    const thrEl = panel.querySelector('[data-role="threshold"]');
+    return {
+      kind: kindEl ? kindEl.value : "above",
+      threshold: thrEl ? Number(thrEl.value) : NaN,
+      panel,
+      thrEl,
+    };
   }
-  if (alertsCat === "gold") return { type: "gold", id: "gold_21k" };
-  if (alertsCat === "usd") return { type: "fx", id: "usd_egp" };
-  if (alertsCat === "eur") return { type: "fx", id: "eur_egp" };
-  if (alertsCat === "brent") return { type: "fx", id: "brent" };
-  return { type: document.getElementById("alerts-type").value, id: document.getElementById("alerts-target").value };
+  const saved = alertsRuleState[cat] || {};
+  return { kind: saved.kind || "above", threshold: Number(saved.threshold), panel: null, thrEl: null };
+}
+
+function alertsResolveTargets() {
+  const out = [];
+  ALERTS_CAT_ORDER.filter((cat) => alertsCats.has(cat)).forEach((cat) => {
+    const rule = alertsRuleForCat(cat);
+    if (cat === "stock") {
+      [...alertsStockSelected].forEach((id) => {
+        out.push({ cat, type: "stock", id, kind: rule.kind, threshold: rule.threshold });
+      });
+      return;
+    }
+    if (cat === "index") {
+      [...alertsIndexSelected].forEach((id) => {
+        out.push({ cat, type: "index", id, kind: rule.kind, threshold: rule.threshold });
+      });
+      return;
+    }
+    if (cat === "gold") out.push({ cat, type: "gold", id: "gold_21k", kind: rule.kind, threshold: rule.threshold });
+    if (cat === "usd") out.push({ cat, type: "fx", id: "usd_egp", kind: rule.kind, threshold: rule.threshold });
+    if (cat === "eur") out.push({ cat, type: "fx", id: "eur_egp", kind: rule.kind, threshold: rule.threshold });
+    if (cat === "brent") out.push({ cat, type: "fx", id: "brent", kind: rule.kind, threshold: rule.threshold });
+  });
+  return out;
+}
+
+function alertsValidateTargets() {
+  if (!alertsCats.size) {
+    alertsMsg.textContent = t("alerts_need_cat");
+    return null;
+  }
+  if (alertsCats.has("stock") && !alertsStockSelected.size) {
+    alertsMsg.textContent = t("alerts_pick_stock");
+    alertsToggleMs("stock");
+    return null;
+  }
+  if (alertsCats.has("index") && !alertsIndexSelected.size) {
+    alertsMsg.textContent = t("alerts_pick_index");
+    alertsToggleMs("index");
+    return null;
+  }
+  const targets = alertsResolveTargets();
+  if (!targets.length) {
+    alertsMsg.textContent = t("alerts_need_cat");
+    return null;
+  }
+  for (const target of targets) {
+    if (!Number.isFinite(target.threshold)) {
+      const rule = alertsRuleForCat(target.cat);
+      if (rule.panel) rule.panel.open = true;
+      alertsMsg.textContent = t("alerts_need_threshold");
+      rule.thrEl?.focus();
+      return null;
+    }
+  }
+  return targets;
 }
 
 async function alertsPostRule(token) {
-  const target = alertsResolveTarget();
-  if (target.type === "stock" && !target.id) {
-    alertsMsg.textContent = t("alerts_pick_stock");
-    return false;
+  const targets = alertsValidateTargets();
+  if (!targets) return false;
+  let okCount = 0;
+  for (const target of targets) {
+    const resp = await fetch("/v1/alerts/rules", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token,
+        target_type: target.type,
+        target_id: target.id,
+        rule_kind: target.kind,
+        threshold: target.threshold,
+      }),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      alertsMsg.textContent = data.detail || t("alerts_fail");
+      return okCount > 0;
+    }
+    okCount += 1;
   }
-  const threshold = Number(document.getElementById("alerts-threshold").value);
-  if (!Number.isFinite(threshold)) {
-    alertsMsg.textContent = t("alerts_fail");
-    return false;
-  }
-  const resp = await fetch("/v1/alerts/rules", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      token,
-      target_type: target.type,
-      target_id: target.id,
-      rule_kind: document.getElementById("alerts-kind").value,
-      threshold,
-    }),
-  });
-  const data = await resp.json().catch(() => ({}));
-  if (!resp.ok) {
-    alertsMsg.textContent = data.detail || t("alerts_fail");
-    return false;
-  }
-  return true;
+  return okCount > 0;
 }
 
 function alertsEnterManageMode(email, confirmed) {
   if (alertsEmailWrap) alertsEmailWrap.hidden = true;
   if (alertsSubmit) alertsSubmit.hidden = true;
   if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = false;
-  if (alertsUnsubBtn) alertsUnsubBtn.hidden = false;
   if (alertsManageEmail) {
     alertsManageEmail.hidden = false;
     alertsManageEmail.textContent = t("alerts_manage_for", { email: email || "" });
   }
   const emailInput = document.getElementById("alerts-email");
-  if (emailInput) emailInput.required = false;
+  if (emailInput) {
+    emailInput.required = false;
+    if (email) emailInput.value = email;
+  }
   alertsMsg.textContent = confirmed ? "" : t("alerts_need_confirm");
 }
 
@@ -5527,11 +5955,7 @@ async function alertsSubscribe(event) {
   alertsMsg.textContent = "";
   const email = document.getElementById("alerts-email").value.trim();
   const digest_on = document.getElementById("alerts-digest").checked;
-  const target = alertsResolveTarget();
-  if (target.type === "stock" && !target.id) {
-    alertsMsg.textContent = t("alerts_pick_stock");
-    return;
-  }
+  if (!alertsValidateTargets()) return;
   try {
     const resp = await fetch("/v1/alerts/subscribe", {
       method: "POST",
@@ -5539,6 +5963,10 @@ async function alertsSubscribe(event) {
       body: JSON.stringify({ email, lang, digest_on }),
     });
     const body = await resp.json().catch(() => ({}));
+    if (resp.status === 409 || body.detail === "already registered") {
+      alertsMsg.textContent = t("alerts_already");
+      return;
+    }
     if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
     alertsManageToken = body.manage_token || "";
     if (alertsManageToken) {
@@ -5562,7 +5990,7 @@ async function alertsLoadManage(token) {
     const body = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
     alertsEnterManageMode(body.email, body.confirmed);
-    alertsSetCat(alertsCat || "stock");
+    alertsSyncCatsUi();
     alertsRules.replaceChildren();
     (body.rules || []).forEach((rule) => {
       const li = document.createElement("li");
@@ -5597,62 +6025,97 @@ async function alertsAddRuleClick(event) {
 }
 
 async function alertsUnsubscribe() {
-  if (!alertsManageToken) return;
-  await fetch("/v1/alerts/unsubscribe?token=" + encodeURIComponent(alertsManageToken), {
-    method: "POST",
-  });
-  alertsMsg.textContent = t("alerts_unsubscribed");
-  alertsManageToken = "";
-  if (alertsEmailWrap) alertsEmailWrap.hidden = false;
-  if (alertsSubmit) alertsSubmit.hidden = false;
-  if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = true;
-  if (alertsUnsubBtn) alertsUnsubBtn.hidden = true;
-  if (alertsManageEmail) alertsManageEmail.hidden = true;
-  const emailInput = document.getElementById("alerts-email");
-  if (emailInput) emailInput.required = true;
-  alertsRules.replaceChildren();
+  alertsMsg.textContent = "";
+  try {
+    let resp;
+    if (alertsManageToken) {
+      resp = await fetch("/v1/alerts/unsubscribe?token=" + encodeURIComponent(alertsManageToken), {
+        method: "POST",
+      });
+    } else {
+      const email = document.getElementById("alerts-email")?.value.trim() || "";
+      if (!email) {
+        alertsMsg.textContent = t("alerts_unsub_need_email");
+        document.getElementById("alerts-email")?.focus();
+        return;
+      }
+      resp = await fetch("/v1/alerts/unsubscribe-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    }
+    const body = await resp.json().catch(() => ({}));
+    if (resp.status === 404) {
+      alertsMsg.textContent = t("alerts_unsub_missing");
+      return;
+    }
+    if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
+    alertsMsg.textContent = t("alerts_unsubscribed");
+    alertsManageToken = "";
+    if (alertsEmailWrap) alertsEmailWrap.hidden = false;
+    if (alertsSubmit) alertsSubmit.hidden = false;
+    if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = true;
+    if (alertsManageEmail) alertsManageEmail.hidden = true;
+    const emailInput = document.getElementById("alerts-email");
+    if (emailInput) emailInput.required = true;
+    alertsRules.replaceChildren();
+  } catch (err) {
+    alertsMsg.textContent = err.message || t("alerts_fail");
+  }
 }
 
 const alertsOpen = document.getElementById("alerts-open");
 if (alertsOpen) alertsOpen.addEventListener("click", () => {
   openAlertsModal();
-  alertsSetCat(alertsCat || "stock");
 });
 const alertsClose = document.getElementById("alerts-close");
 if (alertsClose) alertsClose.addEventListener("click", closeAlertsModal);
 const alertsBackdrop = document.getElementById("alerts-backdrop");
 if (alertsBackdrop) alertsBackdrop.addEventListener("click", closeAlertsModal);
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && alertsModal && !alertsModal.hidden) closeAlertsModal();
+  if (event.key !== "Escape" || !alertsModal || alertsModal.hidden) return;
+  const openMs = ["index", "stock"].find((kind) => {
+    const panel = alertsMsEls(kind).panel;
+    return panel && !panel.hidden;
+  });
+  if (openMs) {
+    alertsCloseMs(openMs);
+    return;
+  }
+  closeAlertsModal();
 });
 if (alertsSignup) alertsSignup.addEventListener("submit", alertsSubscribe);
 if (alertsAddRuleBtn) alertsAddRuleBtn.addEventListener("click", alertsAddRuleClick);
 if (alertsUnsubBtn) alertsUnsubBtn.addEventListener("click", alertsUnsubscribe);
 document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
-  btn.addEventListener("click", () => alertsSetCat(btn.getAttribute("data-cat")));
+  btn.addEventListener("click", () => alertsToggleCat(btn.getAttribute("data-cat")));
 });
-const alertsIndex = document.getElementById("alerts-index");
-if (alertsIndex) {
-  alertsIndex.addEventListener("change", () => {
-    document.getElementById("alerts-type").value = "index";
-    document.getElementById("alerts-target").value = alertsIndex.value;
+["index", "stock"].forEach((kind) => {
+  const els = alertsMsEls(kind);
+  if (els.trigger) {
+    els.trigger.addEventListener("click", () => alertsToggleMs(kind));
+  }
+  if (els.search) {
+    els.search.addEventListener("input", () => alertsRenderStockOptions(els.search.value));
+    els.search.addEventListener("keydown", (event) => event.stopPropagation());
+  }
+});
+document.addEventListener("click", (event) => {
+  if (!alertsModal || alertsModal.hidden) return;
+  ["index", "stock"].forEach((kind) => {
+    const els = alertsMsEls(kind);
+    if (!els.root || !els.panel || els.panel.hidden) return;
+    if (!els.root.contains(event.target)) alertsCloseMs(kind);
   });
-}
-if (alertsStockQ) {
-  alertsStockQ.addEventListener("input", () => {
-    document.getElementById("alerts-stock-symbol").value = "";
-    alertsRenderStockList(alertsStockQ.value);
-  });
-  alertsStockQ.addEventListener("focus", () => {
-    if (alertsStockQ.value.trim()) alertsRenderStockList(alertsStockQ.value);
-  });
-}
+});
+
 load();
 applyView(viewFromHash());
 
 const bootAlertsToken = alertsTokenFromUrl();
 if (bootAlertsToken) alertsLoadManage(bootAlertsToken);
-else alertsSetCat("stock");
+else alertsSyncCatsUi();
 </script>
 </body>
 </html>

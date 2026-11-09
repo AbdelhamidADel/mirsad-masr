@@ -49,3 +49,6 @@ htmlcov/
 # Local agent / worktree scratch
 .worktrees/
 .superpowers/
+
+alerts-local.db
+*.db

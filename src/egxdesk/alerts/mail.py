@@ -70,7 +70,7 @@ def send_email(*, to: str, subject: str, text: str, html: str | None = None) -> 
 
 def _links(manage_token: str) -> tuple[str, str]:
     base = settings.alerts_public_base_url.rstrip("/")
-    manage = f"{base}/board?alerts={manage_token}"
+    manage = f"{base}/app?alerts={manage_token}"
     unsub = f"{base}/v1/alerts/unsubscribe?token={manage_token}"
     return manage, unsub
 

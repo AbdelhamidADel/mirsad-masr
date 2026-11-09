@@ -31,6 +31,10 @@ def _token() -> str:
     return secrets.token_urlsafe(24)
 
 
+class AlreadyRegisteredError(ValueError):
+    """Raised when an active (non soft-deleted) email tries to subscribe again."""
+
+
 def subscribe(
     session: Session, email: str, lang: str = "en", digest_on: bool = False
 ) -> Subscriber:
@@ -41,6 +45,8 @@ def subscribe(
     row = session.scalar(select(Subscriber).where(Subscriber.email == normalized))
     confirm = _token()
     expires = _utcnow() + timedelta(hours=24)
+    if row is not None and row.unsubscribed_at is None:
+        raise AlreadyRegisteredError("already registered")
     if row is None:
         row = Subscriber(
             email=normalized,
@@ -54,14 +60,17 @@ def subscribe(
         )
         session.add(row)
     else:
+        # Soft-deleted row: reactivate with a fresh confirmation cycle.
         row.lang = lang
         row.digest_on = digest_on
         row.confirm_token = confirm
         row.confirm_expires_at = expires
+        row.confirmed_at = None
         row.unsubscribed_at = None
-        # Keep manage_token stable if already confirmed; else refresh.
         if not row.manage_token:
             row.manage_token = _token()
+        for rule in row.rules:
+            rule.active = False
     session.flush()
     mail.confirm_email(row.lang, row.email, confirm)
     return row
@@ -85,14 +94,35 @@ def get_by_manage_token(session: Session, token: str) -> Subscriber | None:
     return session.scalar(select(Subscriber).where(Subscriber.manage_token == token))
 
 
+def _soft_unsubscribe(row: Subscriber) -> Subscriber:
+    """Mark subscriber inactive without deleting the Neon/Postgres row."""
+    row.unsubscribed_at = _utcnow()
+    row.digest_on = False
+    row.confirm_token = None
+    row.confirm_expires_at = None
+    for rule in row.rules:
+        rule.active = False
+    return row
+
+
 def unsubscribe(session: Session, token: str) -> Subscriber | None:
     row = get_by_manage_token(session, token)
     if row is None:
         return None
-    row.unsubscribed_at = _utcnow()
-    row.digest_on = False
-    for rule in row.rules:
-        rule.active = False
+    if row.unsubscribed_at is not None:
+        return row
+    _soft_unsubscribe(row)
+    session.flush()
+    return row
+
+
+def unsubscribe_by_email(session: Session, email: str) -> Subscriber | None:
+    """Soft-delete by email (alerts tab). Missing / already inactive → None."""
+    normalized = email.strip().lower()
+    row = session.scalar(select(Subscriber).where(Subscriber.email == normalized))
+    if row is None or row.unsubscribed_at is not None:
+        return None
+    _soft_unsubscribe(row)
     session.flush()
     return row
 

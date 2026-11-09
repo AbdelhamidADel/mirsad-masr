@@ -63,6 +63,8 @@ def subscribe(body: SubscribeBody) -> dict[str, Any]:
                 "manage_token": row.manage_token,
                 "message": "Check your inbox for a confirmation link.",
             }
+    except service.AlreadyRegisteredError as exc:
+        raise HTTPException(status_code=409, detail="already registered") from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -78,7 +80,7 @@ def confirm(token: Annotated[str, Query(min_length=8)]) -> dict[str, Any]:
             "ok": True,
             "email": row.email,
             "manage_token": row.manage_token,
-            "manage_path": f"/board?alerts={row.manage_token}",
+            "manage_path": f"/app?alerts={row.manage_token}",
         }
 
 
@@ -138,6 +140,10 @@ def set_digest(body: DigestBody) -> dict[str, Any]:
         return {"ok": True, "digest_on": row.digest_on}
 
 
+class UnsubscribeEmailBody(BaseModel):
+    email: EmailStr
+
+
 @router.post("/unsubscribe")
 @router.get("/unsubscribe")
 def unsubscribe(token: Annotated[str, Query(min_length=8)]) -> dict[str, Any]:
@@ -146,7 +152,18 @@ def unsubscribe(token: Annotated[str, Query(min_length=8)]) -> dict[str, Any]:
         row = service.unsubscribe(session, token)
         if row is None:
             raise HTTPException(status_code=404, detail="Subscriber not found.")
-        return {"ok": True, "email": row.email}
+        return {"ok": True, "email": row.email, "soft_deleted": True}
+
+
+@router.post("/unsubscribe-email")
+def unsubscribe_email(body: UnsubscribeEmailBody) -> dict[str, Any]:
+    """Soft-delete from the alerts tab using the registered email."""
+    _require_db()
+    with session_scope() as session:
+        row = service.unsubscribe_by_email(session, body.email)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Subscriber not found.")
+        return {"ok": True, "email": row.email, "soft_deleted": True}
 
 
 @router.post("/tick")
