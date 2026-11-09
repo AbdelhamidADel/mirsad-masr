@@ -885,26 +885,63 @@ try {
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
-  .alerts-panel {
-    margin: 0 0 16px;
-    padding: 14px 16px;
+  .alerts-modal[hidden] { display: none !important; }
+  .alerts-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+  }
+  .alerts-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 19, 21, 0.55);
+  }
+  .alerts-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(560px, 100%);
+    max-height: min(90vh, 760px);
+    overflow: auto;
+    padding: 18px 18px 16px;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: var(--shadow);
   }
-  .alerts-lead {
-    margin: 0 0 12px;
+  .alerts-dialog-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .alerts-dialog-head h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.2rem;
+  }
+  .alerts-close {
+    border: 0;
+    background: transparent;
     color: var(--muted);
-    font-size: 0.92rem;
-    max-width: 70ch;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+  }
+  .alerts-lead {
+    margin: 0 0 14px;
+    color: var(--muted);
+    font-size: 0.9rem;
   }
   .alerts-form,
   .alerts-rule-form {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 10px;
-    align-items: end;
   }
   .alerts-form label,
   .alerts-rule-form label {
@@ -916,7 +953,7 @@ try {
   .alerts-form input[type="email"],
   .alerts-rule-form input,
   .alerts-rule-form select {
-    min-width: 140px;
+    width: 100%;
     padding: 8px 10px;
     border: 1px solid var(--line);
     border-radius: 10px;
@@ -930,10 +967,51 @@ try {
   }
   .alerts-msg {
     margin: 8px 0 0;
-    width: 100%;
     color: var(--muted);
     font-size: 0.88rem;
   }
+  .alerts-cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .alerts-cats .chip[aria-pressed="true"] {
+    background: var(--accent-ink);
+    color: #fff;
+    border-color: var(--accent-ink);
+  }
+  .alerts-stock-wrap { position: relative; }
+  .alerts-stock-list {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    max-height: 180px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+  }
+  .alerts-stock-list[hidden] { display: none !important; }
+  .alerts-stock-list button {
+    display: block;
+    width: 100%;
+    text-align: start;
+    border: 0;
+    background: transparent;
+    padding: 8px 10px;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+  }
+  .alerts-stock-list button:hover,
+  .alerts-stock-list button:focus-visible {
+    background: var(--line);
+  }
+  .alerts-stock-list .sym {
+    font-weight: 600;
+    margin-inline-end: 8px;
+  }
+  .alerts-stock-list .nm { color: var(--muted); font-size: 0.85em; }
   .alerts-rules {
     list-style: none;
     margin: 12px 0;
@@ -949,6 +1027,12 @@ try {
     border: 1px solid var(--line);
     border-radius: 10px;
     font-size: 0.88rem;
+  }
+  .alerts-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
   }
   .card {
     position: relative;
@@ -1784,7 +1868,7 @@ try {
       <span class="live" id="market-status" role="status"><span class="dot" aria-hidden="true"></span> <span id="market-state" data-i18n="market_closed">Market closed</span></span>
       <a class="nav-pill" href="/?home=1" data-i18n="nav_home">Home</a>
       <a class="nav-pill" href="/docs" data-i18n="nav_docs">Docs</a>
-      <a class="nav-pill" href="#alerts-panel" data-i18n="nav_alerts">Alerts</a>
+      <button class="nav-pill" type="button" id="alerts-open" data-i18n="nav_alerts">Alerts</button>
       <button class="lang" id="lang" type="button" aria-label="Language">
         <span class="lang-opt" data-lang-opt="en">EN</span>
         <span class="lang-sep" aria-hidden="true">|</span>
@@ -1820,44 +1904,6 @@ try {
   <section class="indices" aria-label="EGX indices" data-i18n-aria="indices_label">
     <h2 class="indices-head" data-i18n="indices">Indices</h2>
     <div class="indices-grid" id="indices" aria-busy="true"></div>
-  </section>
-  <section class="alerts-panel" id="alerts-panel" aria-label="Email alerts" data-i18n-aria="alerts_label">
-    <h2 class="indices-head" data-i18n="alerts_title">Email alerts</h2>
-    <p class="alerts-lead" data-i18n="alerts_lead">Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.</p>
-    <form class="alerts-form" id="alerts-signup" autocomplete="on">
-      <label>
-        <span data-i18n="alerts_email">Email</span>
-        <input id="alerts-email" type="email" required placeholder="you@example.com" autocomplete="email">
-      </label>
-      <label class="alerts-check">
-        <input id="alerts-digest" type="checkbox">
-        <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
-      </label>
-      <button class="nav-pill" type="submit" data-i18n="alerts_subscribe">Subscribe</button>
-      <p class="alerts-msg" id="alerts-msg" role="status"></p>
-    </form>
-    <div class="alerts-manage" id="alerts-manage" hidden>
-      <p class="alerts-manage-email" id="alerts-manage-email"></p>
-      <form class="alerts-rule-form" id="alerts-rule-form">
-        <select id="alerts-type" aria-label="Target type">
-          <option value="stock">Stock</option>
-          <option value="index">Index</option>
-          <option value="gold">Gold</option>
-          <option value="fx">FX</option>
-        </select>
-        <input id="alerts-target" type="text" placeholder="COMI / CASE30 / gold_21k / usd_egp" required>
-        <select id="alerts-kind" aria-label="Rule">
-          <option value="above">Above</option>
-          <option value="below">Below</option>
-          <option value="pct_move">±%</option>
-          <option value="points_move">± points</option>
-        </select>
-        <input id="alerts-threshold" type="number" step="any" required placeholder="130">
-        <button class="nav-pill" type="submit" data-i18n="alerts_add_rule">Add rule</button>
-      </form>
-      <ul class="alerts-rules" id="alerts-rules"></ul>
-      <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
-    </div>
   </section>
   <div class="desk">
     <section class="panel list-panel" id="list-panel" aria-label="Companies" data-i18n-aria="companies">
@@ -2134,6 +2180,23 @@ const STRINGS = {
     alerts_need_confirm: "Confirm your email from the link we sent, then reopen this page.",
     alerts_rule_added: "Rule added.",
     alerts_unsubscribed: "Unsubscribed.",
+    alerts_pick: "Choose what to watch, then set a rule.",
+    alerts_cat_index: "Indices",
+    alerts_cat_usd: "US dollar",
+    alerts_cat_eur: "Euro",
+    alerts_cat_brent: "Brent oil",
+    alerts_cat_gold: "Gold",
+    alerts_cat_stock: "Stocks",
+    alerts_index: "Index",
+    alerts_stock: "Stock (symbol or company)",
+    alerts_rule: "Rule",
+    alerts_above: "Above",
+    alerts_below: "Below",
+    alerts_pct: "±% move",
+    alerts_points: "± points",
+    alerts_threshold: "Level / threshold",
+    alerts_pick_stock: "Pick a stock from the list.",
+    alerts_no_stock: "No matching companies.",
   },
   ar: {
     loading_companies: "جاري تحميل الشركات المدرجة…",
@@ -2339,6 +2402,23 @@ const STRINGS = {
     alerts_need_confirm: "أكّد بريدك من الرابط ثم أعد فتح هذه الصفحة.",
     alerts_rule_added: "تمت إضافة القاعدة.",
     alerts_unsubscribed: "تم إلغاء الاشتراك.",
+    alerts_pick: "اختر ما تريد متابعته ثم عيّن القاعدة.",
+    alerts_cat_index: "المؤشرات",
+    alerts_cat_usd: "الدولار",
+    alerts_cat_eur: "اليورو",
+    alerts_cat_brent: "خام برنت",
+    alerts_cat_gold: "الذهب",
+    alerts_cat_stock: "الأسهم",
+    alerts_index: "المؤشر",
+    alerts_stock: "سهم (رمز أو اسم الشركة)",
+    alerts_rule: "القاعدة",
+    alerts_above: "أعلى من",
+    alerts_below: "أقل من",
+    alerts_pct: "تغير ٪",
+    alerts_points: "تغير بالنقاط",
+    alerts_threshold: "المستوى / الحد",
+    alerts_pick_stock: "اختر سهماً من القائمة.",
+    alerts_no_stock: "لا شركات مطابقة.",
   },
 };
 const INSTRUMENT_AR = {
@@ -5177,16 +5257,140 @@ function paintMetals(payload, metal, silent = false) {
   mSlot("also", renderMetalsExtras(payload, metal), renderMetalsFunds(payload, metal));
   mSlot("foot", renderMetalsFooter(payload));
 }
-/* ── Email alerts ─────────────────────────────────────────────────────────── */
+/* ── Email alerts (popup) ─────────────────────────────────────────────────── */
 let alertsManageToken = "";
+let alertsCat = "stock";
+const alertsModal = document.getElementById("alerts-modal");
 const alertsSignup = document.getElementById("alerts-signup");
 const alertsManage = document.getElementById("alerts-manage");
 const alertsMsg = document.getElementById("alerts-msg");
 const alertsRules = document.getElementById("alerts-rules");
+const alertsStockList = document.getElementById("alerts-stock-list");
+const alertsStockQ = document.getElementById("alerts-stock-q");
 
 function alertsTokenFromUrl() {
-  const params = new URLSearchParams(location.search);
-  return params.get("alerts") || "";
+  return new URLSearchParams(location.search).get("alerts") || "";
+}
+
+function openAlertsModal() {
+  if (!alertsModal) return;
+  alertsModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  const email = document.getElementById("alerts-email");
+  if (email && !alertsManageToken) email.focus();
+}
+
+function closeAlertsModal() {
+  if (!alertsModal) return;
+  alertsModal.hidden = true;
+  document.body.style.overflow = "";
+  if (alertsStockList) alertsStockList.hidden = true;
+}
+
+function alertsCompanyLabel(company) {
+  const name = lang === "ar" && company.name_ar ? company.name_ar : company.name;
+  return (company.symbol || "") + " — " + (name || company.symbol || "");
+}
+
+function alertsSetCat(cat) {
+  alertsCat = cat;
+  document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
+    btn.setAttribute("aria-pressed", btn.getAttribute("data-cat") === cat ? "true" : "false");
+  });
+  const typeEl = document.getElementById("alerts-type");
+  const targetEl = document.getElementById("alerts-target");
+  const indexWrap = document.getElementById("alerts-index-wrap");
+  const stockWrap = document.getElementById("alerts-stock-wrap");
+  if (indexWrap) indexWrap.hidden = cat !== "index";
+  if (stockWrap) stockWrap.hidden = cat !== "stock";
+  if (alertsStockList) alertsStockList.hidden = true;
+  if (cat === "stock") {
+    typeEl.value = "stock";
+    targetEl.value = document.getElementById("alerts-stock-symbol").value || "";
+  } else if (cat === "index") {
+    typeEl.value = "index";
+    targetEl.value = document.getElementById("alerts-index").value;
+  } else if (cat === "gold") {
+    typeEl.value = "gold";
+    targetEl.value = "gold_21k";
+  } else if (cat === "usd") {
+    typeEl.value = "fx";
+    targetEl.value = "usd_egp";
+  } else if (cat === "eur") {
+    typeEl.value = "fx";
+    targetEl.value = "eur_egp";
+  } else if (cat === "brent") {
+    typeEl.value = "fx";
+    targetEl.value = "brent";
+  }
+}
+
+function alertsFilterStocks(query) {
+  const q = String(query || "").trim().toLowerCase();
+  if (!q || !companies.length) return [];
+  return companies
+    .filter((company) => {
+      const hay = [
+        company.symbol,
+        company.name,
+        company.name_ar,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    })
+    .slice(0, 12);
+}
+
+function alertsRenderStockList(query) {
+  if (!alertsStockList) return;
+  const hits = alertsFilterStocks(query);
+  alertsStockList.replaceChildren();
+  if (!hits.length) {
+    const empty = document.createElement("li");
+    empty.textContent = t("alerts_no_stock");
+    alertsStockList.appendChild(empty);
+    alertsStockList.hidden = false;
+    return;
+  }
+  hits.forEach((company) => {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    const sym = document.createElement("span");
+    sym.className = "sym";
+    sym.textContent = company.symbol;
+    const nm = document.createElement("span");
+    nm.className = "nm";
+    nm.textContent = lang === "ar" && company.name_ar ? company.name_ar : company.name;
+    btn.append(sym, nm);
+    btn.addEventListener("click", () => {
+      document.getElementById("alerts-stock-symbol").value = company.symbol;
+      document.getElementById("alerts-target").value = company.symbol;
+      document.getElementById("alerts-type").value = "stock";
+      alertsStockQ.value = alertsCompanyLabel(company);
+      alertsStockList.hidden = true;
+    });
+    li.appendChild(btn);
+    alertsStockList.appendChild(li);
+  });
+  alertsStockList.hidden = false;
+}
+
+function alertsResolveTarget() {
+  if (alertsCat === "stock") {
+    const sym = document.getElementById("alerts-stock-symbol").value.trim();
+    return { type: "stock", id: sym };
+  }
+  if (alertsCat === "index") {
+    return { type: "index", id: document.getElementById("alerts-index").value };
+  }
+  if (alertsCat === "gold") return { type: "gold", id: "gold_21k" };
+  if (alertsCat === "usd") return { type: "fx", id: "usd_egp" };
+  if (alertsCat === "eur") return { type: "fx", id: "eur_egp" };
+  if (alertsCat === "brent") return { type: "fx", id: "brent" };
+  return { type: document.getElementById("alerts-type").value, id: document.getElementById("alerts-target").value };
 }
 
 async function alertsSubscribe(event) {
@@ -5210,6 +5414,7 @@ async function alertsSubscribe(event) {
 
 async function alertsLoadManage(token) {
   alertsManageToken = token;
+  openAlertsModal();
   try {
     const resp = await fetch("/v1/alerts/manage?token=" + encodeURIComponent(token));
     const body = await resp.json().catch(() => ({}));
@@ -5219,18 +5424,12 @@ async function alertsLoadManage(token) {
     document.getElementById("alerts-manage-email").textContent = t("alerts_manage_for", {
       email: body.email,
     });
-    if (!body.confirmed) {
-      alertsMsg.textContent = t("alerts_need_confirm");
-    }
+    alertsMsg.textContent = body.confirmed ? "" : t("alerts_need_confirm");
+    alertsSetCat(alertsCat || "stock");
     alertsRules.replaceChildren();
     (body.rules || []).forEach((rule) => {
       const li = document.createElement("li");
-      li.textContent = [
-        rule.target_type,
-        rule.target_id,
-        rule.rule_kind,
-        rule.threshold,
-      ].join(" · ");
+      li.textContent = [rule.target_type, rule.target_id, rule.rule_kind, rule.threshold].join(" · ");
       const del = document.createElement("button");
       del.type = "button";
       del.className = "chip";
@@ -5253,10 +5452,15 @@ async function alertsLoadManage(token) {
 async function alertsAddRule(event) {
   event.preventDefault();
   if (!alertsManageToken) return;
+  const target = alertsResolveTarget();
+  if (target.type === "stock" && !target.id) {
+    alertsMsg.textContent = t("alerts_pick_stock");
+    return;
+  }
   const body = {
     token: alertsManageToken,
-    target_type: document.getElementById("alerts-type").value,
-    target_id: document.getElementById("alerts-target").value.trim(),
+    target_type: target.type,
+    target_id: target.id,
     rule_kind: document.getElementById("alerts-kind").value,
     threshold: Number(document.getElementById("alerts-threshold").value),
   };
@@ -5282,18 +5486,126 @@ async function alertsUnsubscribe() {
   alertsMsg.textContent = t("alerts_unsubscribed");
   alertsManage.hidden = true;
   alertsSignup.hidden = false;
+  alertsManageToken = "";
 }
 
+const alertsOpen = document.getElementById("alerts-open");
+if (alertsOpen) alertsOpen.addEventListener("click", openAlertsModal);
+const alertsClose = document.getElementById("alerts-close");
+if (alertsClose) alertsClose.addEventListener("click", closeAlertsModal);
+const alertsBackdrop = document.getElementById("alerts-backdrop");
+if (alertsBackdrop) alertsBackdrop.addEventListener("click", closeAlertsModal);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && alertsModal && !alertsModal.hidden) closeAlertsModal();
+});
 if (alertsSignup) alertsSignup.addEventListener("submit", alertsSubscribe);
 const alertsRuleForm = document.getElementById("alerts-rule-form");
 if (alertsRuleForm) alertsRuleForm.addEventListener("submit", alertsAddRule);
 const alertsUnsub = document.getElementById("alerts-unsub");
 if (alertsUnsub) alertsUnsub.addEventListener("click", alertsUnsubscribe);
+document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
+  btn.addEventListener("click", () => alertsSetCat(btn.getAttribute("data-cat")));
+});
+const alertsIndex = document.getElementById("alerts-index");
+if (alertsIndex) {
+  alertsIndex.addEventListener("change", () => {
+    document.getElementById("alerts-type").value = "index";
+    document.getElementById("alerts-target").value = alertsIndex.value;
+  });
+}
+if (alertsStockQ) {
+  alertsStockQ.addEventListener("input", () => {
+    document.getElementById("alerts-stock-symbol").value = "";
+    alertsRenderStockList(alertsStockQ.value);
+  });
+  alertsStockQ.addEventListener("focus", () => {
+    if (alertsStockQ.value.trim()) alertsRenderStockList(alertsStockQ.value);
+  });
+}
 const bootAlertsToken = alertsTokenFromUrl();
 if (bootAlertsToken) alertsLoadManage(bootAlertsToken);
+else alertsSetCat("stock");
 
 load();
 applyView(viewFromHash());
 </script>
+
+<div class="alerts-modal" id="alerts-modal" hidden>
+  <div class="alerts-backdrop" id="alerts-backdrop" tabindex="-1"></div>
+  <div class="alerts-dialog" role="dialog" aria-modal="true" aria-labelledby="alerts-title">
+    <div class="alerts-dialog-head">
+      <h2 id="alerts-title" data-i18n="alerts_title">Email alerts</h2>
+      <button type="button" class="alerts-close" id="alerts-close" aria-label="Close">×</button>
+    </div>
+    <p class="alerts-lead" data-i18n="alerts_lead">Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.</p>
+    <form class="alerts-form" id="alerts-signup" autocomplete="on">
+      <label>
+        <span data-i18n="alerts_email">Email</span>
+        <input id="alerts-email" type="email" required placeholder="you@example.com" autocomplete="email">
+      </label>
+      <label class="alerts-check">
+        <input id="alerts-digest" type="checkbox">
+        <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
+      </label>
+      <div class="alerts-actions">
+        <button class="nav-pill" type="submit" data-i18n="alerts_subscribe">Subscribe</button>
+      </div>
+      <p class="alerts-msg" id="alerts-msg" role="status"></p>
+    </form>
+    <div class="alerts-manage" id="alerts-manage" hidden>
+      <p class="alerts-manage-email" id="alerts-manage-email"></p>
+      <p class="alerts-lead" data-i18n="alerts_pick">Choose what to watch, then set a rule.</p>
+      <div class="alerts-cats" id="alerts-cats" role="group" aria-label="Alert target">
+        <button class="chip" type="button" data-cat="index" aria-pressed="false" data-i18n="alerts_cat_index">Indices</button>
+        <button class="chip" type="button" data-cat="usd" aria-pressed="false" data-i18n="alerts_cat_usd">US dollar</button>
+        <button class="chip" type="button" data-cat="eur" aria-pressed="false" data-i18n="alerts_cat_eur">Euro</button>
+        <button class="chip" type="button" data-cat="brent" aria-pressed="false" data-i18n="alerts_cat_brent">Brent oil</button>
+        <button class="chip" type="button" data-cat="gold" aria-pressed="false" data-i18n="alerts_cat_gold">Gold</button>
+        <button class="chip" type="button" data-cat="stock" aria-pressed="true" data-i18n="alerts_cat_stock">Stocks</button>
+      </div>
+      <form class="alerts-rule-form" id="alerts-rule-form">
+        <input type="hidden" id="alerts-type" value="stock">
+        <input type="hidden" id="alerts-target" value="">
+        <label id="alerts-index-wrap" hidden>
+          <span data-i18n="alerts_index">Index</span>
+          <select id="alerts-index">
+            <option value="CASE30">EGX 30</option>
+            <option value="EGX_SHARIAH">EGX Shariah</option>
+            <option value="EGX35LV">EGX 35 LV</option>
+            <option value="EGX100_EWI">EGX 100 EWI</option>
+            <option value="EGX70_EWI">EGX 70 EWI</option>
+            <option value="EGX30_CAP">EGX 30 Capped</option>
+            <option value="EGX30_TR">EGX 30 TR</option>
+            <option value="TAMAYUZ">Tamayuz</option>
+          </select>
+        </label>
+        <label class="alerts-stock-wrap" id="alerts-stock-wrap">
+          <span data-i18n="alerts_stock">Stock (symbol or company)</span>
+          <input id="alerts-stock-q" type="search" placeholder="COMI or Commercial International Bank" autocomplete="off">
+          <ul class="alerts-stock-list" id="alerts-stock-list" hidden></ul>
+          <input type="hidden" id="alerts-stock-symbol" value="">
+        </label>
+        <label>
+          <span data-i18n="alerts_rule">Rule</span>
+          <select id="alerts-kind">
+            <option value="above" data-i18n="alerts_above">Above</option>
+            <option value="below" data-i18n="alerts_below">Below</option>
+            <option value="pct_move" data-i18n="alerts_pct">±% move</option>
+            <option value="points_move" data-i18n="alerts_points">± points</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n="alerts_threshold">Level / threshold</span>
+          <input id="alerts-threshold" type="number" step="any" required placeholder="130">
+        </label>
+        <div class="alerts-actions">
+          <button class="nav-pill" type="submit" data-i18n="alerts_add_rule">Add rule</button>
+          <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
+        </div>
+      </form>
+      <ul class="alerts-rules" id="alerts-rules"></ul>
+    </div>
+  </div>
+</div>
 </body>
 </html>
