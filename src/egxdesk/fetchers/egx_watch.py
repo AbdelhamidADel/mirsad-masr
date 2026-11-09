@@ -32,7 +32,7 @@ _ATTRIBUTION = ATTRIBUTIONS["egx"]
 _CAIRO = ZoneInfo("Africa/Cairo")
 _BOARD = "https://beta.egx.com.eg/api/bff/egx/market-watch"
 _POINTS = "https://beta.egx.com.eg/api/bff/egx/price-volume-points"
-_TTL = 300.0
+_TTL = 30.0
 _PAGE_SIZE = 50
 _CHART_DAYS = {
     "1d": 5,

@@ -5,8 +5,8 @@ def test_default_settings() -> None:
     s = Settings(_env_file=None)
     assert s.port == 8000
     assert s.host == "0.0.0.0"
-    assert s.cache_ttl_seconds == 300
-    assert s.demo_cache_ttl_seconds == 600
+    assert s.cache_ttl_seconds == 30
+    assert s.demo_cache_ttl_seconds == 60
     assert s.fetch_quotes_on_startup is True
     assert s.auto_refresh_quotes is True
     assert s.enable_yahoo_finance is False

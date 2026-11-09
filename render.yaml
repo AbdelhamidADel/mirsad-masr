@@ -10,6 +10,8 @@ services:
     envVars:
       - key: ENABLE_YAHOO_FINANCE
         value: "false"
+      - key: CACHE_TTL_SECONDS
+        value: "30"
       - key: DEV_MODE
         value: "false"
       - key: LOG_LEVEL

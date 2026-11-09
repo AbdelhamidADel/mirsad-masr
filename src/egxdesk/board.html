@@ -1899,6 +1899,7 @@ const STRINGS = {
     chart_no_range: "No prices for this range.",
     chart_fail: "The chart did not load.",
     source_yahoo: "Yahoo Finance",
+    source_egx: "Egyptian Exchange",
     interval_monthly: "monthly",
     interval_15m: "15-minute",
     interval_daily: "daily",
@@ -2088,6 +2089,7 @@ const STRINGS = {
     chart_no_range: "لا تتوفر أسعار لهذا النطاق.",
     chart_fail: "تعذر تحميل الرسم.",
     source_yahoo: "ياهو فاينانس",
+    source_egx: "البورصة المصرية",
     interval_monthly: "شهري",
     interval_15m: "١٥ دقيقة",
     interval_daily: "يومي",
@@ -2278,9 +2280,11 @@ function indexLabel(item) {
 }
 function sourceLabel(value) {
   const raw = String(value || "").trim();
-  if (!raw) return t("source_yahoo");
+  if (!raw) return t("source_egx");
   if (lang !== "ar") return raw;
-  return raw.replace(/Yahoo Finance/gi, t("source_yahoo"));
+  return raw
+    .replace(/Egyptian Exchange/gi, t("source_egx"))
+    .replace(/Yahoo Finance/gi, t("source_yahoo"));
 }
 /** EN catalog sector → Arabic label (values stay EN for filtering). */
 const SECTOR_AR = {
@@ -5003,6 +5007,11 @@ async function loadMetals(metal, silent = false) {
 setInterval(() => {
   if (activeView !== "exchange" && !document.hidden) loadMetals(activeView, true);
 }, 60000);
+/* Near-live equity refresh while a stock is open (server TTL ~30s). */
+setInterval(() => {
+  if (document.hidden || activeView !== "exchange" || !selected) return;
+  select(selected);
+}, 20000);
 function mChartSignature(payload) {
   return (payload.chart_ranges || [])
     .map((range) => {

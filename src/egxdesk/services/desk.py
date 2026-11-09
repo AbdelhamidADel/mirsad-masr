@@ -64,7 +64,7 @@ _MUBASHER = "https://english.mubasher.info/markets/EGX/stocks/{symbol}/{kind}"
 _MUBASHER_AR = "https://www.mubasher.info/markets/EGX/stocks/{symbol}/{kind}"
 _MUBASHER_HOST = "https://english.mubasher.info"
 _MUBASHER_HOST_AR = "https://www.mubasher.info"
-_TTL = 300.0
+_TTL = 30.0
 _NEWS_CARD = re.compile(
     r'class="mi-article-media-block__date">([^<]*)</span>\s*'
     r'.*?<a class="mi-article-media-block__title" href="([^"]+)">([^<]*)</a>',
@@ -382,7 +382,7 @@ async def get_chart(symbol: str, range_key: str) -> ChartResponse:
         currency=payload.get("currency"),
         range=range_key,
         interval=payload.get("interval") or "",
-        source=f"Yahoo Finance ({ticker})" if ticker else None,
+        source=f"Egyptian Exchange ({ticker})" if ticker else None,
         bars=[ChartBar(**bar) for bar in payload.get("bars") or []],
     )
 

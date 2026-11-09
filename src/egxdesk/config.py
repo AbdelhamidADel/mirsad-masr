@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     dev_mode: bool = False  # pretty console output when True
 
     # Cache
-    cache_ttl_seconds: int = 300
-    demo_cache_ttl_seconds: int = 600
+    cache_ttl_seconds: int = 30
+    demo_cache_ttl_seconds: int = 60
     cache_max_size: int = 512
     fetch_quotes_on_startup: bool = True
     auto_refresh_quotes: bool = True
