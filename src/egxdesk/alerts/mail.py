@@ -20,6 +20,7 @@ def _on_render_free_smtp_blocked() -> bool:
     """Render free web services block outbound SMTP (25/465/587)."""
     return os.environ.get("RENDER", "").lower() in {"1", "true", "yes"}
 
+
 # Test hook: when set, emails are appended here instead of the network.
 _outbox: list[dict[str, str]] | None = None
 
