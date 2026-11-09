@@ -1,0 +1,17 @@
+{
+  "data": {
+    "liveIndex": {
+      "change": 602.86,
+      "changePer": 1.1864503847215828,
+      "high": 51432.67,
+      "indexClose": 51414.93,
+      "indexDay": "2026-11-09T00:00:00",
+      "indexOpen": 50812.07,
+      "low": 50812.07,
+      "ytdPercent": 22.917
+    },
+    "dailyIndex": []
+  },
+  "success": true,
+  "message": "ok"
+}

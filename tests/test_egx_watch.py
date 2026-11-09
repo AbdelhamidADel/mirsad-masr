@@ -96,6 +96,36 @@ def test_chart_history_builds_bars_from_points(monkeypatch: pytest.MonkeyPatch) 
     assert payload["bars"][-1]["volume"] == 20
 
 
+def test_index_live_maps_case30(monkeypatch: pytest.MonkeyPatch) -> None:
+    payload = _page("egx_index_data_case30.json")
+
+    def fake_fetch(index_name: str) -> dict:
+        assert index_name == "CASE30"
+        return payload
+
+    monkeypatch.setattr(egx_watch, "_fetch_index_data", fake_fetch)
+    egx_watch._index_cache.clear()
+    egx_watch._index_loaded_at.clear()
+    snap = egx_watch.index_live("CASE30")
+    assert snap["price"] == pytest.approx(51414.93)
+    assert snap["change"] == pytest.approx(602.86)
+    assert snap["change_percent"] == pytest.approx(1.1864503847215828)
+
+
+def test_index_live_empty_when_no_live_index(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        egx_watch,
+        "_fetch_index_data",
+        lambda index_name: {"success": True, "data": {"liveIndex": None}},
+    )
+    egx_watch._index_cache.clear()
+    egx_watch._index_loaded_at.clear()
+    snap = egx_watch.index_live("EGX35LV")
+    assert snap["price"] is None
+    assert snap["change"] is None
+    assert snap["change_percent"] is None
+
+
 def test_chart_history_appends_live_board_price(monkeypatch: pytest.MonkeyPatch) -> None:
     board_row = {
         "reuters": "COMI.CA",

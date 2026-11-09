@@ -32,6 +32,7 @@ _ATTRIBUTION = ATTRIBUTIONS["egx"]
 _CAIRO = ZoneInfo("Africa/Cairo")
 _BOARD = "https://beta.egx.com.eg/api/bff/egx/market-watch"
 _POINTS = "https://beta.egx.com.eg/api/bff/egx/price-volume-points"
+_INDEX_DATA = "https://beta.egx.com.eg/api/bff/egx/index-data"
 _TTL = 30.0
 _PAGE_SIZE = 50
 _CHART_DAYS = {
@@ -50,6 +51,8 @@ _CHART_DAYS = {
 _board_cache: dict[str, dict[str, Any]] | None = None
 _board_loaded_at = 0.0
 _board_lock = asyncio.Lock()
+_index_cache: dict[str, dict[str, float | None]] = {}
+_index_loaded_at: dict[str, float] = {}
 
 
 class EgxMarketWatchFetcher:
@@ -317,6 +320,58 @@ def chart_snapshot_from_board(symbol_or_ticker: str) -> dict[str, Any]:
         "currency": _currency(row.get("currShort") or row.get("curr")),
         "exchange": "EGX",
     }
+
+
+def index_live(index_name: str) -> dict[str, float | None]:
+    """Live EGX index level from ``index-data`` (``liveIndex``).
+
+    ``index_name`` is the BFF key (e.g. ``CASE30``, ``EGX70_EWI``), not the
+    Yahoo-style ``^CASE30`` ticker.
+    """
+    key = str(index_name or "").strip()
+    if not key:
+        return {"price": None, "change": None, "change_percent": None}
+    now = time.monotonic()
+    loaded = _index_loaded_at.get(key)
+    if loaded is not None and now - loaded < _TTL and key in _index_cache:
+        return _index_cache[key]
+    try:
+        payload = _fetch_index_data(key)
+    except Exception as exc:
+        log.warning("egx_index_failed", index=key, error=str(exc))
+        empty: dict[str, float | None] = {"price": None, "change": None, "change_percent": None}
+        return empty
+    data = payload.get("data") if isinstance(payload, dict) else None
+    live = data.get("liveIndex") if isinstance(data, dict) else None
+    if not isinstance(live, dict):
+        snap = {"price": None, "change": None, "change_percent": None}
+    else:
+        snap = {
+            "price": _num(live.get("indexClose")),
+            "change": _num(live.get("change")),
+            "change_percent": _num(live.get("changePer")),
+        }
+    _index_cache[key] = snap
+    _index_loaded_at[key] = now
+    return snap
+
+
+def _fetch_index_data(index_name: str) -> dict[str, Any]:
+    query = urllib.parse.urlencode({"interval": 1, "indexName": index_name})
+    url = f"{_INDEX_DATA}?{query}"
+    request = urllib.request.Request(
+        url,
+        headers={
+            **_egx_headers(),
+            "Referer": f"https://beta.egx.com.eg/ar/market/indices?index={index_name}",
+        },
+        method="GET",
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        payload: object = json.loads(response.read().decode("utf-8", "replace"))
+    if not isinstance(payload, dict) or not payload.get("success", True):
+        raise RuntimeError(f"egx index-data failed for {index_name}")
+    return cast(dict[str, Any], payload)
 
 
 def _price_volume_points(isin: str, days: int) -> list[dict[str, Any]]:

@@ -33,7 +33,7 @@ from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 from egxdesk.data.symbols import get_symbol_name
-from egxdesk.fetchers.egx_watch import chart_history
+from egxdesk.fetchers.egx_watch import chart_history, index_live
 from egxdesk.fetchers.yahoo import chart_snapshot as yahoo_chart_snapshot
 from egxdesk.models import (
     ChartBar,
@@ -139,47 +139,63 @@ _INDICES = (
         "id": "egx30",
         "name": "EGX 30",
         "name_ar": "مؤشر EGX 30",
-        "ticker": "^CASE30",
+        "index_name": "CASE30",
         "description": "The benchmark index tracking the 30 most liquid and largest companies by market capitalization.",
         "description_ar": "المؤشر الرئيسي الذي يتتبع أكثر ٣٠ شركة سيولة وكبراً من حيث القيمة السوقية.",
-    },
-    {
-        "id": "egx30_capped",
-        "name": "EGX 30 Capped",
-        "name_ar": "مؤشر EGX 30 المحدود",
-        "ticker": "^EGX30CAPPED.CA",
-        "description": "A variant of the EGX 30 that sets a maximum weight limit per company to avoid index dominance by single large-cap stocks.",
-        "description_ar": "نسخة من EGX 30 تضع حداً أقصى لوزن كل شركة حتى لا تهيمن الأسهم الكبيرة على المؤشر.",
-    },
-    {
-        "id": "egx70_ewi",
-        "name": "EGX 70 EWI",
-        "name_ar": "مؤشر EGX 70 متساوي الأوزان",
-        "ticker": "^EGX70EWI.CA",
-        "description": "Equal-Weighted Index measuring the performance of the top 70 medium and small-cap companies.",
-        "description_ar": "مؤشر متساوي الأوزان يقيس أداء أكبر ٧٠ شركة متوسطة وصغيرة.",
-    },
-    {
-        "id": "egx100_ewi",
-        "name": "EGX 100 EWI",
-        "name_ar": "مؤشر EGX 100 متساوي الأوزان",
-        "ticker": "^EGX100EWI.CA",
-        "description": "Combines the constituents of EGX 30 and EGX 70 using an equal-weighted methodology.",
-        "description_ar": "يجمع مكونات EGX 30 وEGX 70 بمنهجية الأوزان المتساوية.",
     },
     {
         "id": "egx_shariah",
         "name": "EGX Shariah Index",
         "name_ar": "مؤشر الشريعة",
-        "ticker": "^SHARIAH.CA",
+        "index_name": "EGX_SHARIAH",
         "description": "Tracks listed companies compliant with Islamic Shariah financial standards.",
         "description_ar": "يتتبع الشركات المدرجة المتوافقة مع معايير الشريعة الإسلامية.",
+    },
+    {
+        "id": "egx35_lv",
+        "name": "EGX 35 LV",
+        "name_ar": "مؤشر EGX 35 منخفض التقلب",
+        "index_name": "EGX35LV",
+        "description": "Low-volatility basket of 35 listed names selected for smoother index moves.",
+        "description_ar": "سلة منخفضة التقلب من ٣٥ سهماً مدرجاً مختارة لحركة مؤشر أكثر سلاسة.",
+    },
+    {
+        "id": "egx100_ewi",
+        "name": "EGX 100 EWI",
+        "name_ar": "مؤشر EGX 100 متساوي الأوزان",
+        "index_name": "EGX100_EWI",
+        "description": "Combines the constituents of EGX 30 and EGX 70 using an equal-weighted methodology.",
+        "description_ar": "يجمع مكونات EGX 30 وEGX 70 بمنهجية الأوزان المتساوية.",
+    },
+    {
+        "id": "egx70_ewi",
+        "name": "EGX 70 EWI",
+        "name_ar": "مؤشر EGX 70 متساوي الأوزان",
+        "index_name": "EGX70_EWI",
+        "description": "Equal-Weighted Index measuring the performance of the top 70 medium and small-cap companies.",
+        "description_ar": "مؤشر متساوي الأوزان يقيس أداء أكبر ٧٠ شركة متوسطة وصغيرة.",
+    },
+    {
+        "id": "egx30_capped",
+        "name": "EGX 30 Capped",
+        "name_ar": "مؤشر EGX 30 المحدود",
+        "index_name": "EGX30_CAP",
+        "description": "A variant of the EGX 30 that sets a maximum weight limit per company to avoid index dominance by single large-cap stocks.",
+        "description_ar": "نسخة من EGX 30 تضع حداً أقصى لوزن كل شركة حتى لا تهيمن الأسهم الكبيرة على المؤشر.",
+    },
+    {
+        "id": "egx30_tr",
+        "name": "EGX 30 TR",
+        "name_ar": "مؤشر EGX 30 العائد الكلي",
+        "index_name": "EGX30_TR",
+        "description": "Total-return companion to the EGX 30 that reinvests dividends into the index level.",
+        "description_ar": "نسخة العائد الكلي لمؤشر EGX 30 التي تعيد استثمار التوزيعات في مستوى المؤشر.",
     },
     {
         "id": "tamayuz",
         "name": "Tamayuz Market",
         "name_ar": "سوق التميّز",
-        "ticker": "^TAMAYUZ.CA",
+        "index_name": "TAMAYUZ",
         "description": "Dedicated index for Small and Medium-sized Enterprises (SMEs).",
         "description_ar": "مؤشر مخصص للشركات الصغيرة والمتوسطة.",
     },
@@ -587,6 +603,7 @@ def _load_metals(metal: str) -> MetalsResponse:
 def _instrument(item: dict[str, str]) -> MarketInstrument:
     # FX / gold futures / Brent are not on the EGX equity board. Keep Yahoo
     # snapshots for these strip cards until Investing.com (or another feed) lands.
+    # EGX index levels use index_live() separately — not this path.
     snap = _external_snapshot(item["ticker"])
     price = _num(snap.get("price"))
     previous = _num(snap.get("previous_close"))
@@ -610,27 +627,30 @@ def _instrument(item: dict[str, str]) -> MarketInstrument:
 
 
 def _index(item: dict[str, str]) -> IndexInsight:
-    ticker = item.get("ticker")
+    # EGX beta index-data (not Yahoo). index_name is the BFF key (CASE30, …).
+    index_name = item.get("index_name")
     price = None
     change = None
     change_percent = None
-    if ticker:
+    if index_name:
         try:
-            snap = _external_snapshot(ticker)
+            snap = index_live(index_name)
         except Exception:
-            snap = {}
+            snap = {"price": None, "change": None, "change_percent": None}
         price = _num(snap.get("price"))
-        previous = _num(snap.get("previous_close"))
+        change = _num(snap.get("change"))
+        pct = _num(snap.get("change_percent"))
         if price is not None:
             price = round(price, 2)
-        if price is not None and previous not in (None, 0):
-            change = round(price - previous, 2)
-            change_percent = f"{change / previous * 100:+.2f}%"
+        if change is not None:
+            change = round(change, 2)
+        if pct is not None:
+            change_percent = f"{pct:+.2f}%"
     return IndexInsight(
         id=str(item["id"]),
         name=str(item["name"]),
         description=str(item["description"]),
-        ticker=ticker,
+        ticker=index_name,
         price=price,
         change=change,
         change_percent=change_percent,
