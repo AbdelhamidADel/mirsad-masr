@@ -31,14 +31,9 @@ def test_subscribe_confirm_add_rule(alerts_db: None) -> None:
         assert sub.email == "user@example.com"
         assert sub.confirmed_at is None
         token = sub.confirm_token
+        manage = sub.manage_token
         assert token
-    assert mail._outbox and "Confirm" in mail._outbox[0]["subject"]
-
-    with session_scope() as session:
-        confirmed = service.confirm(session, token)
-        assert confirmed is not None
-        assert confirmed.confirmed_at is not None
-        manage = confirmed.manage_token
+        # Rules can be saved before confirm (they will not fire yet).
         rule = service.add_rule(
             session,
             manage,
@@ -48,6 +43,12 @@ def test_subscribe_confirm_add_rule(alerts_db: None) -> None:
             threshold=100.0,
         )
         assert rule.target_id == "COMI"
+    assert mail._outbox and "Confirm" in mail._outbox[0]["subject"]
+
+    with session_scope() as session:
+        confirmed = service.confirm(session, token)
+        assert confirmed is not None
+        assert confirmed.confirmed_at is not None
         payload = service.manage_payload(session, manage)
         assert payload is not None
         assert len(payload["rules"]) == 1

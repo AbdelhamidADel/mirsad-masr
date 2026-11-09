@@ -60,6 +60,7 @@ def subscribe(body: SubscribeBody) -> dict[str, Any]:
                 "email": row.email,
                 "lang": row.lang,
                 "digest_on": row.digest_on,
+                "manage_token": row.manage_token,
                 "message": "Check your inbox for a confirmation link.",
             }
     except ValueError as exc:

@@ -889,15 +889,19 @@ try {
   .alerts-modal {
     position: fixed;
     inset: 0;
-    z-index: 40;
-    display: grid;
-    place-items: center;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 16px;
   }
   .alerts-backdrop {
     position: absolute;
     inset: 0;
     background: rgba(10, 19, 21, 0.55);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
   }
   .alerts-dialog {
     position: relative;
@@ -910,6 +914,7 @@ try {
     border: 1px solid var(--line);
     border-radius: 16px;
     box-shadow: var(--shadow);
+    pointer-events: auto;
   }
   .alerts-dialog-head {
     display: flex;
@@ -1958,15 +1963,16 @@ try {
 </div>
 
 <div class="alerts-modal" id="alerts-modal" hidden>
-  <div class="alerts-backdrop" id="alerts-backdrop" tabindex="-1"></div>
+  <button type="button" class="alerts-backdrop" id="alerts-backdrop" aria-label="Close"></button>
   <div class="alerts-dialog" role="dialog" aria-modal="true" aria-labelledby="alerts-title">
     <div class="alerts-dialog-head">
       <h2 id="alerts-title" data-i18n="alerts_title">Email alerts</h2>
       <button type="button" class="alerts-close" id="alerts-close" aria-label="Close">×</button>
     </div>
     <p class="alerts-lead" data-i18n="alerts_lead">Get price alerts and an optional 16:30 Cairo daily summary by email. No password — confirm via link.</p>
+    <p class="alerts-manage-email" id="alerts-manage-email" hidden></p>
     <form class="alerts-form" id="alerts-signup" autocomplete="on">
-      <label>
+      <label id="alerts-email-wrap">
         <span data-i18n="alerts_email">Email</span>
         <input id="alerts-email" type="email" required placeholder="you@example.com" autocomplete="email">
       </label>
@@ -1974,13 +1980,6 @@ try {
         <input id="alerts-digest" type="checkbox">
         <span data-i18n="alerts_digest">Daily summary at 16:30 Cairo</span>
       </label>
-      <div class="alerts-actions">
-        <button class="nav-pill" type="submit" data-i18n="alerts_subscribe">Subscribe</button>
-      </div>
-      <p class="alerts-msg" id="alerts-msg" role="status"></p>
-    </form>
-    <div class="alerts-manage" id="alerts-manage" hidden>
-      <p class="alerts-manage-email" id="alerts-manage-email"></p>
       <p class="alerts-lead" data-i18n="alerts_pick">Choose what to watch, then set a rule.</p>
       <div class="alerts-cats" id="alerts-cats" role="group" aria-label="Alert target">
         <button class="chip" type="button" data-cat="index" aria-pressed="false" data-i18n="alerts_cat_index">Indices</button>
@@ -1990,48 +1989,48 @@ try {
         <button class="chip" type="button" data-cat="gold" aria-pressed="false" data-i18n="alerts_cat_gold">Gold</button>
         <button class="chip" type="button" data-cat="stock" aria-pressed="true" data-i18n="alerts_cat_stock">Stocks</button>
       </div>
-      <form class="alerts-rule-form" id="alerts-rule-form">
-        <input type="hidden" id="alerts-type" value="stock">
-        <input type="hidden" id="alerts-target" value="">
-        <label id="alerts-index-wrap" hidden>
-          <span data-i18n="alerts_index">Index</span>
-          <select id="alerts-index">
-            <option value="CASE30">EGX 30</option>
-            <option value="EGX_SHARIAH">EGX Shariah</option>
-            <option value="EGX35LV">EGX 35 LV</option>
-            <option value="EGX100_EWI">EGX 100 EWI</option>
-            <option value="EGX70_EWI">EGX 70 EWI</option>
-            <option value="EGX30_CAP">EGX 30 Capped</option>
-            <option value="EGX30_TR">EGX 30 TR</option>
-            <option value="TAMAYUZ">Tamayuz</option>
-          </select>
-        </label>
-        <label class="alerts-stock-wrap" id="alerts-stock-wrap">
-          <span data-i18n="alerts_stock">Stock (symbol or company)</span>
-          <input id="alerts-stock-q" type="search" placeholder="COMI or Commercial International Bank" autocomplete="off">
-          <ul class="alerts-stock-list" id="alerts-stock-list" hidden></ul>
-          <input type="hidden" id="alerts-stock-symbol" value="">
-        </label>
-        <label>
-          <span data-i18n="alerts_rule">Rule</span>
-          <select id="alerts-kind">
-            <option value="above" data-i18n="alerts_above">Above</option>
-            <option value="below" data-i18n="alerts_below">Below</option>
-            <option value="pct_move" data-i18n="alerts_pct">±% move</option>
-            <option value="points_move" data-i18n="alerts_points">± points</option>
-          </select>
-        </label>
-        <label>
-          <span data-i18n="alerts_threshold">Level / threshold</span>
-          <input id="alerts-threshold" type="number" step="any" required placeholder="130">
-        </label>
-        <div class="alerts-actions">
-          <button class="nav-pill" type="submit" data-i18n="alerts_add_rule">Add rule</button>
-          <button class="chip" type="button" id="alerts-unsub" data-i18n="alerts_unsub">Unsubscribe</button>
-        </div>
-      </form>
-      <ul class="alerts-rules" id="alerts-rules"></ul>
-    </div>
+      <input type="hidden" id="alerts-type" value="stock">
+      <input type="hidden" id="alerts-target" value="">
+      <label id="alerts-index-wrap" hidden>
+        <span data-i18n="alerts_index">Index</span>
+        <select id="alerts-index">
+          <option value="CASE30">EGX 30</option>
+          <option value="EGX_SHARIAH">EGX Shariah</option>
+          <option value="EGX35LV">EGX 35 LV</option>
+          <option value="EGX100_EWI">EGX 100 EWI</option>
+          <option value="EGX70_EWI">EGX 70 EWI</option>
+          <option value="EGX30_CAP">EGX 30 Capped</option>
+          <option value="EGX30_TR">EGX 30 TR</option>
+          <option value="TAMAYUZ">Tamayuz</option>
+        </select>
+      </label>
+      <label class="alerts-stock-wrap" id="alerts-stock-wrap">
+        <span data-i18n="alerts_stock">Stock (symbol or company)</span>
+        <input id="alerts-stock-q" type="search" placeholder="COMI or Commercial International Bank" autocomplete="off">
+        <ul class="alerts-stock-list" id="alerts-stock-list" hidden></ul>
+        <input type="hidden" id="alerts-stock-symbol" value="">
+      </label>
+      <label>
+        <span data-i18n="alerts_rule">Rule</span>
+        <select id="alerts-kind">
+          <option value="above" data-i18n="alerts_above">Above</option>
+          <option value="below" data-i18n="alerts_below">Below</option>
+          <option value="pct_move" data-i18n="alerts_pct">±% move</option>
+          <option value="points_move" data-i18n="alerts_points">± points</option>
+        </select>
+      </label>
+      <label>
+        <span data-i18n="alerts_threshold">Level / threshold</span>
+        <input id="alerts-threshold" type="number" step="any" required placeholder="130">
+      </label>
+      <div class="alerts-actions">
+        <button class="nav-pill" type="submit" id="alerts-submit" data-i18n="alerts_subscribe">Subscribe</button>
+        <button class="nav-pill" type="button" id="alerts-add-rule" hidden data-i18n="alerts_add_rule">Add rule</button>
+        <button class="chip" type="button" id="alerts-unsub" hidden data-i18n="alerts_unsub">Unsubscribe</button>
+      </div>
+      <p class="alerts-msg" id="alerts-msg" role="status"></p>
+    </form>
+    <ul class="alerts-rules" id="alerts-rules"></ul>
   </div>
 </div>
 
@@ -5341,11 +5340,15 @@ let alertsManageToken = "";
 let alertsCat = "stock";
 const alertsModal = document.getElementById("alerts-modal");
 const alertsSignup = document.getElementById("alerts-signup");
-const alertsManage = document.getElementById("alerts-manage");
 const alertsMsg = document.getElementById("alerts-msg");
 const alertsRules = document.getElementById("alerts-rules");
 const alertsStockList = document.getElementById("alerts-stock-list");
 const alertsStockQ = document.getElementById("alerts-stock-q");
+const alertsSubmit = document.getElementById("alerts-submit");
+const alertsAddRuleBtn = document.getElementById("alerts-add-rule");
+const alertsUnsubBtn = document.getElementById("alerts-unsub");
+const alertsEmailWrap = document.getElementById("alerts-email-wrap");
+const alertsManageEmail = document.getElementById("alerts-manage-email");
 
 function alertsTokenFromUrl() {
   return new URLSearchParams(location.search).get("alerts") || "";
@@ -5475,11 +5478,60 @@ function alertsResolveTarget() {
   return { type: document.getElementById("alerts-type").value, id: document.getElementById("alerts-target").value };
 }
 
+async function alertsPostRule(token) {
+  const target = alertsResolveTarget();
+  if (target.type === "stock" && !target.id) {
+    alertsMsg.textContent = t("alerts_pick_stock");
+    return false;
+  }
+  const threshold = Number(document.getElementById("alerts-threshold").value);
+  if (!Number.isFinite(threshold)) {
+    alertsMsg.textContent = t("alerts_fail");
+    return false;
+  }
+  const resp = await fetch("/v1/alerts/rules", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      token,
+      target_type: target.type,
+      target_id: target.id,
+      rule_kind: document.getElementById("alerts-kind").value,
+      threshold,
+    }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    alertsMsg.textContent = data.detail || t("alerts_fail");
+    return false;
+  }
+  return true;
+}
+
+function alertsEnterManageMode(email, confirmed) {
+  if (alertsEmailWrap) alertsEmailWrap.hidden = true;
+  if (alertsSubmit) alertsSubmit.hidden = true;
+  if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = false;
+  if (alertsUnsubBtn) alertsUnsubBtn.hidden = false;
+  if (alertsManageEmail) {
+    alertsManageEmail.hidden = false;
+    alertsManageEmail.textContent = t("alerts_manage_for", { email: email || "" });
+  }
+  const emailInput = document.getElementById("alerts-email");
+  if (emailInput) emailInput.required = false;
+  alertsMsg.textContent = confirmed ? "" : t("alerts_need_confirm");
+}
+
 async function alertsSubscribe(event) {
   event.preventDefault();
   alertsMsg.textContent = "";
   const email = document.getElementById("alerts-email").value.trim();
   const digest_on = document.getElementById("alerts-digest").checked;
+  const target = alertsResolveTarget();
+  if (target.type === "stock" && !target.id) {
+    alertsMsg.textContent = t("alerts_pick_stock");
+    return;
+  }
   try {
     const resp = await fetch("/v1/alerts/subscribe", {
       method: "POST",
@@ -5488,7 +5540,15 @@ async function alertsSubscribe(event) {
     });
     const body = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
-    alertsMsg.textContent = t("alerts_sent");
+    alertsManageToken = body.manage_token || "";
+    if (alertsManageToken) {
+      const ok = await alertsPostRule(alertsManageToken);
+      if (ok) alertsMsg.textContent = t("alerts_sent") + " " + t("alerts_rule_added");
+      else alertsMsg.textContent = t("alerts_sent");
+      if (alertsManageToken) await alertsLoadManage(alertsManageToken);
+    } else {
+      alertsMsg.textContent = t("alerts_sent");
+    }
   } catch (err) {
     alertsMsg.textContent = err.message || t("alerts_fail");
   }
@@ -5501,12 +5561,7 @@ async function alertsLoadManage(token) {
     const resp = await fetch("/v1/alerts/manage?token=" + encodeURIComponent(token));
     const body = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(body.detail || t("alerts_fail"));
-    alertsSignup.hidden = true;
-    alertsManage.hidden = false;
-    document.getElementById("alerts-manage-email").textContent = t("alerts_manage_for", {
-      email: body.email,
-    });
-    alertsMsg.textContent = body.confirmed ? "" : t("alerts_need_confirm");
+    alertsEnterManageMode(body.email, body.confirmed);
     alertsSetCat(alertsCat || "stock");
     alertsRules.replaceChildren();
     (body.rules || []).forEach((rule) => {
@@ -5531,33 +5586,14 @@ async function alertsLoadManage(token) {
   }
 }
 
-async function alertsAddRule(event) {
+async function alertsAddRuleClick(event) {
   event.preventDefault();
   if (!alertsManageToken) return;
-  const target = alertsResolveTarget();
-  if (target.type === "stock" && !target.id) {
-    alertsMsg.textContent = t("alerts_pick_stock");
-    return;
+  const ok = await alertsPostRule(alertsManageToken);
+  if (ok) {
+    alertsMsg.textContent = t("alerts_rule_added");
+    alertsLoadManage(alertsManageToken);
   }
-  const body = {
-    token: alertsManageToken,
-    target_type: target.type,
-    target_id: target.id,
-    rule_kind: document.getElementById("alerts-kind").value,
-    threshold: Number(document.getElementById("alerts-threshold").value),
-  };
-  const resp = await fetch("/v1/alerts/rules", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const data = await resp.json().catch(() => ({}));
-  if (!resp.ok) {
-    alertsMsg.textContent = data.detail || t("alerts_fail");
-    return;
-  }
-  alertsMsg.textContent = t("alerts_rule_added");
-  alertsLoadManage(alertsManageToken);
 }
 
 async function alertsUnsubscribe() {
@@ -5566,13 +5602,22 @@ async function alertsUnsubscribe() {
     method: "POST",
   });
   alertsMsg.textContent = t("alerts_unsubscribed");
-  alertsManage.hidden = true;
-  alertsSignup.hidden = false;
   alertsManageToken = "";
+  if (alertsEmailWrap) alertsEmailWrap.hidden = false;
+  if (alertsSubmit) alertsSubmit.hidden = false;
+  if (alertsAddRuleBtn) alertsAddRuleBtn.hidden = true;
+  if (alertsUnsubBtn) alertsUnsubBtn.hidden = true;
+  if (alertsManageEmail) alertsManageEmail.hidden = true;
+  const emailInput = document.getElementById("alerts-email");
+  if (emailInput) emailInput.required = true;
+  alertsRules.replaceChildren();
 }
 
 const alertsOpen = document.getElementById("alerts-open");
-if (alertsOpen) alertsOpen.addEventListener("click", openAlertsModal);
+if (alertsOpen) alertsOpen.addEventListener("click", () => {
+  openAlertsModal();
+  alertsSetCat(alertsCat || "stock");
+});
 const alertsClose = document.getElementById("alerts-close");
 if (alertsClose) alertsClose.addEventListener("click", closeAlertsModal);
 const alertsBackdrop = document.getElementById("alerts-backdrop");
@@ -5581,10 +5626,8 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && alertsModal && !alertsModal.hidden) closeAlertsModal();
 });
 if (alertsSignup) alertsSignup.addEventListener("submit", alertsSubscribe);
-const alertsRuleForm = document.getElementById("alerts-rule-form");
-if (alertsRuleForm) alertsRuleForm.addEventListener("submit", alertsAddRule);
-const alertsUnsub = document.getElementById("alerts-unsub");
-if (alertsUnsub) alertsUnsub.addEventListener("click", alertsUnsubscribe);
+if (alertsAddRuleBtn) alertsAddRuleBtn.addEventListener("click", alertsAddRuleClick);
+if (alertsUnsubBtn) alertsUnsubBtn.addEventListener("click", alertsUnsubscribe);
 document.querySelectorAll("#alerts-cats .chip").forEach((btn) => {
   btn.addEventListener("click", () => alertsSetCat(btn.getAttribute("data-cat")));
 });

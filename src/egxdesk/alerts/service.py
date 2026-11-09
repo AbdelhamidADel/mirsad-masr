@@ -145,8 +145,7 @@ def add_rule(
     row = get_by_manage_token(session, token)
     if row is None or row.unsubscribed_at is not None:
         raise ValueError("subscriber not found")
-    if row.confirmed_at is None:
-        raise ValueError("email not confirmed")
+    # Rules may be added before confirm; evaluate_alerts still skips unconfirmed.
     tt = target_type.strip().lower()
     rk = rule_kind.strip().lower()
     if tt not in _TARGET_TYPES:
