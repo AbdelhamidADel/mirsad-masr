@@ -847,6 +847,7 @@ try {
     flex: none;
     margin: 0;
     min-width: 0;
+    width: 100%;
     font-family: var(--font-display);
     font-weight: 560;
     font-size: 1.15rem;
@@ -856,6 +857,7 @@ try {
     display: flex;
     flex-wrap: nowrap;
     align-items: baseline;
+    justify-content: space-between;
     gap: 6px;
   }
   .index-value > .num:not(.change) {
@@ -863,8 +865,8 @@ try {
     white-space: nowrap;
   }
   .index-value > .change {
-    flex: 0 1 auto;
-    min-width: 0;
+    flex: 0 0 auto;
+    margin-inline-start: auto;
     white-space: nowrap;
     font-size: clamp(0.7rem, 1.4vw, 0.8rem);
     padding-inline: 5px;
