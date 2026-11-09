@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import pytest
+from sqlalchemy import select
 
 from egxdesk.alerts import mail, service
 from egxdesk.alerts.db import init_db, reset_engine, session_scope
+from egxdesk.alerts.models import Subscriber
 from egxdesk.alerts.rules import evaluate_rule
 from egxdesk.config import settings
 
@@ -89,9 +91,6 @@ def test_unsubscribe_stops_digest(alerts_db: None) -> None:
         payload = service.manage_payload(session, sub.manage_token)
         assert payload is None
         # Soft delete: row remains in DB with unsubscribed_at set.
-        from egxdesk.alerts.models import Subscriber
-        from sqlalchemy import select
-
         row = session.scalar(select(Subscriber).where(Subscriber.email == "x@y.z"))
         assert row is not None
         assert row.unsubscribed_at is not None
@@ -100,12 +99,8 @@ def test_unsubscribe_stops_digest(alerts_db: None) -> None:
 def test_already_registered_rejects_active_email(alerts_db: None) -> None:
     with session_scope() as session:
         service.subscribe(session, "dup@ex.com", "en", False)
-    with session_scope() as session:
-        try:
-            service.subscribe(session, "dup@ex.com", "en", False)
-            raise AssertionError("expected AlreadyRegisteredError")
-        except service.AlreadyRegisteredError:
-            pass
+    with session_scope() as session, pytest.raises(service.AlreadyRegisteredError):
+        service.subscribe(session, "dup@ex.com", "en", False)
 
 
 def test_soft_deleted_can_resubscribe(alerts_db: None) -> None:
