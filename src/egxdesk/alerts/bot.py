@@ -32,12 +32,87 @@ _GOLD_PICKS = (("Gold 21K", "gold_21k"),)
 _INDEX_PICKS = (("EGX30", "CASE30"), ("EGX70", "CASE70"))
 _FX_PICKS = (("USD/EGP", "usd_egp"), ("EUR/EGP", "eur_egp"))
 
+_TYPE_EMOJI = {
+    "stock": "📈",
+    "gold": "🥇",
+    "index": "📊",
+    "fx": "💱",
+}
+_KIND_EMOJI = {
+    "above": "⬆️",
+    "below": "⬇️",
+    "pct_move": "📉",
+    "points_move": "↕️",
+}
+_TARGET_LABELS = {
+    "gold_21k": "Gold 21K",
+    "CASE30": "EGX30",
+    "CASE70": "EGX70",
+    "usd_egp": "USD/EGP",
+    "eur_egp": "EUR/EGP",
+}
+
 
 @dataclass
 class BotReply:
     text: str
     reply_markup: dict[str, Any] | None = None
     callback_query_id: str | None = None
+
+
+def _target_label(target_id: str) -> str:
+    return _TARGET_LABELS.get(target_id, target_id)
+
+
+def _kind_label(rule_kind: str, lang: str) -> str:
+    if lang == "ar":
+        return {
+            "above": "أعلى من",
+            "below": "أقل من",
+            "pct_move": "تغير %",
+            "points_move": "تغير نقاط",
+        }.get(rule_kind, rule_kind)
+    return {
+        "above": "Above",
+        "below": "Below",
+        "pct_move": "% move",
+        "points_move": "Points",
+    }.get(rule_kind, rule_kind)
+
+
+def _format_rule_line(index: int, rule: Any, lang: str) -> str:
+    type_emoji = _TYPE_EMOJI.get(rule.target_type, "📌")
+    kind_emoji = _KIND_EMOJI.get(rule.rule_kind, "•")
+    label = _target_label(str(rule.target_id))
+    kind = _kind_label(str(rule.rule_kind), lang)
+    thr = float(rule.threshold)
+    thr_s = str(int(thr)) if thr.is_integer() else str(thr)
+    return (
+        f"{index}- {type_emoji} {rule.target_type} ----> "
+        f"{label} {kind_emoji} {kind} {thr_s}"
+    )
+
+
+def _format_rules_list(rules: list[Any], lang: str) -> str:
+    header = "تنبيهاتك:" if lang == "ar" else "Your alerts:"
+    lines = [_format_rule_line(i, rule, lang) for i, rule in enumerate(rules, start=1)]
+    return header + "\n" + "\n".join(lines)
+
+
+def _rules_delete_keyboard(rules: list[Any], lang: str) -> dict[str, Any]:
+    rows: list[list[tuple[str, str]]] = []
+    row: list[tuple[str, str]] = []
+    for i, _rule in enumerate(rules, start=1):
+        label = f"🗑 {i}" if lang != "ar" else f"🗑 {i}"
+        row.append((label, f"del:{i}"))
+        if len(row) == 3:
+            rows.append(row)
+            row = []
+    if row:
+        rows.append(row)
+    back = ("القائمة", "menu:home") if lang == "ar" else ("Home", "menu:home")
+    rows.append([back])
+    return _keyboard(rows)
 
 
 def clear_sessions() -> None:
@@ -217,6 +292,8 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
         text = lower
     elif text.startswith("menu:"):
         lower = text  # keep menu:add etc.
+    elif text.startswith("del:"):
+        lower = text  # keep del:1
     elif text.startswith("type:"):
         lower = text.split(":", 1)[1].lower()
         text = lower
@@ -244,6 +321,11 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
                 reply_markup=_lang_keyboard(),
                 callback_query_id=callback_query_id,
             )
+        home = _home(lang)
+        home.callback_query_id = callback_query_id
+        return home
+
+    if lower == "menu:home":
         home = _home(lang)
         home.callback_query_id = callback_query_id
         return home
@@ -286,38 +368,49 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
                 reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
-        lines = [
-            f"{r.id[:8]}… {r.target_type}:{r.target_id} {r.rule_kind} {r.threshold}"
-            for r in rules
-        ]
-        header = "تنبيهاتك:" if lang == "ar" else "Your alerts:"
         return BotReply(
-            header + "\n" + "\n".join(lines),
-            reply_markup=_home_keyboard(lang),
+            _format_rules_list(rules, lang),
+            reply_markup=_rules_delete_keyboard(rules, lang),
             callback_query_id=callback_query_id,
         )
 
-    if lower.startswith("/delete"):
-        parts = text.split(maxsplit=1)
-        if len(parts) < 2:
-            return BotReply(
-                "الاستخدام: /delete <rule_id>" if lang == "ar" else "Usage: /delete <rule_id>",
-                reply_markup=_home_keyboard(lang),
-                callback_query_id=callback_query_id,
-            )
-        needle = parts[1].strip()
+    if lower.startswith("del:") or lower.startswith("/delete"):
         rules = service.list_rules_for_chat(session, chat_id)
-        match = next((r for r in rules if r.id.startswith(needle) or r.id == needle), None)
-        if match is None:
+        index_s = ""
+        if lower.startswith("del:"):
+            index_s = lower.split(":", 1)[1].strip()
+        else:
+            parts = text.split(maxsplit=1)
+            index_s = parts[1].strip() if len(parts) >= 2 else ""
+        if not index_s.isdigit():
             return BotReply(
-                "القاعدة غير موجودة." if lang == "ar" else "Rule not found.",
+                "اضغط 🗑 لحذف تنبيه، أو /delete 1"
+                if lang == "ar"
+                else "Tap 🗑 to delete an alert, or /delete 1",
                 reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
+        idx = int(index_s)
+        if idx < 1 or idx > len(rules):
+            return BotReply(
+                "رقم غير صحيح." if lang == "ar" else "Invalid number.",
+                reply_markup=_home_keyboard(lang),
+                callback_query_id=callback_query_id,
+            )
+        match = rules[idx - 1]
         service.delete_rule_for_chat(session, chat_id, match.id)
+        left = service.list_rules_for_chat(session, chat_id)
+        if not left:
+            return BotReply(
+                "تم الحذف. لا توجد تنبيهات الآن."
+                if lang == "ar"
+                else "Deleted. No alerts left.",
+                reply_markup=_home_keyboard(lang),
+                callback_query_id=callback_query_id,
+            )
         return BotReply(
-            "تم حذف القاعدة." if lang == "ar" else "Rule deleted.",
-            reply_markup=_home_keyboard(lang),
+            ("تم الحذف.\n" if lang == "ar" else "Deleted.\n") + _format_rules_list(left, lang),
+            reply_markup=_rules_delete_keyboard(left, lang),
             callback_query_id=callback_query_id,
         )
 
@@ -497,15 +590,14 @@ def _continue_wizard(
             _clear_session(chat_id)
             return BotReply(str(exc))
         _clear_session(chat_id)
+        line = _format_rule_line(1, rule, lang)
         if lang == "ar":
             return BotReply(
-                f"تم حفظ التنبيه ({rule.id[:8]}…):\n"
-                f"{rule.target_type}:{rule.target_id} {rule.rule_kind} {rule.threshold}",
+                f"تم حفظ التنبيه:\n{line}",
                 reply_markup=_home_keyboard("ar"),
             )
         return BotReply(
-            f"Alert saved ({rule.id[:8]}…):\n"
-            f"{rule.target_type}:{rule.target_id} {rule.rule_kind} {rule.threshold}",
+            f"Alert saved:\n{line}",
             reply_markup=_home_keyboard("en"),
         )
 

@@ -71,9 +71,16 @@ def test_start_and_add_rule_flow_with_buttons(alerts_db_telegram: None) -> None:
         r_done = bot.handle_update(session, _msg("1", "100"))
         assert r_done is not None
         assert "Alert saved" in r_done.text or "saved" in r_done.text.lower()
+        assert "COMI" in r_done.text
+        assert "d0c184de" not in r_done.text
+        assert "---->" in r_done.text
         rules = service.list_rules_for_chat(session, "1")
         assert len(rules) == 1
         assert rules[0].target_id == "COMI"
+        listed = bot.handle_update(session, _cb("1", "menu:rules"))
+        assert listed is not None
+        assert "1- 📈 stock ----> COMI" in listed.text
+        assert "⬆️" in listed.text
 
 
 def test_arabic_language_button_shows_home(alerts_db_telegram: None) -> None:
