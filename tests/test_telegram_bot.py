@@ -41,30 +41,56 @@ def _msg(chat_id: str, text: str) -> dict:
     }
 
 
-def test_start_and_add_rule_flow(alerts_db_telegram: None) -> None:
+def _cb(chat_id: str, data: str) -> dict:
+    return {
+        "callback_query": {
+            "id": "cb1",
+            "data": data,
+            "message": {
+                "chat": {"id": int(chat_id) if chat_id.isdigit() else chat_id},
+                "text": "pick",
+            },
+        }
+    }
+
+
+def test_start_and_add_rule_flow_with_buttons(alerts_db_telegram: None) -> None:
     with session_scope() as session:
         r1 = bot.handle_update(session, _msg("1", "/start"))
         assert r1 is not None
-        assert "language" in r1.lower() or "en" in r1.lower()
-        r2 = bot.handle_update(session, _msg("1", "en"))
+        assert r1.reply_markup is not None
+        r2 = bot.handle_update(session, _cb("1", "lang:en"))
         assert r2 is not None
+        assert "Commands" in r2.text
         r3 = bot.handle_update(session, _msg("1", "/add"))
         assert r3 is not None
-        bot.handle_update(session, _msg("1", "stock"))
-        bot.handle_update(session, _msg("1", "COMI"))
-        bot.handle_update(session, _msg("1", "above"))
+        assert r3.reply_markup is not None
+        bot.handle_update(session, _cb("1", "type:stock"))
+        bot.handle_update(session, _cb("1", "id:COMI"))
+        bot.handle_update(session, _cb("1", "kind:above"))
         r_done = bot.handle_update(session, _msg("1", "100"))
         assert r_done is not None
-        assert "rule" in r_done.lower()
+        assert "Rule saved" in r_done.text
         rules = service.list_rules_for_chat(session, "1")
         assert len(rules) == 1
         assert rules[0].target_id == "COMI"
 
 
+def test_arabic_language_button(alerts_db_telegram: None) -> None:
+    with session_scope() as session:
+        bot.handle_update(session, _msg("9", "/start"))
+        reply = bot.handle_update(session, _cb("9", "lang:ar"))
+        assert reply is not None
+        assert "الأوامر" in reply.text
+        sub = service.get_by_telegram_chat(session, "9")
+        assert sub is not None
+        assert sub.lang == "ar"
+
+
 def test_stop_unsubscribes(alerts_db_telegram: None) -> None:
     with session_scope() as session:
         bot.handle_update(session, _msg("2", "/start"))
-        bot.handle_update(session, _msg("2", "en"))
+        bot.handle_update(session, _cb("2", "lang:en"))
         bot.handle_update(session, _msg("2", "/stop"))
         sub = service.get_by_telegram_chat(session, "2")
         assert sub is not None
@@ -75,10 +101,10 @@ def test_digest_on_sends_confirm(alerts_db_telegram: None) -> None:
     mail.clear_outbox()
     with session_scope() as session:
         bot.handle_update(session, _msg("3", "/start"))
-        bot.handle_update(session, _msg("3", "en"))
+        bot.handle_update(session, _cb("3", "lang:en"))
         bot.handle_update(session, _msg("3", "/digest on"))
         reply = bot.handle_update(session, _msg("3", "user@example.com"))
         assert reply is not None
-        assert "confirm" in reply.lower()
+        assert "confirm" in reply.text.lower() or "Confirmation" in reply.text
     assert mail._outbox
     assert "Confirm" in mail._outbox[0]["subject"]

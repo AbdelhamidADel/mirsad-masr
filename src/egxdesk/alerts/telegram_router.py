@@ -8,6 +8,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 
 from egxdesk.alerts import bot
 from egxdesk.alerts import telegram as tg
+from egxdesk.alerts.bot import BotReply
 from egxdesk.alerts.db import init_db, session_scope
 from egxdesk.config import settings
 
@@ -15,6 +16,12 @@ router = APIRouter(prefix="/telegram", tags=["Telegram"])
 
 
 def _extract_chat_id(update: dict[str, Any]) -> str | None:
+    cq = update.get("callback_query")
+    if isinstance(cq, dict):
+        msg = cq.get("message") or {}
+        chat = msg.get("chat") or {}
+        cid = chat.get("id")
+        return str(cid) if cid is not None else None
     msg = update.get("message") or update.get("edited_message") or {}
     chat = msg.get("chat") or {}
     cid = chat.get("id")
@@ -44,8 +51,15 @@ async def telegram_webhook(
     init_db()
     with session_scope() as session:
         reply = bot.handle_update(session, update)
-    if reply:
+
+    if isinstance(reply, BotReply):
+        if reply.callback_query_id:
+            tg.answer_callback_query(callback_query_id=reply.callback_query_id)
         chat = _extract_chat_id(update)
-        if chat is not None:
-            tg.send_message(chat_id=chat, text=reply)
+        if chat is not None and reply.text:
+            tg.send_message(
+                chat_id=chat,
+                text=reply.text,
+                reply_markup=reply.reply_markup,
+            )
     return {"ok": True}
