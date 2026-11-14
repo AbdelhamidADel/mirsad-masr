@@ -214,7 +214,7 @@ def _home_keyboard(lang: str) -> dict[str, Any]:
         return _keyboard(
             [
                 [("إضافة تنبيه", "menu:add")],
-                [("قواعدي", "menu:rules"), ("مساعدة", "menu:help")],
+                [("تنبيهاتي", "menu:rules"), ("مساعدة", "menu:help")],
                 [("تغيير اللغة", "menu:lang"), ("إيقاف التنبيهات", "menu:stop")],
             ]
         )
@@ -244,7 +244,7 @@ def _help(lang: str) -> str:
         return (
             "اضغط الأزرار للتنقل.\n"
             "• إضافة تنبيه — اختر سهم/ذهب/مؤشر/عملة بالضغط\n"
-            "• قواعدي — عرض تنبيهاتك\n"
+            "• تنبيهاتي — عرض تنبيهاتك\n"
             "• يمكنك أيضاً: /add /rules /stop"
         )
     return (
