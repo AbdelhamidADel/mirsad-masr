@@ -214,7 +214,7 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
         service.upsert_telegram_subscriber(session, chat_id, lang=lang)
         _set_session(chat_id, step="await_lang")
         return BotReply(
-            "Welcome to MIRSAD MASR alerts / أهلاً بك في تنبيهات مرساد مصر\n"
+            "Welcome to MIRSAD MASR alerts / أهلاً بك في تنبيهات مرصاد مصر\n"
             "Choose language / اختر اللغة:",
             reply_markup=_lang_keyboard(),
             callback_query_id=callback_query_id,

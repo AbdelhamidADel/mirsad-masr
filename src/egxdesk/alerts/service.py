@@ -458,7 +458,7 @@ def evaluate_alerts(session: Session) -> int:
         if not hits:
             continue
         assert sub.telegram_chat_id is not None
-        header = "تنبيه مرساد مصر" if sub.lang == "ar" else "MIRSAD MASR alert"
+        header = "تنبيه مرصاد مصر" if sub.lang == "ar" else "MIRSAD MASR alert"
         body = header + "\n" + "\n".join(detail for _r, _p, _prev, detail in hits)
         ok = tg.send_message(chat_id=sub.telegram_chat_id, text=body)
         if not ok:
