@@ -17,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 from egxdesk import __version__
 from egxdesk.alerts.db import init_db
 from egxdesk.alerts.router import router as alerts_router
+from egxdesk.alerts.telegram_router import router as telegram_router
 from egxdesk.alerts.scheduler import alerts_loop
 from egxdesk.api_docs import API_DESCRIPTION, OPENAPI_TAGS, scalar_docs_response
 from egxdesk.config import settings
@@ -567,6 +568,7 @@ async def status(
 
 
 v1.include_router(alerts_router)
+v1.include_router(telegram_router)
 app.include_router(v1)
 
 
