@@ -105,6 +105,25 @@ def test_stop_unsubscribes(alerts_db_telegram: None) -> None:
         assert sub.unsubscribed_at is not None
 
 
+def test_stale_type_button_ignored_during_kind_step(alerts_db_telegram: None) -> None:
+    with session_scope() as session:
+        bot.handle_update(session, _msg("5", "/start"))
+        bot.handle_update(session, _cb("5", "lang:en"))
+        bot.handle_update(session, _cb("5", "menu:add"))
+        bot.handle_update(session, _cb("5", "type:gold"))
+        bot.handle_update(session, _cb("5", "id:gold_21k"))
+        stale = bot.handle_update(session, _cb("5", "type:index"))
+        assert stale is not None
+        assert "latest message" in stale.text.lower() or "انتهت" in stale.text
+
+
+def test_type_buttons_are_full_width(alerts_db_telegram: None) -> None:
+    kb = bot._type_keyboard("ar")
+    rows = kb["inline_keyboard"]
+    assert all(len(row) == 1 for row in rows)
+    assert len(rows) == 4
+
+
 def test_digest_on_sends_confirm(alerts_db_telegram: None) -> None:
     mail.clear_outbox()
     with session_scope() as session:

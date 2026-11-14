@@ -84,3 +84,40 @@ def answer_callback_query(*, callback_query_id: str, text: str | None = None) ->
     except Exception as exc:
         log.warning("telegram_answer_callback_failed", error=str(exc))
         return False
+
+
+def clear_inline_keyboard(*, chat_id: str, message_id: int) -> bool:
+    """Remove buttons from a previous message so stale taps can't confuse the wizard."""
+    if _outbox is not None:
+        _outbox.append(
+            {
+                "action": "clear_keyboard",
+                "chat_id": str(chat_id),
+                "message_id": message_id,
+            }
+        )
+        return True
+    token = settings.telegram_bot_token.strip()
+    if not token:
+        return False
+    url = f"https://api.telegram.org/bot{token}/editMessageReplyMarkup"
+    payload: dict[str, object] = {
+        "chat_id": chat_id,
+        "message_id": message_id,
+        "reply_markup": {"inline_keyboard": []},
+    }
+    try:
+        with httpx.Client(timeout=20.0) as client:
+            res = client.post(url, json=payload)
+        data = res.json()
+        if not data.get("ok"):
+            # Message may already lack a keyboard — not fatal.
+            log.info(
+                "telegram_clear_keyboard_skipped",
+                body=str(data.get("description") or "")[:160],
+            )
+            return False
+        return True
+    except Exception as exc:
+        log.warning("telegram_clear_keyboard_failed", error=str(exc))
+        return False

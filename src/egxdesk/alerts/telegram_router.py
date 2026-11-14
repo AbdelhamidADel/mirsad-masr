@@ -55,6 +55,14 @@ async def telegram_webhook(
     if isinstance(reply, BotReply):
         if reply.callback_query_id:
             tg.answer_callback_query(callback_query_id=reply.callback_query_id)
+        if (
+            reply.clear_keyboard_chat_id is not None
+            and reply.clear_keyboard_message_id is not None
+        ):
+            tg.clear_inline_keyboard(
+                chat_id=reply.clear_keyboard_chat_id,
+                message_id=reply.clear_keyboard_message_id,
+            )
         chat = _extract_chat_id(update)
         if chat is not None and reply.text:
             tg.send_message(

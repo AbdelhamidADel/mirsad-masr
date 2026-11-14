@@ -58,6 +58,8 @@ class BotReply:
     text: str
     reply_markup: dict[str, Any] | None = None
     callback_query_id: str | None = None
+    clear_keyboard_message_id: int | None = None
+    clear_keyboard_chat_id: str | None = None
 
 
 def _target_label(target_id: str) -> str:
@@ -100,19 +102,13 @@ def _format_rules_list(rules: list[Any], lang: str) -> str:
 
 
 def _rules_delete_keyboard(rules: list[Any], lang: str) -> dict[str, Any]:
-    rows: list[list[tuple[str, str]]] = []
-    row: list[tuple[str, str]] = []
+    buttons: list[tuple[str, str]] = []
     for i, _rule in enumerate(rules, start=1):
         label = f"🗑 حذف {i}" if lang == "ar" else f"🗑 Delete {i}"
-        row.append((label, f"del:{i}"))
-        if len(row) == 3:
-            rows.append(row)
-            row = []
-    if row:
-        rows.append(row)
+        buttons.append((label, f"del:{i}"))
     back = ("القائمة", "menu:home") if lang == "ar" else ("Home", "menu:home")
-    rows.append([back])
-    return _keyboard(rows)
+    buttons.append(back)
+    return _wide(buttons)
 
 
 def clear_sessions() -> None:
@@ -152,22 +148,31 @@ def _keyboard(rows: list[list[tuple[str, str]]]) -> dict[str, Any]:
     }
 
 
+def _wide(buttons: list[tuple[str, str]]) -> dict[str, Any]:
+    """One full-width button per row."""
+    return _keyboard([[btn] for btn in buttons])
+
+
 def _lang_keyboard() -> dict[str, Any]:
-    return _keyboard([[("English", "lang:en"), ("العربية", "lang:ar")]])
+    return _wide([("English", "lang:en"), ("العربية", "lang:ar")])
 
 
 def _type_keyboard(lang: str) -> dict[str, Any]:
     if lang == "ar":
-        return _keyboard(
+        return _wide(
             [
-                [("سهم", "type:stock"), ("ذهب", "type:gold")],
-                [("مؤشر", "type:index"), ("عملة", "type:fx")],
+                ("📈 سهم", "type:stock"),
+                ("🥇 ذهب", "type:gold"),
+                ("📊 مؤشر", "type:index"),
+                ("💱 عملة", "type:fx"),
             ]
         )
-    return _keyboard(
+    return _wide(
         [
-            [("Stock", "type:stock"), ("Gold", "type:gold")],
-            [("Index", "type:index"), ("FX", "type:fx")],
+            ("📈 Stock", "type:stock"),
+            ("🥇 Gold", "type:gold"),
+            ("📊 Index", "type:index"),
+            ("💱 FX", "type:fx"),
         ]
     )
 
@@ -179,50 +184,50 @@ def _id_keyboard(target_type: str, lang: str) -> dict[str, Any]:
         "index": _INDEX_PICKS,
         "fx": _FX_PICKS,
     }[target_type]
-    rows: list[list[tuple[str, str]]] = []
-    row: list[tuple[str, str]] = []
-    for label, tid in picks:
-        row.append((label, f"id:{tid}"))
-        if len(row) == 2:
-            rows.append(row)
-            row = []
-    if row:
-        rows.append(row)
+    buttons: list[tuple[str, str]] = [(label, f"id:{tid}") for label, tid in picks]
     other = ("رمز آخر (اكتب)", "id:__other__") if lang == "ar" else ("Other (type)", "id:__other__")
-    rows.append([other])
-    return _keyboard(rows)
+    buttons.append(other)
+    return _wide(buttons)
 
 
 def _kind_keyboard(lang: str) -> dict[str, Any]:
     if lang == "ar":
-        return _keyboard(
+        return _wide(
             [
-                [("أعلى من", "kind:above"), ("أقل من", "kind:below")],
-                [("تغير %", "kind:pct_move"), ("تغير نقاط", "kind:points_move")],
+                ("⬆️ أعلى من", "kind:above"),
+                ("⬇️ أقل من", "kind:below"),
+                ("📉 تغير %", "kind:pct_move"),
+                ("↕️ تغير نقاط", "kind:points_move"),
             ]
         )
-    return _keyboard(
+    return _wide(
         [
-            [("Above", "kind:above"), ("Below", "kind:below")],
-            [("% move", "kind:pct_move"), ("Points move", "kind:points_move")],
+            ("⬆️ Above", "kind:above"),
+            ("⬇️ Below", "kind:below"),
+            ("📉 % move", "kind:pct_move"),
+            ("↕️ Points move", "kind:points_move"),
         ]
     )
 
 
 def _home_keyboard(lang: str) -> dict[str, Any]:
     if lang == "ar":
-        return _keyboard(
+        return _wide(
             [
-                [("إضافة تنبيه", "menu:add")],
-                [("تنبيهاتي", "menu:rules"), ("مساعدة", "menu:help")],
-                [("تغيير اللغة", "menu:lang"), ("إيقاف التنبيهات", "menu:stop")],
+                ("إضافة تنبيه", "menu:add"),
+                ("تنبيهاتي", "menu:rules"),
+                ("مساعدة", "menu:help"),
+                ("تغيير اللغة", "menu:lang"),
+                ("إيقاف التنبيهات", "menu:stop"),
             ]
         )
-    return _keyboard(
+    return _wide(
         [
-            [("Add alert", "menu:add")],
-            [("My rules", "menu:rules"), ("Help", "menu:help")],
-            [("Change language", "menu:lang"), ("Stop alerts", "menu:stop")],
+            ("Add alert", "menu:add"),
+            ("My rules", "menu:rules"),
+            ("Help", "menu:help"),
+            ("Change language", "menu:lang"),
+            ("Stop alerts", "menu:stop"),
         ]
     )
 
@@ -255,8 +260,10 @@ def _help(lang: str) -> str:
     )
 
 
-def _parse_update(update: dict[str, Any]) -> tuple[str | None, str, str | None]:
-    """Return (chat_id, text_or_callback_data, callback_query_id)."""
+def _parse_update(
+    update: dict[str, Any],
+) -> tuple[str | None, str, str | None, int | None]:
+    """Return (chat_id, text_or_callback_data, callback_query_id, message_id)."""
     cq = update.get("callback_query")
     if isinstance(cq, dict):
         msg = cq.get("message") or {}
@@ -264,13 +271,22 @@ def _parse_update(update: dict[str, Any]) -> tuple[str | None, str, str | None]:
         cid = chat.get("id")
         data = str(cq.get("data") or "").strip()
         cqid = str(cq.get("id") or "") or None
-        return (str(cid) if cid is not None else None, data, cqid)
+        mid = msg.get("message_id")
+        mid_i = int(mid) if isinstance(mid, int) else None
+        return (str(cid) if cid is not None else None, data, cqid, mid_i)
 
     msg = update.get("message") or update.get("edited_message") or {}
     chat = msg.get("chat") or {}
     cid = chat.get("id")
     text = str(msg.get("text") or "").strip()
-    return (str(cid) if cid is not None else None, text, None)
+    return (str(cid) if cid is not None else None, text, None, None)
+
+
+def _attach_clear(reply: BotReply, chat_id: str, message_id: int | None) -> BotReply:
+    if message_id is not None:
+        reply.clear_keyboard_chat_id = chat_id
+        reply.clear_keyboard_message_id = message_id
+    return reply
 
 
 def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
@@ -278,12 +294,13 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
     if not settings.alerts_enabled:
         return BotReply("Alerts are offline right now. Try again later.")
 
-    chat_id, text, callback_query_id = _parse_update(update)
+    chat_id, text, callback_query_id, source_message_id = _parse_update(update)
     if not chat_id or not text:
         return None
 
     sub = service.get_by_telegram_chat(session, chat_id)
     lang = sub.lang if sub is not None else "en"
+    raw_callback = text  # before normalization
     lower = text.lower()
 
     # Normalize callback payloads into wizard / menu tokens.
@@ -306,9 +323,17 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
 
     state = _get_session(chat_id)
     if state and state.get("step"):
-        reply = _continue_wizard(session, chat_id, text, state, lang=lang)
+        reply = _continue_wizard(
+            session,
+            chat_id,
+            text,
+            state,
+            lang=lang,
+            raw_callback=raw_callback,
+        )
         if reply is not None:
             reply.callback_query_id = callback_query_id
+            _attach_clear(reply, chat_id, source_message_id)
         return reply
 
     if lower.startswith("/start") or lower == "menu:lang":
@@ -316,48 +341,64 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
         # Returning users: show home in their language. New / explicit lang change: ask once.
         if lower == "menu:lang" or sub is None or sub.unsubscribed_at is not None:
             _set_session(chat_id, step="await_lang")
-            return BotReply(
+            return _attach_clear(
+            BotReply(
                 "اختر اللغة / Choose language:",
                 reply_markup=_lang_keyboard(),
                 callback_query_id=callback_query_id,
-            )
+            ),
+            chat_id,
+            source_message_id,
+        )
         home = _home(lang)
         home.callback_query_id = callback_query_id
-        return home
+        return _attach_clear(home, chat_id, source_message_id)
 
     if lower == "menu:home":
         home = _home(lang)
         home.callback_query_id = callback_query_id
-        return home
+        return _attach_clear(home, chat_id, source_message_id)
 
     if lower in ("en", "ar"):
         service.upsert_telegram_subscriber(session, chat_id, lang=lower)
         _clear_session(chat_id)
         home = _home(lower)
         home.callback_query_id = callback_query_id
-        return home
+        return _attach_clear(home, chat_id, source_message_id)
 
     if lower.startswith("/stop") or lower == "menu:stop":
         service.stop_telegram(session, chat_id)
         _clear_session(chat_id)
-        return BotReply(
-            "تم إيقاف التنبيهات. أرسل /start للعودة."
-            if lang == "ar"
-            else "Alerts stopped. Send /start to return.",
-            callback_query_id=callback_query_id,
+        return _attach_clear(
+            BotReply(
+                "تم إيقاف التنبيهات. أرسل /start للعودة."
+                if lang == "ar"
+                else "Alerts stopped. Send /start to return.",
+                callback_query_id=callback_query_id,
+            ),
+            chat_id,
+            source_message_id,
         )
 
     if lower.startswith("/help") or lower == "menu:help":
-        return BotReply(
-            _help(lang),
-            reply_markup=_home_keyboard(lang),
-            callback_query_id=callback_query_id,
+        return _attach_clear(
+            BotReply(
+                _help(lang),
+                reply_markup=_home_keyboard(lang),
+                callback_query_id=callback_query_id,
+            ),
+            chat_id,
+            source_message_id,
         )
 
     if sub is None or sub.unsubscribed_at is not None:
-        return BotReply(
-            "أرسل /start أولاً." if lang == "ar" else "Send /start to subscribe first.",
-            callback_query_id=callback_query_id,
+        return _attach_clear(
+            BotReply(
+                "أرسل /start أولاً." if lang == "ar" else "Send /start to subscribe first.",
+                callback_query_id=callback_query_id,
+            ),
+            chat_id,
+            source_message_id,
         )
 
     if lower.startswith("/rules") or lower == "menu:rules":
@@ -470,12 +511,34 @@ def _continue_wizard(
     state: dict[str, Any],
     *,
     lang: str,
+    raw_callback: str = "",
 ) -> BotReply:
     step = str(state.get("step") or "")
     lower = text.lower().strip()
     sub = service.get_by_telegram_chat(session, chat_id)
     if sub is not None:
         lang = sub.lang
+
+    # Ignore stale buttons from earlier wizard steps (e.g. مؤشر while choosing gold).
+    expected_prefix = {
+        "await_lang": "lang:",
+        "await_type": "type:",
+        "await_id": "id:",
+        "await_kind": "kind:",
+    }.get(step)
+    if (
+        expected_prefix
+        and raw_callback
+        and ":" in raw_callback
+        and not raw_callback.startswith(expected_prefix)
+        and not raw_callback.startswith("menu:")
+    ):
+        return BotReply(
+            "هذه الخطوة انتهت — استخدم الرسالة الأحدث."
+            if lang == "ar"
+            else "That step is done — use the latest message.",
+            reply_markup=None,
+        )
 
     if step == "await_lang":
         if lower not in ("en", "ar"):
@@ -536,7 +599,7 @@ def _continue_wizard(
         if not tid or tid.startswith("/"):
             tt = str(state.get("target_type") or "stock")
             return BotReply(
-                "اختر من الأزرار أو Other:" if lang == "ar" else "Tap a button or Other:",
+                "اختر من الأزرار:" if lang == "ar" else "Tap a button:",
                 reply_markup=_id_keyboard(tt, lang),
             )
         _set_session(chat_id, step="await_kind", target_id=tid)
@@ -547,7 +610,7 @@ def _continue_wizard(
 
     if step == "await_id_typed":
         tid = text.strip()
-        if not tid or tid.startswith("/"):
+        if not tid or tid.startswith("/") or ":" in tid:
             return BotReply(
                 "اكتب الرمز (مثال COMI):" if lang == "ar" else "Type the symbol (e.g. COMI):"
             )
