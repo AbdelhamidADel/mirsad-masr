@@ -134,27 +134,49 @@ def _kind_keyboard(lang: str) -> dict[str, Any]:
     )
 
 
+def _home_keyboard(lang: str) -> dict[str, Any]:
+    if lang == "ar":
+        return _keyboard(
+            [
+                [("إضافة تنبيه", "menu:add")],
+                [("قواعدي", "menu:rules"), ("مساعدة", "menu:help")],
+                [("تغيير اللغة", "menu:lang"), ("إيقاف التنبيهات", "menu:stop")],
+            ]
+        )
+    return _keyboard(
+        [
+            [("Add alert", "menu:add")],
+            [("My rules", "menu:rules"), ("Help", "menu:help")],
+            [("Change language", "menu:lang"), ("Stop alerts", "menu:stop")],
+        ]
+    )
+
+
+def _home(lang: str) -> BotReply:
+    if lang == "ar":
+        return BotReply(
+            "مرصاد مصر — التنبيهات\nاختر من الأزرار:",
+            reply_markup=_home_keyboard("ar"),
+        )
+    return BotReply(
+        "MIRSAD MASR — Alerts\nChoose an option:",
+        reply_markup=_home_keyboard("en"),
+    )
+
+
 def _help(lang: str) -> str:
     if lang == "ar":
         return (
-            "الأوامر:\n"
-            "/start — البداية\n"
-            "/add — إضافة تنبيه (بالأزرار)\n"
-            "/rules — عرض القواعد\n"
-            "/delete <id> — حذف قاعدة\n"
-            "/digest on|off — الملخص اليومي بالبريد\n"
-            "/stop — إلغاء الاشتراك\n"
-            "أو أرسل ar / en لتغيير اللغة"
+            "اضغط الأزرار للتنقل.\n"
+            "• إضافة تنبيه — اختر سهم/ذهب/مؤشر/عملة بالضغط\n"
+            "• قواعدي — عرض تنبيهاتك\n"
+            "• يمكنك أيضاً: /add /rules /stop"
         )
     return (
-        "Commands:\n"
-        "/start — begin\n"
-        "/add — add an alert (tap buttons)\n"
-        "/rules — list rules\n"
-        "/delete <id> — delete a rule\n"
-        "/digest on|off — daily email digest\n"
-        "/stop — unsubscribe\n"
-        "Or send ar / en to change language"
+        "Use the buttons to navigate.\n"
+        "• Add alert — tap stock/gold/index/FX\n"
+        "• My rules — see your alerts\n"
+        "• You can also type: /add /rules /stop"
     )
 
 
@@ -189,10 +211,12 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
     lang = sub.lang if sub is not None else "en"
     lower = text.lower()
 
-    # Normalize callback payloads into wizard tokens.
+    # Normalize callback payloads into wizard / menu tokens.
     if text.startswith("lang:"):
         lower = text.split(":", 1)[1].lower()
         text = lower
+    elif text.startswith("menu:"):
+        lower = text  # keep menu:add etc.
     elif text.startswith("type:"):
         lower = text.split(":", 1)[1].lower()
         text = lower
@@ -210,38 +234,43 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
             reply.callback_query_id = callback_query_id
         return reply
 
-    if lower.startswith("/start"):
+    if lower.startswith("/start") or lower == "menu:lang":
         service.upsert_telegram_subscriber(session, chat_id, lang=lang)
-        _set_session(chat_id, step="await_lang")
-        return BotReply(
-            "Welcome to MIRSAD MASR alerts / أهلاً بك في تنبيهات مرصاد مصر\n"
-            "Choose language / اختر اللغة:",
-            reply_markup=_lang_keyboard(),
-            callback_query_id=callback_query_id,
-        )
+        # Returning users: show home in their language. New / explicit lang change: ask once.
+        if lower == "menu:lang" or sub is None or sub.unsubscribed_at is not None:
+            _set_session(chat_id, step="await_lang")
+            return BotReply(
+                "اختر اللغة / Choose language:",
+                reply_markup=_lang_keyboard(),
+                callback_query_id=callback_query_id,
+            )
+        home = _home(lang)
+        home.callback_query_id = callback_query_id
+        return home
 
     if lower in ("en", "ar"):
         service.upsert_telegram_subscriber(session, chat_id, lang=lower)
         _clear_session(chat_id)
-        msg = (
-            "تم ضبط اللغة على العربية.\n" + _help("ar")
-            if lower == "ar"
-            else "Language set to English.\n" + _help("en")
-        )
-        return BotReply(msg, callback_query_id=callback_query_id)
+        home = _home(lower)
+        home.callback_query_id = callback_query_id
+        return home
 
-    if lower.startswith("/stop"):
+    if lower.startswith("/stop") or lower == "menu:stop":
         service.stop_telegram(session, chat_id)
         _clear_session(chat_id)
         return BotReply(
-            "تم إلغاء الاشتراك. أرسل /start للاشتراك مجدداً."
+            "تم إيقاف التنبيهات. أرسل /start للعودة."
             if lang == "ar"
-            else "Unsubscribed. Send /start to subscribe again.",
+            else "Alerts stopped. Send /start to return.",
             callback_query_id=callback_query_id,
         )
 
-    if lower.startswith("/help"):
-        return BotReply(_help(lang), callback_query_id=callback_query_id)
+    if lower.startswith("/help") or lower == "menu:help":
+        return BotReply(
+            _help(lang),
+            reply_markup=_home_keyboard(lang),
+            callback_query_id=callback_query_id,
+        )
 
     if sub is None or sub.unsubscribed_at is not None:
         return BotReply(
@@ -249,25 +278,31 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
             callback_query_id=callback_query_id,
         )
 
-    if lower.startswith("/rules"):
+    if lower.startswith("/rules") or lower == "menu:rules":
         rules = service.list_rules_for_chat(session, chat_id)
         if not rules:
             return BotReply(
-                "لا توجد قواعد. استخدم /add" if lang == "ar" else "No active rules. Use /add",
+                "لا توجد تنبيهات بعد." if lang == "ar" else "No alerts yet.",
+                reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
         lines = [
             f"{r.id[:8]}… {r.target_type}:{r.target_id} {r.rule_kind} {r.threshold}"
             for r in rules
         ]
-        header = "القواعد النشطة:" if lang == "ar" else "Active rules:"
-        return BotReply(header + "\n" + "\n".join(lines), callback_query_id=callback_query_id)
+        header = "تنبيهاتك:" if lang == "ar" else "Your alerts:"
+        return BotReply(
+            header + "\n" + "\n".join(lines),
+            reply_markup=_home_keyboard(lang),
+            callback_query_id=callback_query_id,
+        )
 
     if lower.startswith("/delete"):
         parts = text.split(maxsplit=1)
         if len(parts) < 2:
             return BotReply(
                 "الاستخدام: /delete <rule_id>" if lang == "ar" else "Usage: /delete <rule_id>",
+                reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
         needle = parts[1].strip()
@@ -276,11 +311,13 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
         if match is None:
             return BotReply(
                 "القاعدة غير موجودة." if lang == "ar" else "Rule not found.",
+                reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
         service.delete_rule_for_chat(session, chat_id, match.id)
         return BotReply(
             "تم حذف القاعدة." if lang == "ar" else "Rule deleted.",
+            reply_markup=_home_keyboard(lang),
             callback_query_id=callback_query_id,
         )
 
@@ -290,9 +327,10 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
             if sub.manage_token:
                 service.set_digest(session, sub.manage_token, False)
             return BotReply(
-                "تم إيقاف الملخص اليومي. تنبيهات تيليجرام ما زالت تعمل."
+                "تم إيقاف الملخص اليومي."
                 if lang == "ar"
-                else "Daily email digest off. Telegram alerts still active.",
+                else "Daily email digest off.",
+                reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
         if len(parts) >= 2 and parts[1] == "on":
@@ -307,15 +345,17 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
             "الاستخدام: /digest on | /digest off"
             if lang == "ar"
             else "Usage: /digest on | /digest off",
+            reply_markup=_home_keyboard(lang),
             callback_query_id=callback_query_id,
         )
 
-    if lower.startswith("/add"):
+    if lower.startswith("/add") or lower == "menu:add":
         if len(service.list_rules_for_chat(session, chat_id)) >= settings.alerts_max_rules:
             return BotReply(
-                f"الحد الأقصى {settings.alerts_max_rules} قواعد. احذف واحدة أولاً بـ /delete"
+                f"الحد الأقصى {settings.alerts_max_rules} تنبيهات."
                 if lang == "ar"
-                else f"Max {settings.alerts_max_rules} rules reached. /delete one first.",
+                else f"Max {settings.alerts_max_rules} alerts reached.",
+                reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
         _set_session(chat_id, step="await_type")
@@ -325,7 +365,9 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
             callback_query_id=callback_query_id,
         )
 
-    return BotReply(_help(lang), callback_query_id=callback_query_id)
+    home = _home(lang)
+    home.callback_query_id = callback_query_id
+    return home
 
 
 def _continue_wizard(
@@ -345,17 +387,12 @@ def _continue_wizard(
     if step == "await_lang":
         if lower not in ("en", "ar"):
             return BotReply(
-                "اختر اللغة من الأزرار" if lang == "ar" else "Tap a language button",
+                "اختر اللغة من الأزرار / Tap a language button",
                 reply_markup=_lang_keyboard(),
             )
         service.upsert_telegram_subscriber(session, chat_id, lang=lower)
         _clear_session(chat_id)
-        msg = (
-            "تم ضبط اللغة على العربية.\n" + _help("ar")
-            if lower == "ar"
-            else "Language set to English.\n" + _help("en")
-        )
-        return BotReply(msg)
+        return _home(lower)
 
     if step == "await_email":
         try:
@@ -462,13 +499,15 @@ def _continue_wizard(
         _clear_session(chat_id)
         if lang == "ar":
             return BotReply(
-                f"تم حفظ القاعدة ({rule.id[:8]}…):\n"
-                f"{rule.target_type}:{rule.target_id} {rule.rule_kind} {rule.threshold}"
+                f"تم حفظ التنبيه ({rule.id[:8]}…):\n"
+                f"{rule.target_type}:{rule.target_id} {rule.rule_kind} {rule.threshold}",
+                reply_markup=_home_keyboard("ar"),
             )
         return BotReply(
-            f"Rule saved ({rule.id[:8]}…):\n"
-            f"{rule.target_type}:{rule.target_id} {rule.rule_kind} {rule.threshold}"
+            f"Alert saved ({rule.id[:8]}…):\n"
+            f"{rule.target_type}:{rule.target_id} {rule.rule_kind} {rule.threshold}",
+            reply_markup=_home_keyboard("en"),
         )
 
     _clear_session(chat_id)
-    return BotReply(_help(lang))
+    return _home(lang)

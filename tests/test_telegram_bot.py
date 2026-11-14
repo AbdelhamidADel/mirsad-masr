@@ -61,8 +61,8 @@ def test_start_and_add_rule_flow_with_buttons(alerts_db_telegram: None) -> None:
         assert r1.reply_markup is not None
         r2 = bot.handle_update(session, _cb("1", "lang:en"))
         assert r2 is not None
-        assert "Commands" in r2.text
-        r3 = bot.handle_update(session, _msg("1", "/add"))
+        assert "Add alert" in str(r2.reply_markup)
+        r3 = bot.handle_update(session, _cb("1", "menu:add"))
         assert r3 is not None
         assert r3.reply_markup is not None
         bot.handle_update(session, _cb("1", "type:stock"))
@@ -70,18 +70,19 @@ def test_start_and_add_rule_flow_with_buttons(alerts_db_telegram: None) -> None:
         bot.handle_update(session, _cb("1", "kind:above"))
         r_done = bot.handle_update(session, _msg("1", "100"))
         assert r_done is not None
-        assert "Rule saved" in r_done.text
+        assert "Alert saved" in r_done.text or "saved" in r_done.text.lower()
         rules = service.list_rules_for_chat(session, "1")
         assert len(rules) == 1
         assert rules[0].target_id == "COMI"
 
 
-def test_arabic_language_button(alerts_db_telegram: None) -> None:
+def test_arabic_language_button_shows_home(alerts_db_telegram: None) -> None:
     with session_scope() as session:
         bot.handle_update(session, _msg("9", "/start"))
         reply = bot.handle_update(session, _cb("9", "lang:ar"))
         assert reply is not None
-        assert "الأوامر" in reply.text
+        assert "مرصاد" in reply.text
+        assert "إضافة تنبيه" in str(reply.reply_markup)
         sub = service.get_by_telegram_chat(session, "9")
         assert sub is not None
         assert sub.lang == "ar"
