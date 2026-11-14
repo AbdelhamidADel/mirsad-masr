@@ -46,6 +46,10 @@ services:
         sync: false
       - key: ALERTS_TICK_SECRET
         sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_WEBHOOK_SECRET
+        sync: false
       - key: ALPHA_VANTAGE_KEY
         sync: false
       - key: FINNHUB_KEY

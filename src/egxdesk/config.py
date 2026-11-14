@@ -64,6 +64,10 @@ class Settings(BaseSettings):
     alerts_public_base_url: str = "http://127.0.0.1:8000"
     alerts_tick_secret: str = ""
     alerts_cooldown_hours_default: int = 6
+    alerts_max_rules: int = 3
+    # Telegram Bot API (instant alerts). Leave empty until configured.
+    telegram_bot_token: str = ""
+    telegram_webhook_secret: str = ""
 
 
 settings = Settings()

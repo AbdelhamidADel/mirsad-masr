@@ -21,7 +21,13 @@ class Subscriber(Base):
     __tablename__ = "subscribers"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
+    email: Mapped[str | None] = mapped_column(String(320), unique=True, index=True, nullable=True)
+    telegram_chat_id: Mapped[str | None] = mapped_column(
+        String(64), unique=True, index=True, nullable=True
+    )
+    telegram_linked_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     lang: Mapped[str] = mapped_column(String(8), default="en")
     digest_on: Mapped[bool] = mapped_column(Boolean, default=False)
     confirm_token: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
