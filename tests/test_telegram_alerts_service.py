@@ -39,3 +39,16 @@ def test_subscriber_telegram_without_email(alerts_db_telegram: None) -> None:
         assert row.id
         assert row.email is None
         assert row.telegram_chat_id == "12345"
+
+
+def test_telegram_outbox_records_send(monkeypatch: pytest.MonkeyPatch) -> None:
+    from egxdesk.alerts import telegram as tg
+
+    monkeypatch.setattr(settings, "telegram_bot_token", "test-token")
+    tg.use_outbox(True)
+    tg.clear_outbox()
+    assert tg.send_message(chat_id="99", text="hello") is True
+    assert tg._outbox is not None
+    assert tg._outbox[0]["chat_id"] == "99"
+    assert tg._outbox[0]["text"] == "hello"
+    tg.use_outbox(False)
