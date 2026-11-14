@@ -17,8 +17,8 @@ from fastapi.staticfiles import StaticFiles
 from egxdesk import __version__
 from egxdesk.alerts.db import init_db
 from egxdesk.alerts.router import router as alerts_router
-from egxdesk.alerts.telegram_router import router as telegram_router
 from egxdesk.alerts.scheduler import alerts_loop
+from egxdesk.alerts.telegram_router import router as telegram_router
 from egxdesk.api_docs import API_DESCRIPTION, OPENAPI_TAGS, scalar_docs_response
 from egxdesk.config import settings
 from egxdesk.data.symbols import is_valid_symbol

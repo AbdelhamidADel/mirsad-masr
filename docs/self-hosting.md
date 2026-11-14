@@ -107,6 +107,31 @@ uv run uvicorn egxdesk.main:app --host 0.0.0.0 --port 8000
 | `LOG_LEVEL` | `info` | `debug` · `info` · `warning` · `error` |
 | `CORS_ORIGINS` | `*` | Comma-separated browser origins allowed to call the API |
 | `CORS_ORIGIN_REGEX` | _(empty)_ | Optional regex for preview domains, for example Vercel |
+| `ALERTS_ENABLED` | `false` | Master switch for alerts tick + Telegram bot |
+| `DATABASE_URL` | _(empty)_ | Postgres URL required when alerts are enabled |
+| `TELEGRAM_BOT_TOKEN` | _(empty)_ | BotFather token for instant threshold alerts |
+| `TELEGRAM_WEBHOOK_SECRET` | _(empty)_ | Shared secret for `/v1/telegram/webhook` |
+| `ALERTS_PUBLIC_BASE_URL` | `http://127.0.0.1:8000` | Public origin for digest confirm links |
+| `ALERTS_TICK_SECRET` | _(empty)_ | Shared secret for `POST /v1/alerts/tick` cron wake |
+| `ALERTS_MAX_RULES` | `3` | Max active rules per Telegram subscriber |
+| `RESEND_API_KEY` | _(empty)_ | Preferred email transport for optional digests |
+
+## Telegram alerts (optional)
+
+Instant alerts are Telegram-first. Email is only for the optional daily digest.
+
+1. Create a bot with [@BotFather](https://t.me/BotFather) and set `TELEGRAM_BOT_TOKEN`.
+2. Set `DATABASE_URL`, `TELEGRAM_WEBHOOK_SECRET`, `ALERTS_PUBLIC_BASE_URL`, and `ALERTS_ENABLED=true`.
+3. Point Telegram at your webhook (secret header must match):
+
+```bash
+curl "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook" \
+  -d "url=$ALERTS_PUBLIC_BASE_URL/v1/telegram/webhook" \
+  -d "secret_token=$TELEGRAM_WEBHOOK_SECRET"
+```
+
+4. On Render Free, also schedule an external cron to `POST /v1/alerts/tick` with `ALERTS_TICK_SECRET` so the dyno wakes during the session window.
+5. In Telegram: `/start` → language → `/add` to create a threshold rule (max 3). Optional: `/digest on` then confirm the email link.
 
 ## Reverse proxy (nginx example)
 
