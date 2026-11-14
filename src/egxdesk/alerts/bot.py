@@ -103,7 +103,7 @@ def _rules_delete_keyboard(rules: list[Any], lang: str) -> dict[str, Any]:
     rows: list[list[tuple[str, str]]] = []
     row: list[tuple[str, str]] = []
     for i, _rule in enumerate(rules, start=1):
-        label = f"🗑 {i}" if lang != "ar" else f"🗑 {i}"
+        label = f"🗑 حذف {i}" if lang == "ar" else f"🗑 Delete {i}"
         row.append((label, f"del:{i}"))
         if len(row) == 3:
             rows.append(row)
@@ -384,9 +384,9 @@ def handle_update(session: Session, update: dict[str, Any]) -> BotReply | None:
             index_s = parts[1].strip() if len(parts) >= 2 else ""
         if not index_s.isdigit():
             return BotReply(
-                "اضغط 🗑 لحذف تنبيه، أو /delete 1"
+                "اضغط «🗑 حذف» لحذف تنبيه، أو /delete 1"
                 if lang == "ar"
-                else "Tap 🗑 to delete an alert, or /delete 1",
+                else "Tap «🗑 Delete» to remove an alert, or /delete 1",
                 reply_markup=_home_keyboard(lang),
                 callback_query_id=callback_query_id,
             )
